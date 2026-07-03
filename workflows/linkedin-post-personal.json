@@ -1,0 +1,711 @@
+{
+  "updatedAt": "2026-07-03T05:22:19.992Z",
+  "createdAt": "2026-07-03T04:39:56.341Z",
+  "id": "9lo7Lhwn3tg2cC6P",
+  "name": "WF1 - LinkedIn Post (Personal)",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "e1951cb4-734a-4cbd-93de-410ab3cf2f97",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1952,
+        -80
+      ],
+      "webhookId": "bf3a1c2d-1111-1111-1111-wf1linkedinprs",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-not-command",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "169c398c-d3f7-4b4a-a935-eac147fa4fb1",
+      "name": "Ignore Commands",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1728,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-has-prefix",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "y:",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7bb3f2d0-b14f-4da8-a929-0dda9a2dc9dd",
+      "name": "Has y: prefix?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1504,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Start your message with y: for personal LinkedIn.\n\nExample: y: Just finished a 10km run at dawn. The city is yours when everyone else is asleep.",
+        "additionalFields": {}
+      },
+      "id": "a054680f-9473-470d-9113-96e330383eee",
+      "name": "Ask for prefix",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        128
+      ],
+      "webhookId": "45b8c354-1364-47a4-8376-d152f43e03b3",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $json.message.chat.id }}"
+            },
+            {
+              "name": "telegram_user_id",
+              "stringValue": "={{ $json.message.from.id }}"
+            },
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text.replace(/^y:\\s*/i, '') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2359db3f-0341-4498-b1d8-c109dd90678d",
+      "name": "Extract Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -1280,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets. Voice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak. Format: strong hook on the first line that stops the scroll, then body, max 1300 characters total. Add 3-5 relevant hashtags on the last line. Return only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
+        "options": {}
+      },
+      "id": "45121b86-f615-4c5a-9e31-abb72faa1acd",
+      "name": "Generate LinkedIn Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -1072,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://xiqohqytcyjiqskkextz.supabase.co/rest/v1/pending_approvals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ telegram_user_id: parseInt($json.telegram_user_id), workflow_type: 'linkedin', resume_url: $execution.resumeUrl, content_preview: $json.post_text.substring(0, 200), status: 'pending' }) }}",
+        "options": {}
+      },
+      "id": "3a26e509-ebbb-426c-9f69-40d2750f0501",
+      "name": "Save to Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -624,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Extract Post Text'].json['chat_id'] }}",
+        "text": "=📝 LinkedIn Preview:\n\n{{ $node['Extract Post Text'].json['post_text'] }}\n\n---\nReply /approve to post, /edit [instructions] to change, or /discard to cancel.",
+        "additionalFields": {}
+      },
+      "id": "fd36ece8-857f-491b-b051-87a00256e48c",
+      "name": "Send Preview",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -80
+      ],
+      "webhookId": "3b5c7b01-40c4-437f-bafc-4245fd63c0a6",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {
+          "webhookSuffix": ""
+        }
+      },
+      "id": "c9909197-4a45-41a7-acb4-4f1fad3fc8b5",
+      "name": "Wait for Approval",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -80
+      ],
+      "webhookId": "bf3a1c2d-2222-2222-2222-wf1waitnode11"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-approve",
+                    "leftValue": "={{ $json.body.command }}",
+                    "rightValue": "approve",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-edit",
+                    "leftValue": "={{ $json.body.command }}",
+                    "rightValue": "edit",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-discard",
+                    "leftValue": "={{ $json.body.command }}",
+                    "rightValue": "discard",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "da3d4b7e-4611-4b92-aa9e-80c67a375bd9",
+      "name": "Route Command",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        48,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_LINKEDIN_ACCESS_TOKEN"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ author: 'urn:li:person:kvFSUycND7', lifecycleState: 'PUBLISHED', specificContent: { 'com.linkedin.ugc.ShareContent': { shareCommentary: { text: $node['Extract Post Text'].json['post_text'] }, shareMediaCategory: 'NONE' } }, visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' } }) }}",
+        "options": {}
+      },
+      "id": "248a1877-e6b1-4bbb-a94e-20d930d60e7b",
+      "name": "Post to LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        256,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Extract Post Text'].json['chat_id'] }}",
+        "text": "✅ Posted to LinkedIn!",
+        "additionalFields": {}
+      },
+      "id": "f588b1c3-bd2b-4a99-b436-7043bbbdc2f8",
+      "name": "Confirm Posted",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -224
+      ],
+      "webhookId": "e066f7ed-2de9-470e-9e3d-514f2b57f8b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax. Voice: direct, authentic, no fluff. Max 1300 characters. 3-5 hashtags at the end. Return only the post text.' }, { role: 'user', content: 'Rewrite this LinkedIn post with the following instructions:\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\nInstructions: ' + $json.body.instructions } ] }) }}",
+        "options": {}
+      },
+      "id": "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
+      "name": "Rewrite with Instructions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        256,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Extract Post Text'].json['chat_id'] }}",
+        "text": "=📝 Updated Preview:\n\n{{ $json.choices[0].message.content }}\n\n---\nReply /approve to post, /edit [instructions] to change again, or /discard to cancel.",
+        "additionalFields": {}
+      },
+      "id": "43406f5b-cbd1-4a69-8d9f-2ca91b0b45bf",
+      "name": "Send Updated Preview",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -80
+      ],
+      "webhookId": "1b3f3ae7-72c2-47bd-b00c-c7a1c281c7b7",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Extract Post Text'].json['chat_id'] }}",
+        "text": "🗑️ Discarded.",
+        "additionalFields": {}
+      },
+      "id": "d97d9288-4738-4680-9809-a2646a3d09a5",
+      "name": "Discard",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        256,
+        64
+      ],
+      "webhookId": "bd1f9af3-e340-493f-8c05-a436c57fe16e",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f7756da3-2548-4bcd-b7ae-df881e659921",
+              "name": "chat_id",
+              "value": "={{ $node[\"Extract Content\"].json.chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "67399116-fdac-4709-af55-eb9cea8bf30a",
+              "name": "telegram_user_id",
+              "value": "={{ $node[\"Extract Content\"].json.telegram_user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "df85f3a2-337c-47c7-b43c-8ddbbe0a32d5",
+              "name": "=post_text",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -864,
+        -80
+      ],
+      "id": "4db16a0d-899b-4ccd-8cc5-18f8bda4e667",
+      "name": "Extract Post Text"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Ignore Commands",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ignore Commands": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Has y: prefix?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has y: prefix?": {
+      "main": [
+        [
+          {
+            "node": "Extract Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ask for prefix",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Content": {
+      "main": [
+        [
+          {
+            "node": "Generate LinkedIn Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Extract Post Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Send Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Preview": {
+      "main": [
+        [
+          {
+            "node": "Wait for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Approval": {
+      "main": [
+        [
+          {
+            "node": "Route Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Command": {
+      "main": [
+        [
+          {
+            "node": "Post to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rewrite with Instructions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Discard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Confirm Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rewrite with Instructions": {
+      "main": [
+        [
+          {
+            "node": "Send Updated Preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Post Text": {
+      "main": [
+        [
+          {
+            "node": "Save to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "18975579-37b2-40a1-a734-61d2638b4ae7",
+  "activeVersionId": "18975579-37b2-40a1-a734-61d2638b4ae7",
+  "versionCounter": 54,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-07-03T04:39:56.343Z",
+      "createdAt": "2026-07-03T04:39:56.343Z",
+      "role": "workflow:owner",
+      "workflowId": "9lo7Lhwn3tg2cC6P",
+      "projectId": "sGCETpH9LzOPK6iL",
+      "project": {
+        "updatedAt": "2026-07-01T07:07:48.289Z",
+        "createdAt": "2026-07-01T07:06:16.838Z",
+        "id": "sGCETpH9LzOPK6iL",
+        "name": "Yahya Zekry <yahyazekry@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": "Version 18975579",
+    "description": ""
+  }
+}

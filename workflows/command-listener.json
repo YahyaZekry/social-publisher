@@ -106,11 +106,11 @@
           "parameters": [
             {
               "name": "apikey",
-              "value": "REDACTED_SUPABASE_SERVICE_ROLE_KEY"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             },
             {
               "name": "Authorization",
-              "value": "REDACTED_SUPABASE_SERVICE_ROLE_KEY"
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
             }
           ]
         },
