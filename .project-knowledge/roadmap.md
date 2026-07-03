@@ -6,34 +6,32 @@
 ## Current Goal
 
 **The full loop works end-to-end, confirmed live 2026-07-03**: `y: <topic>` →
-Groq drafts a post → row written to `pending_approvals` → Telegram preview →
-`/approve` → posted for real to personal LinkedIn → Telegram confirmation.
-WF1 is now the single self-contained workflow (WF4's logic was merged in).
-Next: fix the `Update Status` bug below (cosmetic/bookkeeping, not blocking),
-then start on Instagram / company LinkedIn using WF1 as the template.
+Groq drafts a post (now following the user's actual topic instead of forcing
+Synax, and no longer opening every post with the same templated hook) → row
+written to `pending_approvals` (with a correctly-mapped status) → Telegram
+preview → `/approve` → posted for real to personal LinkedIn → Telegram
+confirmation. WF1 is now the single self-contained workflow (WF4's logic was
+merged in). Next: rotate the exposed Supabase key (see TODO below), then
+start on Instagram / company LinkedIn using WF1 as the template.
 
 ---
 
 ## Known Bugs
 
-- [ ] **`Update Status` writes an invalid `status` value.** It sets
-      `status: $node['Extract Command'].json['command']` directly, which is
-      the bare command word (`approve`/`edit`/`discard`) — but Supabase's
-      `pending_approvals_status_check` constraint rejects `approve` (400,
-      `23514`). It almost certainly wants past-tense (`approved`, matching
-      the `pending` already used elsewhere). Not blocking — the actual
-      LinkedIn post already succeeds via the separate `Post to LinkedIn` path
-      — but the row is left stuck at `status = 'pending'` forever, which
-      could make a later `/approve` (with no new draft) incorrectly match
-      this stale row and try to hit its long-dead `resume_url`. Fix: map the
-      command to the correct enum value before writing (check the actual
-      constraint's allowed values first rather than guessing).
-      *(found: 2026-07-03)*
+*(none open as of 2026-07-03 — see `history.md` for what was just fixed)*
 
 ---
 
 ## Active TODOs
 
+- [ ] **Rotate the Supabase `service_role` key.** It was committed in
+      plaintext to this repo's first commit (`5f50384`) before redaction
+      started. Recommended regardless of whether git history also gets
+      rewritten — a rotated key makes the old exposed one harmless. Needs
+      the Supabase dashboard (can't be done from here) + updating it in the
+      ~4 nodes across WF1 that still hardcode it. Asked 2026-07-03, no
+      decision yet on whether to also rewrite git history for the old commit.
+      *(added: 2026-07-03)*
 - [ ] Move the Supabase `apikey`/`Authorization` headers (used across several
       nodes in WF1) into a proper n8n Header Auth credential instead of
       hardcoded plaintext values on each node. Now doubly important — the
@@ -56,9 +54,10 @@ then start on Instagram / company LinkedIn using WF1 as the template.
       instance entirely, or leave it as an inert historical reference?
       *(added: 2026-07-03)*
 - [ ] Several stale `pending_approvals` rows accumulated during this
-      session's testing (from expired/consumed resume URLs) will never
-      resolve to `approved`/`rejected` — harmless since lookups always take
-      the newest `pending` row, but worth a one-time cleanup query.
+      session's testing (from expired/consumed resume URLs, and a few that
+      predate the status-mapping fix) will never resolve to
+      `approved`/`rejected` — harmless since lookups always take the newest
+      `pending` row, but worth a one-time cleanup query.
       *(added: 2026-07-03)*
 
 ---

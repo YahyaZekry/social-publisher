@@ -3,7 +3,7 @@
 > Last updated: 2026-07-03
 > Status: Active — personal LinkedIn loop fully working end-to-end (confirmed live)
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + LinkedIn API
-> Current goal: fix the minor `Update Status` value bug, then build Instagram / company LinkedIn using WF1 as the template
+> Current goal: rotate the exposed Supabase key, then build Instagram / company LinkedIn using WF1 as the template
 
 ## What This Project Does
 Automates posting to personal Instagram, personal LinkedIn, and company LinkedIn.

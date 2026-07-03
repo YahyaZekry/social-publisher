@@ -107,6 +107,37 @@
   a Telegram preview, and `/approve` genuinely posts it to LinkedIn via
   `Post to LinkedIn` → `Confirm Posted`. First real, human-confirmed
   success of the full loop.
+- `Update Status` was writing the raw command word (`approve`/`edit`/`discard`)
+  straight into `pending_approvals.status`, which the table's
+  `pending_approvals_status_check` constraint rejects (`approve` isn't a
+  valid value). Fixed by mapping it explicitly: `approve` → `approved`,
+  `discard` → `rejected`, anything else (i.e. `edit`) stays `pending` since
+  that path loops back to another preview rather than finalizing.
+  *(fixed: 2026-07-03)*
+- Generated posts always defaulted to Synax/work/debugging themes regardless
+  of what the user actually wrote (e.g. `y: Testing the bot` → a post about
+  debugging a Synax workflow) — the system prompt never told the model it
+  *could* write about anything else. Fixed by adding an explicit instruction
+  to follow the user's actual topic and not force Synax/work into every
+  post, in both `Generate LinkedIn Post` and `Rewrite with Instructions`.
+  *(fixed: 2026-07-03)*
+- Even after the fix above, every generated post opened with the identical
+  "Just spent [some time] [doing something] and..." hook — a strong LLM
+  default for this kind of prompt that a generic "strong hook" instruction
+  doesn't discourage on its own. Fixed by explicitly telling the model to
+  vary its opening structure and never use that specific pattern.
+  *(fixed: 2026-07-03)*
+- Caught while updating `Rewrite with Instructions`' prompt (not yet actually
+  hit in testing): it still read `$json.body.instructions`, left over from
+  before the Wait-node resume mechanism switched to query params — `/edit`
+  would have received `undefined` as the rewrite instructions. Fixed to
+  `$json.query.instructions` to match the rest of the flow. *(fixed: 2026-07-03)*
+- Both of the two prompt-update edits above (and the `Update Status` fix)
+  needed a second attempt each — the first attempt tested against the *old*
+  unsaved text every time, since the paste hadn't actually landed. No
+  special reason found; re-verifying each field via the DB after every
+  "done" (rather than trusting the UI) caught it immediately both times.
+  *(2026-07-03)*
 
 ---
 
@@ -126,3 +157,10 @@
   WF1 is now the single self-contained workflow for the LinkedIn flow; WF4
   is kept inactive as a historical reference only.
   *(decided: 2026-07-02, superseded: 2026-07-03)*
+- Decided **not** to build LinkedIn hashtag-popularity lookup. LinkedIn has
+  no public API for trending/popular hashtags — the only way to get that
+  data would be scraping LinkedIn's own UI, which violates their ToS and
+  risks the account now actively used to post. Sticking with the LLM's own
+  hashtag judgment (steerable via the system prompt if needed) rather than
+  adding a third-party hashtag-analytics API for a marginal quality gain.
+  *(2026-07-03)*

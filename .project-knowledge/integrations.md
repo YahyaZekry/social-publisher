@@ -41,19 +41,23 @@
 - Written via `Save to Supabase` node:
   `POST /pending_approvals` with body
   `{ telegram_user_id, workflow_type: 'linkedin', resume_url, content_preview, status: 'pending' }`
-- Updated (partially — see `roadmap.md` bug) via `Update Status` node:
+- Updated via `Update Status` node:
   `PATCH /pending_approvals?id=eq.<id>` with body
-  `{ status: <bare command word>, edit_instructions }`.
+  `{ status: <mapped status>, edit_instructions }` — `command` is mapped
+  (`approve`→`approved`, `discard`→`rejected`, anything else stays `pending`)
+  rather than written raw, since the `pending_approvals_status_check`
+  constraint rejects bare command words like `approve`.
 - Known columns (from usage, not a schema dump): `telegram_user_id` (bigint — must be
   a real number, not the string `"undefined"`), `workflow_type` (`'linkedin'` seen —
   presumably distinguishes Instagram/company-LinkedIn rows once those exist),
   `resume_url` (`$execution.resumeUrl` — a one-time n8n Wait-node resume link),
   `content_preview` (first 200 chars of the generated post text), `status`
-  (`pending` confirmed valid; a `pending_approvals_status_check` constraint
-  rejects at least `approve` — exact allowed values not yet confirmed, see
-  `roadmap.md`), `created_at`.
+  (`pending`/`approved`/`rejected` confirmed used; exact full constraint
+  definition still not directly inspected, see `roadmap.md`), `created_at`.
 - Auth: `apikey` header + `Authorization: Bearer <service_role JWT>`, hardcoded on
-  all three nodes above (not an n8n credential — see `roadmap.md` to fix).
+  all three nodes above (not an n8n credential — see `roadmap.md` to fix; this
+  key was exposed in this repo's first commit and should be rotated regardless
+  of redaction — see `roadmap.md`).
 - **Gotcha:** a 0-row response is a 0-item n8n output, which silently stops the whole
   downstream branch (no error, no reply). `Get Pending Approval` has
   **"Always Output Data" enabled** to work around this — do not disable it.
@@ -70,8 +74,16 @@
   format, model `llama-3.3-70b-versatile`, `max_tokens: 600`.
 - Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on both nodes
   (not an n8n credential — see `roadmap.md`).
-- System prompt fixes Yahya's voice/length/hashtag rules for personal LinkedIn;
-  user message is either the raw topic (`Extract Content.content`) or, for edits,
+- System prompt (identical in both nodes): Yahya's voice/length/hashtag rules,
+  **plus explicit instructions to (a) write about whatever topic the user
+  actually gave it rather than defaulting to Synax/work content, and (b) vary
+  the opening line rather than always starting with "Just spent [time]..."**
+  — both were real, observed failure modes before the 2026-07-03 prompt
+  update (see `history.md`). No hashtag-popularity data source — the model
+  picks hashtags from its own training knowledge; a real trending-hashtags
+  lookup was considered and declined (no public LinkedIn API for it, see
+  `history.md`).
+- User message is either the raw topic (`Extract Content.content`) or, for edits,
   the original post + `$json.query.instructions` concatenated.
 - Response shape consumed: `choices[0].message.content` (plain text post, no
   JSON/structured output requested).

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T06:26:30.231Z",
+  "updatedAt": "2026-07-03T14:37:25.487Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -167,7 +167,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets. Voice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak. Format: strong hook on the first line that stops the scroll, then body, max 1300 characters total. Add 3-5 relevant hashtags on the last line. Return only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total. Add 3-5 relevant hashtags on the last line.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
         "options": {}
       },
       "id": "45121b86-f615-4c5a-9e31-abb72faa1acd",
@@ -419,7 +419,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax. Voice: direct, authentic, no fluff. Max 1300 characters. 3-5 hashtags at the end. Return only the post text.' }, { role: 'user', content: 'Rewrite this LinkedIn post with the following instructions:\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\nInstructions: ' + $json.body.instructions } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total. Add 3-5 relevant hashtags on the last line.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: 'Rewrite this LinkedIn post with the following instructions:\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\nInstructions: ' + $json.query.instructions } ] }) }}",
         "options": {}
       },
       "id": "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
@@ -688,7 +688,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ status: $node['Extract Command'].json['command'], edit_instructions: $node['Extract Command'].json['instructions'] }) }}",
+        "body": "={{ JSON.stringify({ status: $node['Extract Command'].json['command'] === 'approve' ? 'approved' : $node['Extract Command'].json['command'] === 'discard' ? 'rejected' : 'pending', edit_instructions: $node['Extract Command'].json['instructions'] }) }}",
         "options": {}
       },
       "id": "56a05006-8992-4b2f-9d05-3573baf60d7a",
@@ -991,9 +991,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "174ad495-a60f-4b6d-8c58-f4b41bb56cf7",
-  "activeVersionId": "174ad495-a60f-4b6d-8c58-f4b41bb56cf7",
-  "versionCounter": 73,
+  "versionId": "1db61563-c552-4643-bc65-d81ec74a35da",
+  "activeVersionId": "1db61563-c552-4643-bc65-d81ec74a35da",
+  "versionCounter": 83,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -1018,7 +1018,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version 174ad495",
+    "name": "Version 1db61563",
     "description": ""
   }
 }
