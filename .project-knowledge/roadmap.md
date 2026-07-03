@@ -5,61 +5,66 @@
 
 ## Current Goal
 
-WF1 (LinkedIn Post - Personal) now drafts end-to-end: `y: <topic>` → Groq
-generates the post → row written to `pending_approvals` → Telegram preview
-reply. Next: fix the webhook-contention bug below so `/approve` can actually
-reach WF4 and resume WF1, then exercise the full draft → approve → post loop
-for real.
+**The full loop works end-to-end, confirmed live 2026-07-03**: `y: <topic>` →
+Groq drafts a post → row written to `pending_approvals` → Telegram preview →
+`/approve` → posted for real to personal LinkedIn → Telegram confirmation.
+WF1 is now the single self-contained workflow (WF4's logic was merged in).
+Next: fix the `Update Status` bug below (cosmetic/bookkeeping, not blocking),
+then start on Instagram / company LinkedIn using WF1 as the template.
 
 ---
 
 ## Known Bugs
 
-- [ ] **WF1 and WF4 silently fight over the same Telegram webhook.** Both
-      workflows have their own `Telegram Trigger` node using the *same*
-      credential (`Telegram account`, id `ZkWfYSlTSfJ42VwR`). Telegram only
-      allows one webhook URL per bot, so activating/saving either workflow
-      overwrites the other's registration — confirmed via `getWebhookInfo`,
-      which currently points at WF1's trigger, not WF4's. Right now, sending
-      `/approve` hits WF1's trigger, gets caught by its `Ignore Commands` IF
-      node (matches "starts with /"), and is silently dropped — WF4 never
-      sees it, so `Resume Workflow` never fires. Needs an architectural fix:
-      either one shared Telegram Trigger that fans out by prefix/command to
-      both flows, or moving WF1's draft step and WF4's approve step into a
-      single workflow. *(found: 2026-07-03)*
-- [ ] **WF4's `Update Status` node has an incomplete Supabase credential** —
-      its `apikey` header is truncated (missing the JWT header segment) and
-      `Authorization` is still the literal placeholder text
-      `Bearer YOUR_SUPABASE_SERVICE_ROLE_KEY`, never replaced with a real key
-      (unlike `Get Pending Approval`, which was fixed earlier). This node runs
-      right after `Resume Workflow`, so `/approve` will 401 here even once the
-      webhook-contention bug above is fixed. *(found: 2026-07-03, while
-      redacting secrets from the exported JSON for this repo)*
+- [ ] **`Update Status` writes an invalid `status` value.** It sets
+      `status: $node['Extract Command'].json['command']` directly, which is
+      the bare command word (`approve`/`edit`/`discard`) — but Supabase's
+      `pending_approvals_status_check` constraint rejects `approve` (400,
+      `23514`). It almost certainly wants past-tense (`approved`, matching
+      the `pending` already used elsewhere). Not blocking — the actual
+      LinkedIn post already succeeds via the separate `Post to LinkedIn` path
+      — but the row is left stuck at `status = 'pending'` forever, which
+      could make a later `/approve` (with no new draft) incorrectly match
+      this stale row and try to hit its long-dead `resume_url`. Fix: map the
+      command to the correct enum value before writing (check the actual
+      constraint's allowed values first rather than guessing).
+      *(found: 2026-07-03)*
 
 ---
 
 ## Active TODOs
 
-- [ ] Move the Supabase `apikey`/`Authorization` headers (used by `Get Pending
-      Approval` in WF4 and `Save to Supabase` in WF1) into a proper n8n Header
-      Auth credential instead of hardcoded plaintext values on each node.
-      Now doubly important — the same raw service_role JWT is duplicated
-      across two workflows' exported JSON in this (private) repo, alongside
-      a raw Groq API key and a raw LinkedIn bearer token (see
-      `integrations.md`). *(added: 2026-07-02, expanded: 2026-07-03)*
+- [ ] Move the Supabase `apikey`/`Authorization` headers (used across several
+      nodes in WF1) into a proper n8n Header Auth credential instead of
+      hardcoded plaintext values on each node. Now doubly important — the
+      same raw service_role JWT, a raw Groq API key, and a raw LinkedIn
+      bearer token are all duplicated across multiple nodes in this (private)
+      repo's exported JSON (see `integrations.md`).
+      *(added: 2026-07-02, expanded: 2026-07-03)*
 - [ ] Build the actual publish step(s) for Instagram and company LinkedIn —
-      only personal LinkedIn (WF1) exists so far. *(added: 2026-07-02)*
-- [ ] Test `/approve`, `/edit [instructions]`, and `/discard` against a real
-      pending row end-to-end — blocked on the webhook-contention bug above.
-      *(added: 2026-07-02, refined: 2026-07-03)*
+      only personal LinkedIn (WF1) exists so far. WF1 is the template:
+      draft via LLM → Supabase pending row → Telegram preview → Wait node →
+      approve/edit/discard routing. *(added: 2026-07-02, refined: 2026-07-03)*
 - [ ] Consider a real command parser instead of `startsWith('/')` if more
-      commands beyond `/approve` are planned (e.g. `/reject`). *(added: 2026-07-02)*
+      commands beyond `/approve`/`/edit`/`/discard` are planned.
+      *(added: 2026-07-02)*
 - [ ] LinkedIn bearer token on `Post to LinkedIn` is a raw personal access
       token with unknown expiry — confirm how/when it needs refreshing before
       relying on it. *(added: 2026-07-03)*
+- [ ] Decide what to do with the now-inactive WF4 workflow (kept as
+      `workflows/command-listener-deprecated.json`) — delete it from the n8n
+      instance entirely, or leave it as an inert historical reference?
+      *(added: 2026-07-03)*
+- [ ] Several stale `pending_approvals` rows accumulated during this
+      session's testing (from expired/consumed resume URLs) will never
+      resolve to `approved`/`rejected` — harmless since lookups always take
+      the newest `pending` row, but worth a one-time cleanup query.
+      *(added: 2026-07-03)*
 
 ---
 
 ## Planned Features
 
-- [ ] `/reject` command (or similar) as a counterpart to `/approve`. *(added: 2026-07-02)*
+- [ ] `/reject` command (or similar) as a counterpart to `/approve` — note
+      `/discard` already exists in WF1 and may already cover this.
+      *(added: 2026-07-02, refined: 2026-07-03)*

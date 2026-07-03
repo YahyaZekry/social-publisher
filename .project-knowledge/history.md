@@ -64,6 +64,49 @@
   produced a literal fixed string instead of erroring, which is what made
   each attempt look plausible until re-checked against the DB. Worth
   remembering for any future Set/Edit Fields node work. *(fixed: 2026-07-03)*
+- **WF1 and WF4 fighting over one Telegram webhook** (see the bug logged
+  2026-07-03 above): fixed by merging WF4's 8 non-trigger nodes (`Is it a
+  command?` through `Reply - No Pending`) directly into WF1 via copy/paste
+  across workflow tabs, wired off `Ignore Commands`' true ("starts with /")
+  branch, which previously dead-ended. WF4 was then deactivated (kept, not
+  deleted, as a reference/backup — see `workflows/command-listener-deprecated.json`).
+  Telegram now has exactly one webhook registered, on WF1. *(fixed: 2026-07-03)*
+- Clipboard copy/paste across workflow tabs silently failed via a "Paste"
+  context-menu click (likely a browser clipboard-read permission issue) but
+  worked fine with a direct Ctrl+V keystroke on the focused canvas. *(noted: 2026-07-03)*
+- **`/approve` resumed nothing, repeatedly, with `404: The workflow for
+  execution "N" does not contain a waiting webhook with a matching
+  path/method`** — this survived a fresh (never-edited-since) execution, a
+  matching workflow version, and a WF1 deactivate/reactivate cycle, so none
+  of those were the cause. Root cause, found by directly curling the resume
+  URL with different HTTP methods: **n8n's `Wait` node (resume: webhook)
+  listens for `GET` by default when no `httpMethod` option is set** — WF4's
+  `Resume Workflow` node had always sent `POST`, which never matched. A GET
+  to the exact same URL returned `200 "Workflow was started"` immediately.
+  Fixed by changing `Resume Workflow` to GET with `command`/`instructions`
+  as query parameters instead of a JSON body, and updating `Route Command`'s
+  three conditions from `$json.body.command` to `$json.query.command`.
+  *(fixed: 2026-07-03)*
+- One diagnostic GET call made directly (via curl, to isolate the method-
+  mismatch bug above) consumed a real paused execution without a real
+  command attached, so that specific draft never got a reply/post — not a
+  bug, just a side effect of debugging worth remembering before repeating
+  that kind of direct test against a live paused execution. *(2026-07-03)*
+- After the GET-method fix, `/approve` still didn't post: `Route Command`
+  matched nothing and `Update Status` hit
+  `pending_approvals_status_check`. Cause: `Extract Command`'s `command`
+  field is `message.text.split(' ')[0]`, which for `/approve` keeps the
+  leading `/` — but `Route Command` and the status column both expect the
+  bare word. Fixed by appending `.replace(/^\//, '')`. *(fixed: 2026-07-03)*
+- Same double-`=` expression mistake as above recurred once on this exact
+  fix (`command` briefly held `=approve` — a literal `=` prepended to an
+  otherwise-correctly-evaluated result) before landing correctly.
+  *(fixed: 2026-07-03)*
+- End-to-end confirmed working 2026-07-03: a `y: ...` Telegram message
+  produces a real Groq-generated post, a Supabase `pending_approvals` row,
+  a Telegram preview, and `/approve` genuinely posts it to LinkedIn via
+  `Post to LinkedIn` → `Confirm Posted`. First real, human-confirmed
+  success of the full loop.
 
 ---
 
@@ -76,11 +119,10 @@
 - This project was split out of the n8n instance as its own repo rather than
   folded into the existing `Synax-n8n` project — unrelated project, different
   purpose (Synax vs. personal/company social posting). *(2026-07-02)*
-- WF1 hands off approval to WF4 via n8n's native `Wait` node (`resume: webhook`)
-  rather than its own polling: WF1 pauses at `Wait for Approval` and writes
-  its one-time `$execution.resumeUrl` into the `pending_approvals.resume_url`
-  column. WF4's `Resume Workflow` node is meant to POST to that URL once the
-  user approves, which resumes WF1's paused execution directly into
-  `Route Command`. This only works if WF4's Telegram Trigger is actually the
-  one receiving updates — see the webhook-contention bug in `roadmap.md`.
-  *(2026-07-03)*
+- ~~WF1 hands off approval to WF4 via n8n's native `Wait` node (`resume:
+  webhook`) as two separate workflows~~ — superseded 2026-07-03: WF4's logic
+  was merged directly into WF1 (see Fixed, above) once it became clear two
+  workflows can't each hold their own Telegram Trigger against the same bot.
+  WF1 is now the single self-contained workflow for the LinkedIn flow; WF4
+  is kept inactive as a historical reference only.
+  *(decided: 2026-07-02, superseded: 2026-07-03)*

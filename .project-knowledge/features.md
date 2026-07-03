@@ -4,43 +4,30 @@
 
 ## Features
 
-- **Telegram approval commands** — owner can message the bot to act on a pending
-  approval. Currently only `/approve` has been exercised. *(added: 2026-07-01)*
-- **LinkedIn post drafting via Telegram** — texting the bot `y: <topic>` generates
-  a personal LinkedIn post with Groq and sends it back as a preview, pending
-  approval. Drafting half confirmed working end-to-end 2026-07-03; the
-  approve/post half is built but not yet exercised (see `roadmap.md` — blocked
-  on the webhook-contention bug). *(added: 2026-07-03)*
+- **LinkedIn post drafting + approval via Telegram** — texting the bot
+  `y: <topic>` generates a personal LinkedIn post with Groq, sends it back as
+  a preview, and waits; `/approve` posts it for real, `/edit <instructions>`
+  regenerates it, `/discard` cancels. **Confirmed working end-to-end live on
+  2026-07-03** — first real post published this way. *(added: 2026-07-01,
+  confirmed working: 2026-07-03)*
 
 ---
 
 ## Workflows
 
-**WF4 - Command Listener** (`workflows/command-listener.json`)
-
-1. `Telegram Trigger` — receives `message` updates via webhook.
-2. `Is it a command?` (IF) — passes only if `message.text` starts with `/`.
-3. `Extract Command` (Set) — pulls out `telegram_user_id`, `chat_id`, `command`,
-   `instructions` (text after the command) via expressions on `$json.message.*`.
-4. `Get Pending Approval` (HTTP Request → Supabase) — looks up the latest pending
-   row for that user. `Always Output Data` is on (see `integrations.md` gotcha).
-5. `Has Pending?` (IF) — branches on whether a row was found.
-   - **Found →** `Resume Workflow` (HTTP Request) → `Update Status` (HTTP Request) →
-     `Reply - Processing` (Telegram) — tells the user their approval is being processed.
-   - **Not found →** `Reply - No Pending` (Telegram) — tells the user there's nothing
-     to approve.
-
-Not yet built: the actual Instagram/company-LinkedIn publish steps that presumably
-run after `Resume Workflow` for those targets (WF1 below covers personal LinkedIn).
-
----
-
 **WF1 - LinkedIn Post (Personal)** (`workflows/linkedin-post-personal.json`)
 
-1. `Telegram Trigger` — receives `message` updates via webhook (same bot/credential
-   as WF4 — see the webhook-contention bug in `roadmap.md`).
-2. `Ignore Commands` (IF) — messages starting with `/` are dropped here (dead end,
-   no downstream connection) so `/approve` etc. don't leak into the drafting flow.
+This is now the *only* active workflow — it originally shared duties with a
+separate "WF4 - Command Listener" workflow, but both had their own Telegram
+Trigger on the same bot credential, and Telegram only allows one webhook per
+bot. WF4's approve-handling nodes were merged directly into WF1 on
+2026-07-03 (see `history.md`); WF4 itself is now inactive, kept only as
+`workflows/command-listener-deprecated.json` for reference.
+
+**Draft half:**
+1. `Telegram Trigger` — receives `message` updates via webhook.
+2. `Ignore Commands` (IF) — `message.text` starting with `/` branches into the
+   **approve half** below instead of the drafting flow.
 3. `Has y: prefix?` (IF) — `message.text` must start with `y:` (case-insensitive).
    - **No →** `Ask for prefix` (Telegram) — sends usage instructions back.
    - **Yes →** continues to step 4.
@@ -59,16 +46,31 @@ run after `Resume Workflow` for those targets (WF1 below covers personal LinkedI
 8. `Send Preview` (Telegram) — sends the full generated post back with
    `/approve`, `/edit [instructions]`, `/discard` instructions.
 9. `Wait for Approval` (`Wait` node, `resume: webhook`) — pauses this execution;
-   its one-time resume URL is what got stored in step 7.
-10. `Route Command` (Switch on `$json.body.command`) — branches on what the
-    resumed webhook call's body contains:
+   its one-time resume URL is what got stored in step 7. **Only resumes on a
+   `GET` request** — this is n8n's default for the Wait node's webhook mode
+   when no HTTP method is configured; see `integrations.md` gotcha.
+10. `Route Command` (Switch on `$json.query.command`) — branches on the query
+    string of whatever request resumed it:
     - **`approve` →** `Post to LinkedIn` (HTTP Request → LinkedIn `ugcPosts` API)
       → `Confirm Posted` (Telegram).
     - **`edit` →** `Rewrite with Instructions` (HTTP Request → Groq, same model,
-      rewrites the post per `$json.body.instructions`) → `Send Updated Preview`
+      rewrites the post per `$json.query.instructions`) → `Send Updated Preview`
       (Telegram) — loops back to another approve/edit/discard decision.
     - **`discard` →** `Discard` (Telegram) — confirms cancellation.
 
-Not yet exercised end-to-end: steps 9–10 depend on WF4 (or something) actually
-calling the stored `resume_url` — currently blocked by the Telegram
-webhook-contention bug (`roadmap.md`).
+**Approve half** (was WF4, merged in via `Ignore Commands`' true branch):
+11. `Is it a command?` (IF) — passes only if `message.text` starts with `/`
+    (redundant with `Ignore Commands` above, harmless).
+12. `Extract Command` (Set) — pulls `telegram_user_id`, `chat_id`, `command`
+    (the word after `/`, slash stripped via `.replace(/^\//, '')`), and
+    `instructions` (text after the command).
+13. `Get Pending Approval` (HTTP Request → Supabase) — looks up the latest
+    `pending` row for that user. `Always Output Data` is on (see
+    `integrations.md` gotcha).
+14. `Has Pending?` (IF) — branches on whether a row was found.
+    - **Found →** `Resume Workflow` (HTTP Request, **GET**, `command` +
+      `instructions` as query params) → calls back into step 9/10 above,
+      resuming the paused draft execution → `Update Status` (HTTP Request,
+      PATCH — currently writes an invalid `status` value, see `roadmap.md`)
+      → `Reply - Processing` (Telegram).
+    - **Not found →** `Reply - No Pending` (Telegram).

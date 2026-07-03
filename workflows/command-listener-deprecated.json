@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-07-02T11:03:00.079Z",
+  "updatedAt": "2026-07-03T05:54:15.883Z",
   "createdAt": "2026-07-01T07:09:21.778Z",
   "id": "UB66YgKsgND0gU6a",
   "name": "WF4 - Command Listener",
   "description": null,
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -356,9 +356,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "2471a517-a67a-4e2c-8c70-caec4027f0dc",
-  "activeVersionId": "2471a517-a67a-4e2c-8c70-caec4027f0dc",
-  "versionCounter": 22,
+  "versionId": "c1575ba1-5706-479c-82d0-1067d58b0c41",
+  "activeVersionId": null,
+  "versionCounter": 24,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -383,7 +383,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version 2471a517",
-    "description": ""
+    "name": null,
+    "description": null
   }
 }

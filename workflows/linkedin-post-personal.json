@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T05:22:19.992Z",
+  "updatedAt": "2026-07-03T06:26:30.231Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1728,
-        -80
+        -1744,
+        -128
       ]
     },
     {
@@ -265,15 +265,15 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": false,
+                  "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 1
                 },
                 "conditions": [
                   {
                     "id": "cond-approve",
-                    "leftValue": "={{ $json.body.command }}",
+                    "leftValue": "={{ $json.query.command }}",
                     "rightValue": "approve",
                     "operator": {
                       "type": "string",
@@ -287,15 +287,15 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": false,
+                  "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 1
                 },
                 "conditions": [
                   {
                     "id": "cond-edit",
-                    "leftValue": "={{ $json.body.command }}",
+                    "leftValue": "={{ $json.query.command }}",
                     "rightValue": "edit",
                     "operator": {
                       "type": "string",
@@ -309,15 +309,15 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": false,
+                  "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 1
                 },
                 "conditions": [
                   {
                     "id": "cond-discard",
-                    "leftValue": "={{ $json.body.command }}",
+                    "leftValue": "={{ $json.query.command }}",
                     "rightValue": "discard",
                     "operator": {
                       "type": "string",
@@ -509,6 +509,240 @@
       ],
       "id": "4db16a0d-899b-4ccd-8cc5-18f8bda4e667",
       "name": "Extract Post Text"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-starts-slash",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "/",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1032fe4c-519c-449d-aa84-b5945b6a5b8d",
+      "name": "Is it a command?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1472,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "telegram_user_id",
+              "stringValue": "={{ $json.message.from.id }}"
+            },
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $json.message.chat.id }}"
+            },
+            {
+              "name": "command",
+              "stringValue": "={{ $json.message.text.split(' ')[0].replace(/^\\//, '') }}"
+            },
+            {
+              "name": "instructions",
+              "stringValue": "={{ $json.message.text.split(' ').slice(1).join(' ') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d75c1b73-6573-47c9-9634-02239ec257ae",
+      "name": "Extract Command",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -1216,
+        -672
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://xiqohqytcyjiqskkextz.supabase.co/rest/v1/pending_approvals?telegram_user_id=eq.{{ $json.telegram_user_id }}&status=eq.pending&order=created_at.desc&limit=1&select=*",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e14b468c-3ab6-4b3e-9f47-7826a382aa22",
+      "name": "Get Pending Approval",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -1008,
+        -672
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-has-resume",
+              "leftValue": "={{ $json.resume_url ?? '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5a0ae5cd-138f-4b84-a27e-49c129e643b1",
+      "name": "Has Pending?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        -672
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.resume_url }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "command",
+              "value": "={{ $node[\"Extract Command\"].json[\"command\"] }}"
+            },
+            {
+              "name": "instructions",
+              "value": "={{ $node[\"Extract Command\"].json[\"instructions\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e4376308-4a9c-4a42-967a-5ba987bccf09",
+      "name": "Resume Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -560,
+        -752
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://xiqohqytcyjiqskkextz.supabase.co/rest/v1/pending_approvals?id=eq.{{ $node['Has Pending?'].json['id'] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ status: $node['Extract Command'].json['command'], edit_instructions: $node['Extract Command'].json['instructions'] }) }}",
+        "options": {}
+      },
+      "id": "56a05006-8992-4b2f-9d05-3573baf60d7a",
+      "name": "Update Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -336,
+        -752
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Extract Command'].json['chat_id'] }}",
+        "text": "Got it, processing... ⏳",
+        "additionalFields": {}
+      },
+      "id": "ce4a716a-6697-4ad0-adbb-24ed49d2de3c",
+      "name": "Reply - Processing",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -752
+      ],
+      "webhookId": "429971d4-e874-4bef-b3f2-45ca0806b9b6",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Extract Command'].json['chat_id'] }}",
+        "text": "❌ No pending approval found. Send a post request first.",
+        "additionalFields": {}
+      },
+      "id": "70697aa5-63a7-4e36-8b62-1ccd3932d9bf",
+      "name": "Reply - No Pending",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -528
+      ],
+      "webhookId": "b75baef6-f4e4-47ee-b069-ce4964860101",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "connections": {
@@ -525,7 +759,13 @@
     },
     "Ignore Commands": {
       "main": [
-        [],
+        [
+          {
+            "node": "Is it a command?",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Has y: prefix?",
@@ -665,6 +905,79 @@
           }
         ]
       ]
+    },
+    "Is it a command?": {
+      "main": [
+        [
+          {
+            "node": "Extract Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Command": {
+      "main": [
+        [
+          {
+            "node": "Get Pending Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Pending Approval": {
+      "main": [
+        [
+          {
+            "node": "Has Pending?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Pending?": {
+      "main": [
+        [
+          {
+            "node": "Resume Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply - No Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resume Workflow": {
+      "main": [
+        [
+          {
+            "node": "Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status": {
+      "main": [
+        [
+          {
+            "node": "Reply - Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -678,9 +991,9 @@
   },
   "nodeGroups": [],
   "pinData": {},
-  "versionId": "18975579-37b2-40a1-a734-61d2638b4ae7",
-  "activeVersionId": "18975579-37b2-40a1-a734-61d2638b4ae7",
-  "versionCounter": 54,
+  "versionId": "174ad495-a60f-4b6d-8c58-f4b41bb56cf7",
+  "activeVersionId": "174ad495-a60f-4b6d-8c58-f4b41bb56cf7",
+  "versionCounter": 73,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -705,7 +1018,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version 18975579",
+    "name": "Version 174ad495",
     "description": ""
   }
 }
