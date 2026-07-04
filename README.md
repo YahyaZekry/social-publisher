@@ -17,16 +17,26 @@ ig: <topic>  →  Instagram image + caption
 
 ```mermaid
 flowchart LR
-    A["📱 Telegram\ny: / ig: message"] --> B["🧠 Groq\ndrafts content"]
-    B -->|Instagram only| C["🎨 Pollinations\ngenerates image"]
+    A["📱 Telegram\nmessage"] --> R{"Prefix?"}
+    R -->|"y:"| B1["🧠 Groq\ndrafts LinkedIn post"]
+    R -->|"ig:"| B2["🧠 Groq\ndrafts image prompt"]
+    B2 --> C["🎨 Pollinations\ngenerates image"]
     C --> D["☁️ Cloudinary\nhosts image"]
-    B --> E["🗄️ Supabase\npending_approvals"]
-    D --> E
+    D --> B3["🧠 Groq\nwrites caption"]
+    B1 --> E["🗄️ Supabase\npending_approvals"]
+    B3 --> E
     E --> F["📱 Telegram\npreview sent"]
-    F -->|/approve| G["🚀 Published\nLinkedIn / Instagram"]
-    F -->|/edit or /regenerate| B
-    F -->|/discard| H["🗑️ Cancelled"]
+    F -->|"/approve"| G1["🚀 Posted to LinkedIn"]
+    F -->|"/approve"| G2["🚀 Posted to Instagram"]
+    F -->|"/edit"| B1
+    F -->|"/regenerate"| B2
+    F -->|"/discard"| H["🗑️ Cancelled"]
 ```
+
+LinkedIn (top lane) never touches the image pipeline at all — only Instagram
+(bottom lane) does. Both lanes converge only at Supabase/the preview step;
+`/edit` and `/regenerate` loop back into their own platform's draft step, not
+into each other.
 
 Everything above lives in **one n8n workflow** (`WF1 - LinkedIn Post
 (Personal)` — the name is a holdover from before Instagram joined it). That's
@@ -35,11 +45,6 @@ every platform's logic has to share the same workflow and Telegram trigger,
 routed internally by message prefix. Two earlier attempts at giving a second
 platform its own workflow both silently broke the first one's webhook — see
 `.project-knowledge/history.md` for the full story.
-
-`workflows/command-listener-deprecated.json` and
-`workflows/instagram-post-personal-deprecated.json` are historical exports
-from before their logic got folded in — kept for reference, not needed to
-run this.
 
 ---
 

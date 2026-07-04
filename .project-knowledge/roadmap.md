@@ -61,10 +61,14 @@ LinkedIn (`s:`).
       relying on it. (The Instagram/Meta token, by contrast, is now a known
       long-lived Page Access Token good until ~Sept 2026 — see
       `integrations.md`.) *(added: 2026-07-03)*
-- [ ] Decide what to do with the now-empty/inactive WF4 and WF2 workflows in
-      n8n (kept as `command-listener-deprecated.json` and
-      `instagram-post-personal-deprecated.json`) — delete entirely, or leave
-      as inert historical reference? *(added: 2026-07-03, expanded: 2026-07-04)*
+- [ ] The now-empty/inactive WF4 and WF2 workflows still exist **inside the
+      live n8n instance** (not deleted, just inactive with 0/near-0 nodes).
+      Their repo-side exports (`command-listener-deprecated.json`,
+      `instagram-post-personal-deprecated.json`) were removed from this repo
+      on 2026-07-04 as pointless clutter — `history.md`/`sessions.md` already
+      cover everything about them. Still open: delete the two dead workflows
+      from n8n itself, or leave them as inert? *(added: 2026-07-03, resolved
+      re: repo files 2026-07-04, still open re: live n8n)*
 - [ ] Several stale `pending_approvals` rows accumulated during testing
       (from expired/consumed resume URLs, rows that predate the
       status-mapping fix, and now Instagram test rows too) will never
