@@ -1,6 +1,6 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-04 (Instagram quality fixed, repo made public-ready)
+> Last updated: 2026-07-04 (hashtag count/format fix — both platforms now correct)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
@@ -45,7 +45,7 @@ public (git history was rewritten to scrub an exposed key first — see
 |------|-------------------|
 | Editing WF1 (any platform's drafting or approve/post side) | `features.md` + `integrations.md` |
 | Debugging Telegram webhook / Wait-node resume issues | `integrations.md` (Wait-node GET gotcha) + `history.md` |
-| Fixing Instagram output quality (image/caption/hashtags) | `roadmap.md` (Known Bugs) + `integrations.md` (Groq section) |
+| Tuning content quality or hashtags for either platform | `integrations.md` (Groq section) + `history.md` |
 | Building company LinkedIn (`s:`) | `roadmap.md` + `integrations.md` + `features.md` (use WF1's Instagram merge as the template) |
 | General orientation (new session) | This file → then pick by task |
 | Full audit | All files |

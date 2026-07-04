@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (Instagram quality fix)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (hashtag count/format fix)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal

@@ -1,6 +1,6 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (hashtag count/format fix)
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
@@ -90,7 +90,8 @@
 - `POST https://api.groq.com/openai/v1/chat/completions`, OpenAI-compatible chat
   format, model `llama-3.3-70b-versatile`. LinkedIn nodes: `max_tokens: 600`.
   Instagram: `Build Image Prompt` uses `max_tokens: 200`, `Generate Caption`
-  uses `max_tokens: 400`.
+  uses `max_tokens: 700` (bumped from 400 so a longer reflective caption +
+  hashtags doesn't get truncated).
 - Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on all four
   (not an n8n credential — see `roadmap.md`).
 - LinkedIn system prompt: Yahya's voice/length/hashtag rules, plus explicit
@@ -112,6 +113,16 @@
   CamelCase — both were silently breaking hashtag parsing) and a flexible
   length rule (short by default, up to ~2000 characters for a topic that
   calls for real reflection) instead of a rigid character cap.
+- **Hashtag counts** (updated 2026-07-04 based on actual platform data —
+  not guesses): both platforms now target **3-5 highly specific hashtags**,
+  never more. LinkedIn (`Generate LinkedIn Post`, `Rewrite with
+  Instructions`) was already at 3-5. Instagram (`Generate Caption`) was
+  wrongly set to 15-20 — Instagram enforces a **hard 5-hashtag cap** as of
+  Dec 2025, and both platforms' own engagement data favor fewer, more
+  specific tags over many generic ones. All three prompts now also specify
+  the exact formatting rule (no space after `#`, no hyphens, CamelCase for
+  multi-word tags) since both errors silently break hashtag parsing on
+  their respective platforms.
 - No hashtag-popularity data source for either platform — the model picks
   hashtags from its own training knowledge; a real trending-hashtags lookup
   was considered and declined for LinkedIn (no public API for it, would need

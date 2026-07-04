@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T17:48:16.587Z",
+  "updatedAt": "2026-07-04T20:11:55.599Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -145,7 +145,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total. Add 3-5 relevant hashtags on the last line.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total.\\n\\nAdd 3-5 relevant hashtags on the last line, formatted with no space after # and no hyphens — e.g. #AIAutomation, never \\'# AIAutomation\\' or \\'#AI-Automation\\'.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
         "options": {}
       },
       "id": "45121b86-f615-4c5a-9e31-abb72faa1acd",
@@ -397,7 +397,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total. Add 3-5 relevant hashtags on the last line.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: 'Rewrite this LinkedIn post with the following instructions:\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\nInstructions: ' + $json.query.instructions } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total.\\n\\nAdd 3-5 relevant hashtags on the last line, formatted with no space after # and no hyphens — e.g. #AIAutomation, never \\'# AIAutomation\\' or \\'#AI-Automation\\'.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: 'Rewrite this LinkedIn post with the following instructions:\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\nInstructions: ' + $json.query.instructions } ] }) }}",
         "options": {}
       },
       "id": "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
@@ -941,7 +941,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth. Use specific, niche hashtags tied to the actual content.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nAdd 15-20 relevant hashtags on a new line at the end. Return only the caption and hashtags, nothing else.' }, { role: 'user', content: $node['Extract Image Prompt'].json['content'] } ] }) }}",
+        "body": "=={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: $node['Extract Image Prompt'].json['content'] } ] }) }}",
         "options": {}
       },
       "id": "e414dd03-ff2b-4443-81b3-a4f7965b0955",
@@ -1709,9 +1709,9 @@
     }
   ],
   "pinData": {},
-  "versionId": "d6f3ebf3-4f80-4df3-bedd-84cd903c20f1",
-  "activeVersionId": "d6f3ebf3-4f80-4df3-bedd-84cd903c20f1",
-  "versionCounter": 145,
+  "versionId": "3b16e1e5-4ff8-42b5-a275-baf79eabbe47",
+  "activeVersionId": "3b16e1e5-4ff8-42b5-a275-baf79eabbe47",
+  "versionCounter": 148,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -1736,7 +1736,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version d6f3ebf3",
+    "name": "Version 3b16e1e5",
     "description": ""
   }
 }

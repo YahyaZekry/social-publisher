@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (Instagram quality fix)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (hashtag count/format fix)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -231,6 +231,17 @@
   every commit and on GitHub's remote afterward; local backup refs then
   removed and garbage-collected. Done specifically so the repo could be made
   public without carrying that exposure. *(fixed: 2026-07-04)*
+- **Hashtag count was wrong for Instagram, right for LinkedIn** — web
+  research found Instagram actually enforces a **hard 5-hashtag cap**
+  (rolled out Dec 2025) and both platforms' own data favor 3-5 highly
+  specific hashtags over many generic ones (Reels with 4 tags got 47% more
+  reach than those with 15+; LinkedIn posts with 11+ hashtags see *less*
+  engagement than posts with none). `Generate Caption` was asking for 15-20
+  hashtags — fixed to 3-5. `Generate LinkedIn Post` and `Rewrite with
+  Instructions` were already correctly set to 3-5, just missing the explicit
+  hashtag-formatting rule (no space after `#`, no hyphens) that Instagram's
+  caption prompt had already needed — added it to both LinkedIn prompts too,
+  preventively. *(fixed: 2026-07-04)*
 
 ---
 
