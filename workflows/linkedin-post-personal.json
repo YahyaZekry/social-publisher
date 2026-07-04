@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-03T14:37:25.487Z",
+  "updatedAt": "2026-07-04T14:55:22.803Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -20,7 +20,7 @@
       "typeVersion": 1,
       "position": [
         -1952,
-        -80
+        -400
       ],
       "webhookId": "bf3a1c2d-1111-1111-1111-wf1linkedinprs",
       "credentials": {
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1744,
-        -128
+        -1728,
+        -400
       ]
     },
     {
@@ -93,30 +93,8 @@
       "typeVersion": 2,
       "position": [
         -1504,
-        0
+        -208
       ]
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $json.message.chat.id }}",
-        "text": "Start your message with y: for personal LinkedIn.\n\nExample: y: Just finished a 10km run at dawn. The city is yours when everyone else is asleep.",
-        "additionalFields": {}
-      },
-      "id": "a054680f-9473-470d-9113-96e330383eee",
-      "name": "Ask for prefix",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1,
-      "position": [
-        -1280,
-        128
-      ],
-      "webhookId": "45b8c354-1364-47a4-8376-d152f43e03b3",
-      "credentials": {
-        "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
-          "name": "Telegram account"
-        }
-      }
     },
     {
       "parameters": {
@@ -143,8 +121,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -1280,
-        -80
+        -1168,
+        -112
       ]
     },
     {
@@ -175,8 +153,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -1072,
-        -80
+        -944,
+        -112
       ]
     },
     {
@@ -215,8 +193,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -624,
-        -80
+        -496,
+        -112
       ]
     },
     {
@@ -230,8 +208,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -400,
-        -80
+        -272,
+        -112
       ],
       "webhookId": "3b5c7b01-40c4-437f-bafc-4245fd63c0a6",
       "credentials": {
@@ -253,8 +231,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        -192,
-        -80
+        -48,
+        -112
       ],
       "webhookId": "bf3a1c2d-2222-2222-2222-wf1waitnode11"
     },
@@ -337,8 +315,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        48,
-        -80
+        176,
+        -128
       ]
     },
     {
@@ -373,8 +351,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        256,
-        -224
+        400,
+        -384
       ]
     },
     {
@@ -388,8 +366,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        480,
-        -224
+        624,
+        -384
       ],
       "webhookId": "e066f7ed-2de9-470e-9e3d-514f2b57f8b0",
       "credentials": {
@@ -427,8 +405,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        256,
-        -80
+        400,
+        -192
       ]
     },
     {
@@ -442,8 +420,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        480,
-        -80
+        624,
+        -192
       ],
       "webhookId": "1b3f3ae7-72c2-47bd-b00c-c7a1c281c7b7",
       "credentials": {
@@ -464,8 +442,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        256,
-        64
+        400,
+        0
       ],
       "webhookId": "bd1f9af3-e340-493f-8c05-a436c57fe16e",
       "credentials": {
@@ -504,8 +482,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -864,
-        -80
+        -720,
+        -112
       ],
       "id": "4db16a0d-899b-4ccd-8cc5-18f8bda4e667",
       "name": "Extract Post Text"
@@ -539,8 +517,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1472,
-        -640
+        -1152,
+        -1088
       ]
     },
     {
@@ -572,8 +550,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -1216,
-        -672
+        -928,
+        -1088
       ]
     },
     {
@@ -599,8 +577,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -1008,
-        -672
+        -704,
+        -1088
       ],
       "alwaysOutputData": true
     },
@@ -633,8 +611,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -784,
-        -672
+        -480,
+        -1088
       ]
     },
     {
@@ -660,8 +638,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -560,
-        -752
+        -256,
+        -1104
       ]
     },
     {
@@ -696,8 +674,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -336,
-        -752
+        -32,
+        -1104
       ]
     },
     {
@@ -711,8 +689,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -112,
-        -752
+        192,
+        -1104
       ],
       "webhookId": "429971d4-e874-4bef-b3f2-45ca0806b9b6",
       "credentials": {
@@ -733,10 +711,519 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -560,
-        -528
+        -256,
+        -912
       ],
       "webhookId": "b75baef6-f4e4-47ee-b069-ce4964860101",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-has-prefix",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "ig:",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b6b43d1d-9766-42c6-9be3-7503abac8796",
+      "name": "Has ig: prefix?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Start your message with ig: for Instagram.\n\nExample: ig: 14km done before sunrise. The city belongs to whoever shows up.",
+        "additionalFields": {}
+      },
+      "id": "7aba1837-df8b-4f1e-850a-3fead6190431",
+      "name": "Ask for prefix (IG)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        720
+      ],
+      "webhookId": "850310bd-d119-4de5-a371-544ecebea886",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $json.message.chat.id.toString() }}"
+            },
+            {
+              "name": "telegram_user_id",
+              "stringValue": "={{ $json.message.from.id.toString() }}"
+            },
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text.replace(/^ig:\\s*/i, '').trim() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "49955966-6563-4bf6-884a-7356cf788f51",
+      "name": "Extract Content (IG)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -1136,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'Turn the user\\'s literal input into a short, vivid image generation prompt for an Instagram post — depict what they actually described, do NOT default to generic AI/tech/running imagery unless they mention it.\\n\\nAvoid generic corporate stock-photo visuals (skylines, sunsets over cities, people looking at phones, vague \\'success\\' imagery). Invent one specific, concrete, grounded moment or scene — even for an abstract topic, pick a real physical detail rather than a vague symbolic one.\\n\\nThe image should be visually stunning and photorealistic or highly artistic. Do NOT include text or words in the image. Max 150 characters. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
+        "options": {}
+      },
+      "id": "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
+      "name": "Build Image Prompt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -912,
+        528
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "image_prompt",
+              "stringValue": "={{ $json.choices[0].message.content.trim() }}"
+            },
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $node[\"Extract Content (IG)\"].json.chat_id }}"
+            },
+            {
+              "name": "telegram_user_id",
+              "stringValue": "={{ $node[\"Extract Content (IG)\"].json.telegram_user_id }}"
+            },
+            {
+              "name": "content",
+              "stringValue": "={{ $node[\"Extract Content (IG)\"].json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7d4d673a-0c26-4fe2-a0d4-a40f5218275f",
+      "name": "Extract Image Prompt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -688,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://image.pollinations.ai/prompt/{{ encodeURIComponent($json.image_prompt) }}?width=1080&height=1080&nologo=true&model=flux",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "72924b5b-67cc-4878-9290-c8b33f3d0eee",
+      "name": "Generate Image (Pollinations)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -464,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/cbolcssr/image/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "upload_preset",
+              "value": "ttloffm8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "59481bf3-2c72-4f6c-bbe9-c496e5dc78e4",
+      "name": "Upload to Cloudinary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -240,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 400, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nHashtags: never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth. Use specific, niche hashtags tied to the actual content — real communities and topics, not vague marketing-speak.\\n\\nKeep it under 300 characters. Add 15-20 relevant hashtags on a new line at the end. Return only the caption and hashtags, nothing else.' }, { role: 'user', content: $node['Extract Image Prompt'].json['content'] } ] }) }}",
+        "options": {}
+      },
+      "id": "e414dd03-ff2b-4443-81b3-a4f7965b0955",
+      "name": "Generate Caption",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -16,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "cloudinary_url",
+              "stringValue": "={{ $node[\"Upload to Cloudinary\"].json.secure_url }}"
+            },
+            {
+              "name": "caption",
+              "stringValue": "={{ $json.choices[0].message.content.trim() }}"
+            },
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $node[\"Extract Image Prompt\"].json.chat_id }}"
+            },
+            {
+              "name": "telegram_user_id",
+              "stringValue": "={{ $node[\"Extract Image Prompt\"].json.telegram_user_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "61f10535-cff9-470f-8ef6-6ddee60eb6be",
+      "name": "Set Post Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        208,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://xiqohqytcyjiqskkextz.supabase.co/rest/v1/pending_approvals",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ telegram_user_id: parseInt($json.telegram_user_id), workflow_type: 'instagram', resume_url: $execution.resumeUrl, content_preview: $json.caption.substring(0, 200), status: 'pending' }) }}",
+        "options": {}
+      },
+      "id": "9e47d76c-6ea6-423f-b9a9-8c100ab7c17c",
+      "name": "Save to Supabase (IG)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        432,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
+        "file": "={{ $node[\"Set Post Data\"].json[\"cloudinary_url\"] }}",
+        "additionalFields": {
+          "caption": "=📸 Instagram Preview:\n\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nReply /approve to post, /regenerate to redo image, or /discard to cancel."
+        }
+      },
+      "id": "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
+      "name": "Send Preview (IG)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        656,
+        464
+      ],
+      "webhookId": "d84a3984-e700-48f9-9eb9-2695c7afdfaa",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "id": "446b5702-99cb-45e5-80be-b2827bf72b82",
+      "name": "Wait for Approval (IG)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        880,
+        464
+      ],
+      "webhookId": "bf3a1c2d-4444-4444-4444-wf2waitnode22"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-approve",
+                    "leftValue": "={{ $json.query.command }}",
+                    "rightValue": "approve",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-regenerate",
+                    "leftValue": "={{ $json.query.command }}",
+                    "rightValue": "regenerate",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-discard",
+                    "leftValue": "={{ $json.query.command }}",
+                    "rightValue": "discard",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7d4e2e03-3e53-4015-ac64-824e3fde01dc",
+      "name": "Route Command (IG)",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1104,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/17841476339271624/media",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ image_url: $node['Set Post Data'].json['cloudinary_url'], caption: $node['Set Post Data'].json['caption'], access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
+        "options": {}
+      },
+      "id": "4e0f8bf5-97a9-4305-8479-779befe7712d",
+      "name": "Create Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1328,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/17841476339271624/media_publish",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ creation_id: $json.id, access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
+        "options": {}
+      },
+      "id": "2e82f211-2cea-4024-9637-802b0f97f6b9",
+      "name": "Publish to Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1552,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
+        "text": "✅ Posted to Instagram!",
+        "additionalFields": {}
+      },
+      "id": "d01f074a-d31d-46f9-a959-5caec4809787",
+      "name": "Confirm Posted (IG)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1776,
+        432
+      ],
+      "webhookId": "6a33175f-8185-4c2b-a877-d0e88601cba2",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
+        "text": "🗑️ Discarded.",
+        "additionalFields": {}
+      },
+      "id": "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
+      "name": "Discard (IG)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        624
+      ],
+      "webhookId": "78523c8a-bbe9-4185-b05d-3e684b922bb8",
       "credentials": {
         "telegramApi": {
           "id": "ZkWfYSlTSfJ42VwR",
@@ -786,7 +1273,7 @@
         ],
         [
           {
-            "node": "Ask for prefix",
+            "node": "Has ig: prefix?",
             "type": "main",
             "index": 0
           }
@@ -978,6 +1465,181 @@
           }
         ]
       ]
+    },
+    "Has ig: prefix?": {
+      "main": [
+        [
+          {
+            "node": "Extract Content (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ask for prefix (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Content (IG)": {
+      "main": [
+        [
+          {
+            "node": "Build Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "Extract Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate Image (Pollinations)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image (Pollinations)": {
+      "main": [
+        [
+          {
+            "node": "Upload to Cloudinary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Cloudinary": {
+      "main": [
+        [
+          {
+            "node": "Generate Caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Caption": {
+      "main": [
+        [
+          {
+            "node": "Set Post Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Post Data": {
+      "main": [
+        [
+          {
+            "node": "Save to Supabase (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Supabase (IG)": {
+      "main": [
+        [
+          {
+            "node": "Send Preview (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Preview (IG)": {
+      "main": [
+        [
+          {
+            "node": "Wait for Approval (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Approval (IG)": {
+      "main": [
+        [
+          {
+            "node": "Route Command (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Command (IG)": {
+      "main": [
+        [
+          {
+            "node": "Create Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Discard (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Media Container": {
+      "main": [
+        [
+          {
+            "node": "Publish to Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to Instagram": {
+      "main": [
+        [
+          {
+            "node": "Confirm Posted (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -989,11 +1651,67 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "nodeGroups": [],
+  "nodeGroups": [
+    {
+      "id": "1f366b1e-d432-4f7c-9ef2-278d99aa85b3",
+      "name": "Instagram",
+      "nodeIds": [
+        "b6b43d1d-9766-42c6-9be3-7503abac8796",
+        "7aba1837-df8b-4f1e-850a-3fead6190431",
+        "49955966-6563-4bf6-884a-7356cf788f51",
+        "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
+        "7d4d673a-0c26-4fe2-a0d4-a40f5218275f",
+        "72924b5b-67cc-4878-9290-c8b33f3d0eee",
+        "59481bf3-2c72-4f6c-bbe9-c496e5dc78e4",
+        "e414dd03-ff2b-4443-81b3-a4f7965b0955",
+        "61f10535-cff9-470f-8ef6-6ddee60eb6be",
+        "9e47d76c-6ea6-423f-b9a9-8c100ab7c17c",
+        "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
+        "446b5702-99cb-45e5-80be-b2827bf72b82",
+        "7d4e2e03-3e53-4015-ac64-824e3fde01dc",
+        "4e0f8bf5-97a9-4305-8479-779befe7712d",
+        "2e82f211-2cea-4024-9637-802b0f97f6b9",
+        "d01f074a-d31d-46f9-a959-5caec4809787",
+        "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5"
+      ]
+    },
+    {
+      "id": "a03c7e06-e81d-465b-b5e3-28b019fab384",
+      "name": "Telegram Bot",
+      "nodeIds": [
+        "1032fe4c-519c-449d-aa84-b5945b6a5b8d",
+        "d75c1b73-6573-47c9-9634-02239ec257ae",
+        "e14b468c-3ab6-4b3e-9f47-7826a382aa22",
+        "5a0ae5cd-138f-4b84-a27e-49c129e643b1",
+        "e4376308-4a9c-4a42-967a-5ba987bccf09",
+        "56a05006-8992-4b2f-9d05-3573baf60d7a",
+        "ce4a716a-6697-4ad0-adbb-24ed49d2de3c",
+        "70697aa5-63a7-4e36-8b62-1ccd3932d9bf"
+      ]
+    },
+    {
+      "id": "1a8c840b-5423-49c9-82f8-719df4e82a77",
+      "name": "Linkedin Personal",
+      "nodeIds": [
+        "2359db3f-0341-4498-b1d8-c109dd90678d",
+        "45121b86-f615-4c5a-9e31-abb72faa1acd",
+        "3a26e509-ebbb-426c-9f69-40d2750f0501",
+        "fd36ece8-857f-491b-b051-87a00256e48c",
+        "c9909197-4a45-41a7-acb4-4f1fad3fc8b5",
+        "da3d4b7e-4611-4b92-aa9e-80c67a375bd9",
+        "248a1877-e6b1-4bbb-a94e-20d930d60e7b",
+        "f588b1c3-bd2b-4a99-b436-7043bbbdc2f8",
+        "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
+        "43406f5b-cbd1-4a69-8d9f-2ca91b0b45bf",
+        "d97d9288-4738-4680-9809-a2646a3d09a5",
+        "4db16a0d-899b-4ccd-8cc5-18f8bda4e667"
+      ]
+    }
+  ],
   "pinData": {},
-  "versionId": "1db61563-c552-4643-bc65-d81ec74a35da",
-  "activeVersionId": "1db61563-c552-4643-bc65-d81ec74a35da",
-  "versionCounter": 83,
+  "versionId": "ecc506ac-a2ad-43c9-ba84-a26cad38b031",
+  "activeVersionId": "ecc506ac-a2ad-43c9-ba84-a26cad38b031",
+  "versionCounter": 143,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -1018,7 +1736,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version 1db61563",
+    "name": "Version ecc506ac",
     "description": ""
   }
 }

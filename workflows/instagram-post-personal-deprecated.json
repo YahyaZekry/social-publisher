@@ -1,0 +1,52 @@
+{
+  "updatedAt": "2026-07-04T13:56:06.330Z",
+  "createdAt": "2026-07-04T11:34:59.969Z",
+  "id": "hFGRAm8mwF9grYFh",
+  "name": "WF2 - Instagram Post (Personal)",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "94b3b0f3-4694-4461-b023-e33bfe978b7d",
+  "activeVersionId": null,
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-07-04T11:34:59.970Z",
+      "createdAt": "2026-07-04T11:34:59.970Z",
+      "role": "workflow:owner",
+      "workflowId": "hFGRAm8mwF9grYFh",
+      "projectId": "sGCETpH9LzOPK6iL",
+      "project": {
+        "updatedAt": "2026-07-01T07:07:48.289Z",
+        "createdAt": "2026-07-01T07:06:16.838Z",
+        "id": "sGCETpH9LzOPK6iL",
+        "name": "Yahya Zekry <yahyazekry@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

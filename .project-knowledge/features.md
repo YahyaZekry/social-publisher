@@ -1,6 +1,6 @@
 # Features & Workflows
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-03
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
 
 ## Features
 
@@ -10,6 +10,13 @@
   regenerates it, `/discard` cancels. **Confirmed working end-to-end live on
   2026-07-03** — first real post published this way. *(added: 2026-07-01,
   confirmed working: 2026-07-03)*
+- **Instagram post drafting + approval via Telegram** — texting `ig: <topic>`
+  generates an AI image (Pollinations) + caption (Groq), previews both, and
+  `/approve` posts to Instagram for real, `/regenerate` redoes the image,
+  `/discard` cancels. **Mechanically confirmed working live 2026-07-04**
+  (image → Cloudinary → caption → post, all the way through) — **but output
+  quality (image relevance, caption voice, hashtags) is not good enough yet,
+  open bug in `roadmap.md`.** *(added: 2026-07-04)*
 
 ---
 
@@ -17,12 +24,16 @@
 
 **WF1 - LinkedIn Post (Personal)** (`workflows/linkedin-post-personal.json`)
 
-This is now the *only* active workflow — it originally shared duties with a
-separate "WF4 - Command Listener" workflow, but both had their own Telegram
-Trigger on the same bot credential, and Telegram only allows one webhook per
-bot. WF4's approve-handling nodes were merged directly into WF1 on
-2026-07-03 (see `history.md`); WF4 itself is now inactive, kept only as
-`workflows/command-listener-deprecated.json` for reference.
+This is now the *only* active workflow, and the single hub for every
+platform — it started as just LinkedIn, absorbed WF4's approve-handling
+logic on 2026-07-03, then absorbed WF2's Instagram-drafting logic on
+2026-07-04, each time because a second workflow with its own `Telegram
+Trigger` on the same bot credential silently steals the one available
+webhook. Both WF4 and WF2 are now inactive, empty/near-empty, kept only as
+reference exports (`command-listener-deprecated.json`,
+`instagram-post-personal-deprecated.json`). **Any future platform (company
+LinkedIn, etc.) must follow the same pattern — merged into this one
+workflow, never its own standalone one.**
 
 **Draft half:**
 1. `Telegram Trigger` — receives `message` updates via webhook.
@@ -58,7 +69,46 @@ bot. WF4's approve-handling nodes were merged directly into WF1 on
       (Telegram) — loops back to another approve/edit/discard decision.
     - **`discard` →** `Discard` (Telegram) — confirms cancellation.
 
-**Approve half** (was WF4, merged in via `Ignore Commands`' true branch):
+**Instagram draft half** (was WF2, merged in off `Has y: prefix?`'s false branch):
+10a. `Has ig: prefix?` (IF) — `message.text` starting with `ig:`.
+    - **No →** `Ask for prefix (IG)` (Telegram) — usage instructions.
+    - **Yes →** `Extract Content (IG)` (Set) — same pattern as `Extract Content`,
+      `ig:` instead of `y:`.
+11a. `Build Image Prompt` (HTTP Request → Groq) — turns the topic into a short
+    image-generation prompt; reads `$node["Extract Content (IG)"].json.content`
+    (not `$json.content`) so this also works correctly when reached via the
+    `/regenerate` loop-back, not just the first pass.
+12a. `Extract Image Prompt` (Set) — carries `image_prompt`, `chat_id`,
+    `telegram_user_id`, `content` forward.
+13a. `Generate Image (Pollinations)` (HTTP Request, GET, `response.responseFormat:
+    "file"`) — `https://image.pollinations.ai/prompt/<encoded prompt>` returns
+    the image as binary.
+14a. `Upload to Cloudinary` (HTTP Request, multipart form) — uploads the binary,
+    unsigned upload preset `ttloffm8`; response's `secure_url` is the public URL
+    Instagram's API needs.
+15a. `Generate Caption` (HTTP Request → Groq) — writes the Instagram caption +
+    hashtags from `$node['Extract Image Prompt'].json['content']`.
+16a. `Set Post Data` (Set) — `cloudinary_url`, `caption`, `chat_id`,
+    `telegram_user_id` carried forward.
+17a. `Save to Supabase (IG)` (HTTP Request → POST `pending_approvals`) — same
+    shape as LinkedIn's, `workflow_type: 'instagram'`.
+18a. `Send Preview (IG)` (Telegram, `sendPhoto`) — the `file` parameter (not
+    `photoUrl` — that field doesn't exist on this node version, see
+    `integrations.md`) is the Cloudinary URL; caption includes
+    `/approve` / `/regenerate` / `/discard` instructions.
+19a. `Wait for Approval (IG)` (`Wait`, `resume: webhook`, same GET-only gotcha
+    as the LinkedIn one).
+20a. `Route Command (IG)` (Switch on `$json.query.command`):
+    - **`approve` →** `Create Media Container` → `Publish to Instagram`
+      (Graph API two-step publish) → `Confirm Posted (IG)`.
+    - **`regenerate` →** loops back to `Build Image Prompt` — regenerates
+      both image and caption from the same original topic.
+    - **`discard` →** `Discard (IG)`.
+
+**Approve half** (was WF4, merged in via `Ignore Commands`' true branch — shared
+by both LinkedIn and Instagram, and will be by any future platform too, since
+it's generic: it just looks up the newest pending row and calls its stored
+`resume_url`, regardless of which platform/Wait-node it belongs to):
 11. `Is it a command?` (IF) — passes only if `message.text` starts with `/`
     (redundant with `Ignore Commands` above, harmless).
 12. `Extract Command` (Set) — pulls `telegram_user_id`, `chat_id`, `command`
@@ -69,8 +119,9 @@ bot. WF4's approve-handling nodes were merged directly into WF1 on
     `integrations.md` gotcha).
 14. `Has Pending?` (IF) — branches on whether a row was found.
     - **Found →** `Resume Workflow` (HTTP Request, **GET**, `command` +
-      `instructions` as query params) → calls back into step 9/10 above,
-      resuming the paused draft execution → `Update Status` (HTTP Request,
-      PATCH — currently writes an invalid `status` value, see `roadmap.md`)
-      → `Reply - Processing` (Telegram).
+      `instructions` as query params) → calls back into whichever Wait node
+      the pending row's `resume_url` points at, resuming that paused draft
+      execution → `Update Status` (HTTP Request, PATCH — maps `approve`/
+      `discard` to `approved`/`rejected`, anything else stays `pending`) →
+      `Reply - Processing` (Telegram).
     - **Not found →** `Reply - No Pending` (Telegram).

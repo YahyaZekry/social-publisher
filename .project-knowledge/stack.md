@@ -1,6 +1,6 @@
 # Stack
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-03
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
 
 ## Tech Stack
 
@@ -11,8 +11,10 @@
 | Tunnel | ngrok, static domain `ergonomic-password-rosy.ngrok-free.dev` |
 | Bot platform | Telegram Bot API |
 | Database | Supabase (project ref `xiqohqytcyjiqskkextz`) — `pending_approvals` table |
-| LLM | Groq (`llama-3.3-70b-versatile`) — generates/rewrites LinkedIn post text |
-| Publish targets | Personal LinkedIn (built, WF1), Instagram + company LinkedIn — not yet integrated |
+| LLM | Groq (`llama-3.3-70b-versatile`) — generates/rewrites LinkedIn posts, Instagram image prompts + captions |
+| Image generation | Pollinations (`image.pollinations.ai`) — free, no auth, text-to-image only |
+| Image hosting | Cloudinary (unsigned upload preset) |
+| Publish targets | Personal LinkedIn (built), Instagram (built) — both live; company LinkedIn not yet integrated |
 | License | n8n Community/base license (1 entitlement) — no Source Control (Business/Enterprise-only) |
 
 ---

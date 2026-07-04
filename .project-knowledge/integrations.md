@@ -1,13 +1,14 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-03
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
 
 - Trigger: `Telegram Trigger` node, `updates: ["message"]`. WF1 now has the
-  *only* one — WF4 used to have its own too, but Telegram only allows one
-  webhook per bot, so its logic was merged into WF1 (see `history.md`).
+  *only* one — WF4 and WF2 used to have their own too, but Telegram only
+  allows one webhook per bot, so their logic was merged into WF1 (see
+  `history.md`). **Any future platform must follow this same pattern.**
 - Webhook path: `/webhook/<uuid>/webhook` on the ngrok tunnel.
 - Commands are plain `message.text` starting with `/` (checked via `startsWith`) —
   not Telegram's native `bot_command` entity parsing.
@@ -16,6 +17,20 @@
   second workflow its own `Telegram Trigger` on this same bot credential —
   whichever workflow activates/saves most recently silently wins the webhook,
   and the other stops receiving updates with no error at all.
+- **Gotcha (open, see `roadmap.md`):** all prefix checks (`Has y: prefix?`,
+  `Has ig: prefix?`) only look at `message.text`. A photo sent *with a
+  caption* puts that text in `message.caption` instead — `message.text` is
+  entirely absent on those messages, so a photo+caption message currently
+  falls through every prefix check and just gets the reminder text.
+- **File download**: this Telegram node version (confirmed from the
+  installed node's source, `Telegram.node.js`) has a `resource: "file"`,
+  `operation: "get"` mode that takes a `fileId` parameter — with its
+  `download` option set to `true`, it fetches the file's path via Telegram's
+  API and downloads the actual binary in one node, no separate HTTP calls
+  needed. Relevant for the planned "post user's own photo" feature (see
+  `roadmap.md`) — the photo's `file_id` comes from
+  `message.photo[n].file_id` (Telegram sends multiple resolutions; last one
+  is highest-res).
 
 ## n8n `Wait` node webhook resume (used by `Wait for Approval`)
 
@@ -67,26 +82,61 @@
   request but produces wrong/`null` values or a PostgREST `PGRST102 Empty or
   invalid json`/check-constraint error depending on where it ends up.
 
-## Groq (LLM — LinkedIn post generation)
+## Groq (LLM — post/caption/image-prompt generation)
 
-- Used by WF1's `Generate LinkedIn Post` and `Rewrite with Instructions` nodes.
+- Used by 4 nodes: WF1's `Generate LinkedIn Post` + `Rewrite with
+  Instructions` (LinkedIn), and `Build Image Prompt` + `Generate Caption`
+  (Instagram).
 - `POST https://api.groq.com/openai/v1/chat/completions`, OpenAI-compatible chat
-  format, model `llama-3.3-70b-versatile`, `max_tokens: 600`.
-- Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on both nodes
+  format, model `llama-3.3-70b-versatile`. LinkedIn nodes: `max_tokens: 600`.
+  Instagram: `Build Image Prompt` uses `max_tokens: 200`, `Generate Caption`
+  uses `max_tokens: 400`.
+- Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on all four
   (not an n8n credential — see `roadmap.md`).
-- System prompt (identical in both nodes): Yahya's voice/length/hashtag rules,
-  **plus explicit instructions to (a) write about whatever topic the user
-  actually gave it rather than defaulting to Synax/work content, and (b) vary
-  the opening line rather than always starting with "Just spent [time]..."**
-  — both were real, observed failure modes before the 2026-07-03 prompt
-  update (see `history.md`). No hashtag-popularity data source — the model
-  picks hashtags from its own training knowledge; a real trending-hashtags
-  lookup was considered and declined (no public LinkedIn API for it, see
-  `history.md`).
-- User message is either the raw topic (`Extract Content.content`) or, for edits,
-  the original post + `$json.query.instructions` concatenated.
-- Response shape consumed: `choices[0].message.content` (plain text post, no
+- LinkedIn system prompt: Yahya's voice/length/hashtag rules, plus explicit
+  instructions to (a) write about whatever topic the user actually gave it
+  rather than defaulting to Synax/work content, and (b) vary the opening
+  line rather than always starting with "Just spent [time]..." — both real,
+  observed failure modes before the 2026-07-03 prompt update (see
+  `history.md`). **This one is working well.**
+- Instagram system prompts (`Build Image Prompt`, `Generate Caption`): same
+  category of "follow the user's actual topic" instruction added
+  2026-07-04, plus anti-generic-hashtag and anti-generic-stock-photo
+  instructions. **Not working well yet as of 2026-07-04 — output still
+  feels generic/off per the user, open bug in `roadmap.md`.** Abstract
+  "don't do X" instructions haven't been enough for these two; concrete
+  examples may be needed.
+- No hashtag-popularity data source for either platform — the model picks
+  hashtags from its own training knowledge; a real trending-hashtags lookup
+  was considered and declined for LinkedIn (no public API for it, would need
+  ToS-violating scraping, see `history.md`) — same reasoning would apply to
+  Instagram.
+- User message for LinkedIn is either the raw topic (`Extract
+  Content.content`) or, for edits, the original post + `$json.query.instructions`
+  concatenated. For Instagram, `Build Image Prompt` and `Generate Caption`
+  both read from `$node["Extract Content (IG)"]`/`$node['Extract Image
+  Prompt']` respectively (not `$json` directly) so the `/regenerate` loop-back
+  reaches the original topic correctly.
+- Response shape consumed: `choices[0].message.content` (plain text, no
   JSON/structured output requested).
+
+## Pollinations (Instagram image generation)
+
+- Used by `Generate Image (Pollinations)`.
+- `GET https://image.pollinations.ai/prompt/<url-encoded image prompt>?width=1080&height=1080&nologo=true&model=flux`
+  — no auth/API key needed. Response format set to `file` (binary).
+- Prompt comes from `Build Image Prompt`'s Groq output (short vivid scene
+  description, no text-in-image).
+
+## Cloudinary (image hosting for Instagram)
+
+- Used by `Upload to Cloudinary`.
+- `POST https://api.cloudinary.com/v1_1/cbolcssr/image/upload`, multipart
+  form: `file` (binary from Pollinations), `upload_preset: 'ttloffm8'`
+  (an *unsigned* preset — not a secret, safe to have client-side/in a public
+  repo).
+- Response's `secure_url` field is the public HTTPS URL handed to both
+  Telegram (`Send Preview (IG)`) and Instagram's Graph API.
 
 ## LinkedIn (personal)
 
@@ -101,7 +151,36 @@
   `visibility['com.linkedin.ugc.MemberNetworkVisibility']: 'PUBLIC'`.
 - **Confirmed working live 2026-07-03** — first real post published this way.
 
-## Instagram / LinkedIn (company)
+## Instagram — Meta Graph API (personal, via Facebook Page "Bear Code")
+
+- Used by `Create Media Container` → `Publish to Instagram` (two-step publish,
+  fired only after `/approve`).
+- Key IDs: Meta App (BearCode) `1528187988974071` · Facebook Page ID
+  (Graph API, **not** the number in the page's `profile.php?id=` URL)
+  `1175585338972824` · Instagram Business Account ID `17841476339271624` ·
+  Instagram username `yahya_zekry`.
+- **Step 1**: `POST /v20.0/17841476339271624/media` with `image_url`
+  (Cloudinary's `secure_url`), `caption`, `access_token` → returns `creation_id`
+  (as `$json.id`).
+- **Step 2**: `POST /v20.0/17841476339271624/media_publish` with
+  `creation_id`, `access_token`.
+- Auth: `access_token` is a **long-lived Page Access Token** (hardcoded
+  directly in the request body on both nodes, not a header — same
+  "move to a credential" TODO as everything else, see `roadmap.md`),
+  derived via the `fb_exchange_token` flow from a long-lived user token.
+  Good until **~Sept 2026** (tied to the underlying user token's expiry,
+  not a short-lived token) — refresh steps documented separately by the
+  user outside this repo. The *first* token used here was short-lived and
+  expired same-day; don't confuse the two failure modes if this breaks
+  again: "Session has expired" (auth/expiry) vs. "Cannot parse access token"
+  (malformed value — e.g. stray whitespace, seen once during setup).
+- **Confirmed working live 2026-07-04** — first real Instagram post
+  published this way (content quality issues aside, see `roadmap.md`).
+
+## LinkedIn (company)
 
 - Not integrated yet. No credentials, no nodes, no data contract defined.
-- When built: document the exact publish payload shape here before wiring the node.
+- When built: document the exact publish payload shape here before wiring
+  the node. Note from `roadmap.md`: the prompt for this one will likely
+  want to *always* talk about Synax/work, the opposite of the personal
+  LinkedIn prompt's "don't force it" instruction.

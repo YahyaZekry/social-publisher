@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-03
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -138,6 +138,60 @@
   special reason found; re-verifying each field via the DB after every
   "done" (rather than trusting the UI) caught it immediately both times.
   *(2026-07-03)*
+- **WF2 - Instagram Post (Personal) built and merged into WF1**, same
+  reasoning as the WF4 merge: a second workflow with its own `Telegram
+  Trigger` would contend for the one webhook. WF2's 17 non-trigger nodes
+  were merged in via a locally-edited, paste-ready JSON fragment (built by
+  editing a user-supplied workflow export file directly, not by touching the
+  live DB), with 8 colliding node names disambiguated with an `(IG)` suffix.
+  WF2 itself was left active=0 with 0 nodes (its content lives in WF1 now).
+  *(fixed: 2026-07-04)*
+- The user-supplied source file for WF2 used a Set-node field schema
+  (`{name, type, value}`) that doesn't match what this n8n instance's
+  typeVersion 3 Set node actually expects (`{name, stringValue}`, no `type`
+  key) — pasting it in meant `Extract Content (IG)`, `Extract Image Prompt`,
+  and `Set Post Data` silently passed through their input completely
+  unchanged, contributing none of their defined fields, with no error at
+  all. Fixed by having the fields re-entered directly through the node UI
+  (not re-pasted as JSON) so n8n serializes them per its own real schema.
+  *(fixed: 2026-07-04)*
+- Same source file wired `Route Command`'s "regenerate" branch to `Extract
+  Content` (now `Extract Content (IG)`) — which expects a Telegram message
+  shape, not resume data, and would have crashed on `/regenerate`. Fixed by
+  rewiring it to `Build Image Prompt` instead, using
+  `$node["Extract Content (IG)"].json.content` (rather than `$json.content`)
+  in that node's body so it correctly reaches back to the original topic
+  regardless of whether it's the first pass or a regenerate loop-back.
+  *(fixed: 2026-07-04)*
+- `Send Preview (IG)`'s `sendPhoto` operation had no way to specify which
+  photo to send — the source file used a `photoUrl` parameter that doesn't
+  exist on this n8n version's Telegram node (confirmed straight from the
+  installed node's source: `body.photo = this.getNodeParameter('file', i)`).
+  Silently dropped on import, so this went unnoticed until testing produced
+  "Bad Request: there is no photo in the request". Fixed by setting the
+  correct `file` parameter to
+  `={{ $node["Set Post Data"].json["cloudinary_url"] }}` instead.
+  *(fixed: 2026-07-04)*
+- Instagram/Meta Graph API access token expired mid-session (a short-lived
+  token). User generated a proper long-lived Page Access Token (via the
+  `fb_exchange_token` flow, good until ~Sept 2026) to replace it in
+  `Create Media Container` / `Publish to Instagram` — but the first two
+  attempts to paste it in still failed: once because an *old* paused
+  execution is permanently bound to the workflow snapshot from when it
+  started (confirmed via mismatched `workflowVersionId`), so re-testing the
+  same stale draft can never pick up a token change — needs a fresh draft;
+  and once because the pasted token had 2 stray leading spaces, which Meta's
+  API rejected as "Cannot parse access token". *(fixed: 2026-07-04)*
+- First real Instagram post attempt exposed the same "ignores the actual
+  topic" problem WF1 had, plus a new one: hashtags were generic filler
+  (`#newpost`, `#digitalfootprint`, `#onlinepresence`) that don't match the
+  "authentic, raw, no fluff" voice, and generated images defaulted to
+  generic corporate stock-photo visuals (city skylines, sunsets) regardless
+  of topic. Prompt updates were made to `Generate Caption` (explicit
+  anti-generic-hashtag instruction) and `Build Image Prompt` (avoid stock-
+  photo defaults, invent one concrete grounded scene) — **user reports these
+  are still not good enough as of 2026-07-04; open, see `roadmap.md`.**
+  *(attempted: 2026-07-04, not resolved)*
 
 ---
 
