@@ -1,22 +1,25 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-04
-> Status: Active — LinkedIn fully working live; Instagram working live but content quality needs work
+> Last updated: 2026-07-04 (Instagram quality fixed, repo made public-ready)
+> Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
-> Current goal: fix Instagram's generic/off-topic image+caption+hashtag output (open bug), then build company LinkedIn (`s:`)
+> Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
 
 ## What This Project Does
 Automates posting to personal Instagram, personal LinkedIn, and company LinkedIn.
 A human approves each post via Telegram before it goes out. "WF1 - LinkedIn
-Post (Personal)" is the single self-contained workflow for everything — it
-started as just LinkedIn (`y:` prefix) and has since absorbed Instagram
-(`ig:` prefix) too, since only one workflow can hold the bot's webhook.
-Texting `y:` or `ig:` drafts a post/image+caption, sends a Telegram preview,
-and `/approve`/`/edit`/`/regenerate`/`/discard` control what happens next —
+Post (Personal)" (exported as `workflows/main-workflow.json`) is the single
+self-contained workflow for everything — it started as just LinkedIn (`y:`
+prefix) and has since absorbed Instagram (`ig:` prefix) too, since only one
+workflow can hold the bot's webhook. Texting `y:` or `ig:` drafts a
+post/image+caption, sends a Telegram preview, and
+`/approve`/`/edit`/`/regenerate`/`/discard` control what happens next —
 approving actually publishes. **First real LinkedIn post: 2026-07-03. First
-real Instagram post: 2026-07-04** (though Instagram's output quality is
-still an open complaint — see `roadmap.md`). Company LinkedIn (`s:`) is not
-built yet.
+real Instagram post: 2026-07-04, with output quality fixed the same day**
+(see `history.md` for the FLUX/Llama prompting research behind that fix).
+Company LinkedIn (`s:`) is not built yet. Repo is confirmed safe to make
+public (git history was rewritten to scrub an exposed key first — see
+`history.md`).
 
 ---
 

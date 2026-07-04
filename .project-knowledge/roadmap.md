@@ -1,45 +1,34 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (Instagram quality fix)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
 
-**LinkedIn (`y:`) is fully working, confirmed live** — draft → preview →
-`/approve` → real post. **Instagram (`ig:`) is mechanically working as of
-2026-07-04** (image generated, uploaded, captioned, previewed, `/approve`
-actually posts to Instagram) **but content quality is not good enough yet** —
-see Known Bugs. That's the immediate focus before moving on to company
-LinkedIn (`s:`).
+**LinkedIn (`y:`) and Instagram (`ig:`) are both fully working, confirmed
+live** — draft → preview → `/approve` → real post, with genuinely good
+content quality on both (see `history.md` for the 2026-07-04 fix). Next:
+proper n8n credentials instead of hardcoded values, then company LinkedIn
+(`s:`).
 
 ---
 
 ## Known Bugs
 
-- [ ] **Instagram output quality is bad — image, caption, and hashtags all
-      feel off.** User's own words: "i hate the tags, the way it's writing
-      and the image output." Two rounds of prompt tweaks so far (follow the
-      user's topic instead of defaulting to Yahya's AI/athlete persona;
-      avoid generic stock-photo imagery; avoid filler hashtags like
-      `#newpost`/`#digitalfootprint`) have **not** resolved it as of
-      2026-07-04. Needs a harder look at `Build Image Prompt` and
-      `Generate Caption`'s prompts — possibly needs concrete before/after
-      examples in the system prompt rather than more abstract instructions,
-      since abstract "don't do X" instructions haven't been landing well.
-      *(found: 2026-07-04)*
+*(none open as of 2026-07-04 — see `history.md` for what was just fixed)*
 
 ---
 
 ## Active TODOs
 
-- [ ] **Rotate the Supabase `service_role` key.** It was committed in
-      plaintext to this repo's first commit (`5f50384`) before redaction
-      started. Recommended regardless of whether git history also gets
-      rewritten — a rotated key makes the old exposed one harmless. Needs
-      the Supabase dashboard (can't be done from here) + updating it in the
-      nodes across WF1 that still hardcode it. Asked 2026-07-03, no
-      decision yet on whether to also rewrite git history for the old commit.
-      *(added: 2026-07-03)*
+- [ ] **Rotate the Supabase `service_role` key.** Was committed in plaintext
+      to this repo's first commit before a 2026-07-04 history rewrite scrubbed
+      it (confirmed clean across all commits + GitHub after a force-push).
+      Since the repo was never public before that rewrite, this is now low
+      urgency — the key was likely never actually seen outside this project
+      — but rotating is still good hygiene since it's used from a live
+      workflow with plaintext copies on multiple nodes. *(added: 2026-07-03,
+      downgraded: 2026-07-04 after history rewrite)*
 - [ ] Move the Supabase `apikey`/`Authorization` headers, Groq key, LinkedIn
       token, and Meta/Instagram access token (all used across many nodes in
       WF1 now) into proper n8n credentials instead of hardcoded plaintext

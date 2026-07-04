@@ -13,16 +13,16 @@
 - **Instagram post drafting + approval via Telegram** — texting `ig: <topic>`
   generates an AI image (Pollinations) + caption (Groq), previews both, and
   `/approve` posts to Instagram for real, `/regenerate` redoes the image,
-  `/discard` cancels. **Mechanically confirmed working live 2026-07-04**
-  (image → Cloudinary → caption → post, all the way through) — **but output
-  quality (image relevance, caption voice, hashtags) is not good enough yet,
-  open bug in `roadmap.md`.** *(added: 2026-07-04)*
+  `/discard` cancels. **Confirmed working live end-to-end with genuinely good
+  output quality as of 2026-07-04** — see `history.md` for the FLUX/Llama
+  prompting fix. *(added: 2026-07-04, quality fixed: 2026-07-04)*
 
 ---
 
 ## Workflows
 
-**WF1 - LinkedIn Post (Personal)** (`workflows/linkedin-post-personal.json`)
+**WF1 - LinkedIn Post (Personal)** (`workflows/main-workflow.json` — filename
+updated 2026-07-04 since it now covers every platform, not just LinkedIn)
 
 This is now the *only* active workflow, and the single hub for every
 platform — it started as just LinkedIn, absorbed WF4's approve-handling

@@ -82,7 +82,7 @@ against your actual table before trusting it verbatim.)
 
 ### 3. Import the workflow
 
-n8n → **Workflows → Import from File** → `workflows/linkedin-post-personal.json`.
+n8n → **Workflows → Import from File** → `workflows/main-workflow.json`.
 
 ### 4. Fill in every placeholder
 
@@ -147,7 +147,7 @@ to change voice, length, hashtag rules, or what topics it will or won't cover.
 
 ```bash
 docker exec n8n n8n export:workflow --backup --output=/home/node/.n8n/workflow-backups/
-docker cp n8n:/home/node/.n8n/workflow-backups/<workflow-id>.json ./workflows/linkedin-post-personal.json
+docker cp n8n:/home/node/.n8n/workflow-backups/<workflow-id>.json ./workflows/main-workflow.json
 docker exec n8n rm -rf /home/node/.n8n/workflow-backups/
 ```
 

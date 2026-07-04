@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (Instagram quality fix)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -192,6 +192,45 @@
   photo defaults, invent one concrete grounded scene) — **user reports these
   are still not good enough as of 2026-07-04; open, see `roadmap.md`.**
   *(attempted: 2026-07-04, not resolved)*
+- **Instagram output quality — actually resolved.** Root cause of the image
+  problem: the prompt was asking the model for a vague "vivid description"
+  with no real technique behind it. Web research on FLUX (the model
+  Pollinations uses) prompting found it (a) strongly prefers natural-language
+  prose over comma-separated keyword tags, (b) weighs earlier words more
+  heavily, so the subject must come first and never get buried, and (c)
+  responds well to explicit camera/lighting/shot-type vocabulary
+  ("low angle shot", "35mm", "shallow depth of field") rather than vague
+  adjectives like "stunning". Separately, Llama 3.3 prompting guidance
+  confirmed few-shot examples in the system prompt outperform purely
+  abstract "don't do X" instructions. `Build Image Prompt` was rewritten
+  around a subject→environment→lighting→camera/style structure with one
+  concrete worked example. Confirmed live: a Monster Energy / gaming-desk
+  test produced a genuinely well-composed, on-topic image (not stock-photo
+  generic). *(fixed: 2026-07-04)*
+- Caption still had two issues once the image was fixed: (1) hashtag
+  formatting was inconsistent — sometimes a space after `#` (breaks Telegram/
+  Instagram hashtag parsing entirely) or a hyphen inside a multi-word tag
+  (also breaks it, since Instagram only continues a hashtag through letters/
+  numbers/underscores); (2) length was hard-capped under 300 characters with
+  no way to write a longer, essay-style caption when a topic actually called
+  for one. Fixed `Generate Caption`'s prompt: added an explicit hashtag-
+  format rule (no space after `#`, no hyphens, CamelCase) and replaced the
+  fixed length cap with "match length to the topic, up to ~2000 characters
+  for something that calls for real reflection" — also bumped `max_tokens`
+  from 400 to 700 so a longer caption + hashtags doesn't get truncated.
+  Confirmed live on a genuinely reflective topic ("the struggle is real...")
+  — produced a real short-essay caption with correctly-formatted hashtags
+  and a matching, well-composed image. *(fixed: 2026-07-04)*
+- Repo's exported workflow file renamed from `linkedin-post-personal.json`
+  to `main-workflow.json` — the old name stopped making sense once the file
+  covered LinkedIn + Instagram (+ eventually company LinkedIn) in one
+  workflow. *(2026-07-04)*
+- Git history rewritten (`git filter-branch`, all commits, force-pushed) to
+  scrub the real Supabase `service_role` key that had been exposed in the
+  first commit before redaction practices started. Verified clean across
+  every commit and on GitHub's remote afterward; local backup refs then
+  removed and garbage-collected. Done specifically so the repo could be made
+  public without carrying that exposure. *(fixed: 2026-07-04)*
 
 ---
 
@@ -218,3 +257,9 @@
   hashtag judgment (steerable via the system prompt if needed) rather than
   adding a third-party hashtag-analytics API for a marginal quality gain.
   *(2026-07-03)*
+- Repo confirmed safe to make public on 2026-07-04, after the git-history
+  rewrite fully scrubbed the exposed Supabase key and every account-specific
+  ID (Supabase ref, LinkedIn URN, Instagram Business Account ID, Cloudinary
+  cloud name/preset) was genericized out of the README and workflow
+  exports — those aren't classified as secrets but the user didn't want
+  them public either. *(2026-07-04)*

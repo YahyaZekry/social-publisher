@@ -99,13 +99,19 @@
   line rather than always starting with "Just spent [time]..." — both real,
   observed failure modes before the 2026-07-03 prompt update (see
   `history.md`). **This one is working well.**
-- Instagram system prompts (`Build Image Prompt`, `Generate Caption`): same
-  category of "follow the user's actual topic" instruction added
-  2026-07-04, plus anti-generic-hashtag and anti-generic-stock-photo
-  instructions. **Not working well yet as of 2026-07-04 — output still
-  feels generic/off per the user, open bug in `roadmap.md`.** Abstract
-  "don't do X" instructions haven't been enough for these two; concrete
-  examples may be needed.
+- Instagram system prompts (`Build Image Prompt`, `Generate Caption`):
+  **working well as of 2026-07-04**, after a harder rewrite than the
+  LinkedIn one needed. `Build Image Prompt` is structured specifically
+  around how FLUX (Pollinations' underlying model) actually responds —
+  natural-language prose rather than keyword tags, subject stated first
+  (FLUX weighs earlier words more heavily), explicit camera/lighting/shot
+  vocabulary, plus one worked example (Llama 3.3 responds better to
+  few-shot examples than to abstract "don't do X" rules alone — this is
+  what the first two prompt rounds were missing). `Generate Caption` adds
+  an explicit hashtag-format rule (no space after `#`, no hyphens,
+  CamelCase — both were silently breaking hashtag parsing) and a flexible
+  length rule (short by default, up to ~2000 characters for a topic that
+  calls for real reflection) instead of a rigid character cap.
 - No hashtag-popularity data source for either platform — the model picks
   hashtags from its own training knowledge; a real trending-hashtags lookup
   was considered and declined for LinkedIn (no public API for it, would need
