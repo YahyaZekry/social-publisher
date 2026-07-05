@@ -1,6 +1,6 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (/edit loop-back fix + grounding/anti-slop prompt fix)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (targeted Instagram regenerate + anti-uncanny-face image prompt)
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
@@ -11,8 +11,23 @@
   `history.md`). **Any future platform must follow this same pattern.**
 - Webhook path: `/webhook/<uuid>/webhook` on the ngrok tunnel.
 - Commands are plain `message.text` starting with `/` (checked via `startsWith`) —
-  not Telegram's native `bot_command` entity parsing.
+  not Telegram's native `bot_command` entity parsing on the *receiving* side.
 - Owner: single private chat (`chat.type: "private"`) tested so far.
+- **Tappable commands need no BotFather setup (discovered 2026-07-05):** this
+  bot has **zero** commands registered via BotFather's `/setcommands` — the
+  `/approve`, `/edit`, `/regenerate` etc. words that appear tappable in
+  Telegram are just Telegram's own client auto-detecting any `/word` pattern
+  inside message text as a `bot_command` entity and linkifying it, confirmed
+  from actual Telegram API responses on our own outbound preview messages
+  (e.g. `Send Updated Preview`'s response included
+  `{"offset":209,"length":8,"type":"bot_command"}` matching where `/discard`
+  sits in the text). **Important side effect:** tapping one of these
+  auto-linked words sends *only that word* — Telegram does not let you tap
+  then keep typing more text after it. This is why a shared `/regenerate
+  <target>` command relying on typed trailing text (`instructions`) fights
+  against the tappable UX; dedicated single-word commands (`/regenerateImage`,
+  `/regenerateCaption`) work with it instead of against it — see
+  `features.md` and `history.md`.
 - **Gotcha (resolved, keep in mind for any future workflow):** don't give a
   second workflow its own `Telegram Trigger` on this same bot credential —
   whichever workflow activates/saves most recently silently wins the webhook,
@@ -172,9 +187,21 @@
 
 - Used by `Generate Image (Pollinations)`.
 - `GET https://image.pollinations.ai/prompt/<url-encoded image prompt>?width=1080&height=1080&nologo=true&model=flux`
-  — no auth/API key needed. Response format set to `file` (binary).
+  — no auth/API key needed. Response format set to `file` (binary). **No
+  negative-prompt parameter exists on this endpoint** — anything to avoid has
+  to be steered via the positive prompt text itself, there's no `negative:`
+  field to hand it.
 - Prompt comes from `Build Image Prompt`'s Groq output (short vivid scene
   description, no text-in-image).
+- **Uncanny/disturbing realistic faces (fixed 2026-07-05):** FLUX (like most
+  diffusion models) frequently distorts faces/hands/anatomy on detailed
+  photorealistic human portraits. Research confirmed the fix isn't a realism
+  dial — people prefer AI art that's clearly stylized *or* clearly photoreal,
+  never the semi-realistic middle. Since there's no negative prompt param
+  (above), `Build Image Prompt`'s system prompt now has an explicit rule:
+  when a person appears in the scene, prefer them faceless/at a
+  distance/mid-motion/from behind, or switch the whole scene to a named
+  illustration/digital-art style instead of photorealistic camera language.
 
 ## Cloudinary (image hosting for Instagram)
 

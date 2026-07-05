@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (/edit → /approve loop-back bug fixed)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (targeted Instagram regenerate + anti-uncanny-face image prompt)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
@@ -15,8 +15,8 @@ proper n8n credentials instead of hardcoded values, then company LinkedIn
 
 ## Known Bugs
 
-*(none open as of 2026-07-05 — see `history.md` for the `/edit`→`/approve`
-loop-back bug and the grounding/anti-slop prompt fix, both just resolved)*
+*(none open as of 2026-07-05 — see `history.md` for the targeted-regenerate
+build and the anti-uncanny-face image prompt fix, both just resolved)*
 
 ---
 

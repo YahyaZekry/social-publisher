@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (hashtag count/format fix)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (targeted Instagram regenerate + anti-uncanny-face image prompt)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -284,6 +284,50 @@
   `cannot unmarshal string into Go value of type map[string]interface{}`).
   Both diagnosed by reading the live node's stored `body` param directly
   from the DB rather than guessing. *(fixed: 2026-07-05)*
+- `ig:` drafts stopped replying entirely: `Generate Caption`'s Body field had
+  the same doubled-`=` corruption (`"=={{ JSON..."`) left over from the
+  2026-07-04 hashtag-count edit session, silently un-noticed since Instagram
+  hadn't been tested since. Fixed by removing the extra leading `=`. A
+  workflow-wide scan for the same `==` pattern across every node's
+  `body`/`value`/Set-field values found no other occurrences. *(fixed:
+  2026-07-05)*
+- Built targeted Instagram regenerate (`/regenerateImage` / `/regenerateCaption`
+  redo only one half instead of both) — see `features.md` for the final node
+  graph. Three bugs surfaced while building it, all fixed same day: (1) the
+  new `Skip Caption?` node referenced `$node["Wait for Approval (IG)"]`
+  unconditionally, which throws `"hasn't been executed"` on the very first
+  draft pass (before any resume has ever happened) rather than returning
+  undefined — fixed by wrapping the reference in a try/catch IIFE that
+  defaults to `""`; (2) the same doubled-`=`/stray-space expression-prefix
+  bug recurred twice more while wiring the new If nodes (`Skip Caption?` got
+  `==`, `Route Regenerate Target` got `= ` with a space) — both silently
+  broke their conditions exactly like the earlier `/edit` bug; (3) after
+  fixing the prefix issue, `Skip Caption?`'s right-hand comparison value was
+  `regenerateimage` (lowercase) while the actual command everywhere else was
+  `regenerateImage` (camelCase), and the condition was case-sensitive — so it
+  never matched. All three found by reading the live node's stored
+  parameters and cross-referencing actual execution run-counts per node
+  rather than guessing from symptoms alone. Along the way, `Route Regenerate
+  Target` (an earlier, more complex two-hop design using `instructions` text
+  matching) was replaced with a simpler direct 5-way switch on `Route Command
+  (IG)`'s own `command` value, once it became clear the "clickable" preview
+  buttons the user relied on are just Telegram's automatic `bot_command`
+  entity detection on any `/word` in message text (confirmed zero BotFather
+  commands are registered for this bot) — meaning a shared `/regenerate
+  <target>` command relying on typed trailing text was fighting against
+  Telegram's own tap-to-send-immediately behavior for command-shaped words,
+  while dedicated one-word commands work with it. *(fixed: 2026-07-05)*
+- Instagram images occasionally generated disturbing/uncanny realistic human
+  faces — a known FLUX/diffusion failure mode, not a bug in this workflow's
+  code. Web research confirmed the fix isn't "more" or "less" realism as a
+  dial, but avoiding the semi-realistic middle ground entirely (people
+  generally prefer AI art that reads as clearly stylized *or* convincingly
+  photoreal, never in between). Pollinations' API has no negative-prompt
+  parameter, so the fix had to be a new paragraph in `Build Image Prompt`'s
+  system prompt: when a person appears, prefer keeping them faceless/at a
+  distance/in motion/from behind, or explicitly switch to a stated
+  illustration/digital-art style rather than photorealistic camera language.
+  *(fixed: 2026-07-05)*
 
 ---
 

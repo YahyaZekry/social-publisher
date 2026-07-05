@@ -1,6 +1,6 @@
 # Features & Workflows
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (targeted Instagram regenerate + anti-uncanny-face image prompt)
 
 ## Features
 
@@ -12,10 +12,15 @@
   confirmed working: 2026-07-03)*
 - **Instagram post drafting + approval via Telegram** — texting `ig: <topic>`
   generates an AI image (Pollinations) + caption (Groq), previews both, and
-  `/approve` posts to Instagram for real, `/regenerate` redoes the image,
-  `/discard` cancels. **Confirmed working live end-to-end with genuinely good
-  output quality as of 2026-07-04** — see `history.md` for the FLUX/Llama
-  prompting fix. *(added: 2026-07-04, quality fixed: 2026-07-04)*
+  `/approve` posts to Instagram for real; `/discard` cancels. Regenerating
+  is now three separate commands: `/regenerate` redoes both image and
+  caption, `/regenerateImage` redoes only the image (caption untouched),
+  `/regenerateCaption` redoes only the caption (image untouched) — see the
+  Instagram draft half below for how targeting works. **Confirmed working
+  live end-to-end with genuinely good output quality as of 2026-07-05**,
+  including a fix for FLUX generating disturbing/uncanny realistic human
+  faces — see `history.md`. *(added: 2026-07-04, quality fixed: 2026-07-04,
+  targeted regenerate + anti-uncanny-face fix: 2026-07-05)*
 
 ---
 
@@ -98,12 +103,38 @@ workflow, never its own standalone one.**
     `/approve` / `/regenerate` / `/discard` instructions.
 19a. `Wait for Approval (IG)` (`Wait`, `resume: webhook`, same GET-only gotcha
     as the LinkedIn one).
-20a. `Route Command (IG)` (Switch on `$json.query.command`):
+20a. `Route Command (IG)` (Switch on `$json.query.command`, 5 outputs as of
+    2026-07-05):
     - **`approve` →** `Create Media Container` → `Publish to Instagram`
       (Graph API two-step publish) → `Confirm Posted (IG)`.
     - **`regenerate` →** loops back to `Build Image Prompt` — regenerates
       both image and caption from the same original topic.
+    - **`regenerateImage` →** also loops back to `Build Image Prompt` (same
+      target as bare `regenerate`), but `Skip Caption?` (see below) stops it
+      short of `Generate Caption` — only the image changes.
+    - **`regenerateCaption` →** goes straight to `Generate Caption`, skipping
+      the whole image chain entirely — only the caption changes, the
+      existing `cloudinary_url` is reused untouched.
     - **`discard` →** `Discard (IG)`.
+    - `Send Preview (IG)`'s text advertises all three regenerate variants;
+      Telegram auto-links any `/word` pattern in message text as a tappable
+      command with **zero BotFather registration needed** — this project has
+      no BotFather commands configured at all, confirmed 2026-07-05.
+21a. `Skip Caption?` (If node, sits between `Upload to Cloudinary` and
+    `Generate Caption`) — condition checks
+    `$node["Wait for Approval (IG)"].json.query.command == 'regenerateImage'`,
+    wrapped in a try/catch IIFE since this node also runs on the very first
+    draft pass, before `Wait for Approval (IG)` has ever executed (referencing
+    it directly there throws `"hasn't been executed"` rather than returning
+    undefined). True → `Set Post Data` directly (caption untouched, since
+    `Generate Caption` simply didn't re-run — `$node["Generate Caption"]`
+    still resolves to its last real output). False → `Generate Caption`
+    (normal path, also correctly used by the initial draft pass since the
+    condition safely evaluates to `""` before any resume exists).
+    `Set Post Data`'s `caption` field had to change from `$json.choices[0]...`
+    (assumes `Generate Caption` is the immediate predecessor) to the named
+    reference `$node["Generate Caption"].json.choices[0]...` so it resolves
+    correctly regardless of which path reached it.
 
 **Approve half** (was WF4, merged in via `Ignore Commands`' true branch — shared
 by both LinkedIn and Instagram, and will be by any future platform too, since

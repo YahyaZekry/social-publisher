@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-05T03:56:50.378Z",
+  "updatedAt": "2026-07-05T15:49:56.875Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -826,7 +826,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for an Instagram post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones — always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nDepict what the user actually described — do NOT default to generic AI/tech/running imagery, and avoid generic corporate stock-photo visuals (skylines, sunsets over cities, people on phones) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nExample — for the topic \\'finally beat my 10k personal best\\', a good prompt is: \\'A lone runner crossing an empty park path at dawn, mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for an Instagram post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones — always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE — this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face — instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language — a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nDepict what the user actually described — do NOT default to generic AI/tech/running imagery, and avoid generic corporate stock-photo visuals (skylines, sunsets over cities, people on phones) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nExample — for the topic \\'finally beat my 10k personal best\\', a good prompt is: \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
         "options": {}
       },
       "id": "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
@@ -941,7 +941,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "=={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: $node['Extract Image Prompt'].json['content'] } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: $node['Extract Image Prompt'].json['content'] } ] }) }}",
         "options": {}
       },
       "id": "e414dd03-ff2b-4443-81b3-a4f7965b0955",
@@ -949,7 +949,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -16,
+        192,
         464
       ]
     },
@@ -963,7 +963,7 @@
             },
             {
               "name": "caption",
-              "stringValue": "={{ $json.choices[0].message.content.trim() }}"
+              "stringValue": "={{ $node[\"Generate Caption\"].json.choices[0].message.content.trim() }}"
             },
             {
               "name": "chat_id",
@@ -982,7 +982,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        208,
+        416,
         464
       ]
     },
@@ -1022,7 +1022,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        432,
+        640,
         464
       ]
     },
@@ -1032,7 +1032,7 @@
         "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
         "file": "={{ $node[\"Set Post Data\"].json[\"cloudinary_url\"] }}",
         "additionalFields": {
-          "caption": "=📸 Instagram Preview:\n\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nReply /approve to post, /regenerate to redo image, or /discard to cancel."
+          "caption": "=📸 Instagram Preview:\n---\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nReply /approve to post, /regenerate to redo both,  /regenerateImage or /regenerateCaption to redo just one, or /discard to cancel."
         }
       },
       "id": "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
@@ -1040,7 +1040,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        656,
+        864,
         464
       ],
       "webhookId": "d84a3984-e700-48f9-9eb9-2695c7afdfaa",
@@ -1061,7 +1061,7 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        880,
+        1088,
         464
       ],
       "webhookId": "bf3a1c2d-4444-4444-4444-wf2waitnode22"
@@ -1073,9 +1073,9 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": false,
+                  "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 1
                 },
                 "conditions": [
@@ -1095,9 +1095,9 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": false,
+                  "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 1
                 },
                 "conditions": [
@@ -1117,9 +1117,9 @@
             {
               "conditions": {
                 "options": {
-                  "caseSensitive": false,
+                  "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 1
                 },
                 "conditions": [
@@ -1135,6 +1135,52 @@
                 ],
                 "combinator": "and"
               }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cf3efec2-2c4a-4f27-a3c8-6cce6ee2b48f",
+                    "leftValue": "={{ $json.query.command }}",
+                    "rightValue": "regenerateImage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "a0f3a20a-a396-4e81-91d2-a09fb4b385a4",
+                    "leftValue": "={{ $json.query.command }}",
+                    "rightValue": "regenerateCaption",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             }
           ]
         },
@@ -1145,7 +1191,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        1104,
+        1312,
         512
       ]
     },
@@ -1164,7 +1210,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1328,
+        1744,
         432
       ]
     },
@@ -1183,7 +1229,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1552,
+        1968,
         432
       ]
     },
@@ -1198,7 +1244,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        1776,
+        2192,
         432
       ],
       "webhookId": "6a33175f-8185-4c2b-a877-d0e88601cba2",
@@ -1220,7 +1266,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        1328,
+        1744,
         624
       ],
       "webhookId": "78523c8a-bbe9-4185-b05d-3e684b922bb8",
@@ -1230,6 +1276,40 @@
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "415bbaa6-9d83-44e9-a211-9af55a02c638",
+              "leftValue": "={{ (() => { try { return $node[\"Wait for Approval (IG)\"].json.query.command } catch (e) { return \"\" } })() }}",
+              "rightValue": "regenerateImage",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -32,
+        464
+      ],
+      "id": "7f1bd801-4351-400e-b562-c5c6d68edca1",
+      "name": "Skip Caption?"
     }
   ],
   "connections": {
@@ -1532,7 +1612,7 @@
       "main": [
         [
           {
-            "node": "Generate Caption",
+            "node": "Skip Caption?",
             "type": "main",
             "index": 0
           }
@@ -1616,6 +1696,20 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Build Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Caption",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -1646,6 +1740,24 @@
         [
           {
             "node": "Wait for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Caption?": {
+      "main": [
+        [
+          {
+            "node": "Set Post Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Caption",
             "type": "main",
             "index": 0
           }
@@ -1683,7 +1795,8 @@
         "4e0f8bf5-97a9-4305-8479-779befe7712d",
         "2e82f211-2cea-4024-9637-802b0f97f6b9",
         "d01f074a-d31d-46f9-a959-5caec4809787",
-        "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5"
+        "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
+        "7f1bd801-4351-400e-b562-c5c6d68edca1"
       ]
     },
     {
@@ -1720,9 +1833,9 @@
     }
   ],
   "pinData": {},
-  "versionId": "b9bc3016-c7bd-48ef-9d0b-5fcd512072fd",
-  "activeVersionId": "b9bc3016-c7bd-48ef-9d0b-5fcd512072fd",
-  "versionCounter": 156,
+  "versionId": "b180d669-6564-4236-b3f6-aece4f2884ad",
+  "activeVersionId": "b180d669-6564-4236-b3f6-aece4f2884ad",
+  "versionCounter": 199,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -1747,7 +1860,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version b9bc3016",
+    "name": "Version b180d669",
     "description": ""
   }
 }
