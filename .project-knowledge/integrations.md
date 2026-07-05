@@ -1,6 +1,6 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (hashtag count/format fix)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (/edit loop-back fix + grounding/anti-slop prompt fix)
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
@@ -47,6 +47,18 @@
 - The resume URL/signature itself is stable and matches exactly what the
   Wait node reports in its own execution metadata — if a resume 404s, check
   the HTTP method before suspecting the URL or workflow version.
+- **Gotcha (cost a lot of debugging time, fixed 2026-07-05):** every branch
+  that can lead back to a second approval decision must loop back to the
+  `Wait` node — a dead-end branch doesn't just stop harmlessly, it finishes
+  the execution entirely. `Send Updated Preview` (fired after `/edit`) had
+  no outgoing connection, so the execution finished right there instead of
+  re-entering `Wait for Approval`. The stale `pending_approvals` row still
+  pointed at that now-finished execution's resume URL, so the *next*
+  `/approve` or `/edit` failed with `409: "The execution 'N' has finished
+  already"` — silently, no Telegram reply, and easy to misread as a
+  token/signature problem. The same resume URL/signature stays valid across
+  multiple loops through the same execution, so no extra Supabase update
+  was needed after wiring the loop-back — just the missing connection.
 
 ## Supabase — `pending_approvals` table
 
@@ -99,7 +111,26 @@
   rather than defaulting to Synax/work content, and (b) vary the opening
   line rather than always starting with "Just spent [time]..." — both real,
   observed failure modes before the 2026-07-03 prompt update (see
-  `history.md`). **This one is working well.**
+  `history.md`).
+- **Grounding + anti-slop rules** (added 2026-07-05, both `Generate LinkedIn
+  Post` and `Rewrite with Instructions` share the identical system prompt):
+  surfaced specifically on the `/edit`-with-no-instructions path, where the
+  model started fabricating specifics never in the input (e.g. "audited my
+  work processes", "slashed hours to minutes") wrapped in generic AI-slop
+  phrasing ("hidden taxes", "trenches of", "crash course", "blind spots")
+  and always ending on the same reflective-question structure. Research
+  (hallucination-mitigation + AI-slop/cliché literature, see `history.md`)
+  pointed at two concrete fixes rather than vague "sound more human"
+  instructions: (1) an explicit grounding rule — only use facts/details
+  actually present in the input, never invent numbers/timelines/backstory,
+  and a short/vague input should produce a short/honest post rather than a
+  padded one; (2) a **named** banned-phrase list (naming the exact clichés
+  outperforms a generic "avoid AI jargon" instruction) plus an instruction
+  to vary the ending instead of always closing with a rhetorical question.
+  `Rewrite with Instructions`'s user-message also got a ternary: when
+  `$json.query.instructions` is empty (bare `/edit`), it now explicitly
+  demands a different hook/structure/metaphor instead of a synonym-level
+  reword of the same idea. **Confirmed working live 2026-07-05.**
 - Instagram system prompts (`Build Image Prompt`, `Generate Caption`):
   **working well as of 2026-07-04**, after a harder rewrite than the
   LinkedIn one needed. `Build Image Prompt` is structured specifically

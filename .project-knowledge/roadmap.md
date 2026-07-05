@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04 (hashtag count/format fix)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (/edit → /approve loop-back bug fixed)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
@@ -15,7 +15,8 @@ proper n8n credentials instead of hardcoded values, then company LinkedIn
 
 ## Known Bugs
 
-*(none open as of 2026-07-04 — see `history.md` for what was just fixed)*
+*(none open as of 2026-07-05 — see `history.md` for the `/edit`→`/approve`
+loop-back bug and the grounding/anti-slop prompt fix, both just resolved)*
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-04T20:11:55.599Z",
+  "updatedAt": "2026-07-05T03:56:50.378Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -145,7 +145,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total.\\n\\nAdd 3-5 relevant hashtags on the last line, formatted with no space after # and no hyphens — e.g. #AIAutomation, never \\'# AIAutomation\\' or \\'#AI-Automation\\'.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nGROUNDING — this is critical: only use facts and details that are actually in the input below. Do NOT invent specific numbers, timelines, outcomes, or backstory (e.g. \\'audited my processes\\', \\'slashed hours to minutes\\', \\'built a crash course\\') that the user never said. If the input is short or vague, write a short, honest, specific post about that — a small real post beats a padded generic one.\\n\\nBANNED phrases and structures — never use any of these, they read as AI slop: \\'hidden tax(es)\\', \\'trenches of\\', \\'crash course in\\', \\'blind spots\\', \\'prime example of\\', \\'game-changer\\', \\'synergy\\', \\'unlock\\', \\'swerve around\\', and \\'it\\'s not just X, it\\'s Y\\' contrast framing. Also do not end every post with a reflective rhetorical question — vary the ending; sometimes just make a statement instead.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total.\\n\\nAdd 3-5 relevant hashtags on the last line, formatted with no space after # and no hyphens — e.g. #AIAutomation, never \\'# AIAutomation\\' or \\'#AI-Automation\\'.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: $json.content } ] }) }}",
         "options": {}
       },
       "id": "45121b86-f615-4c5a-9e31-abb72faa1acd",
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        -48,
-        -112
+        -64,
+        -240
       ],
       "webhookId": "bf3a1c2d-2222-2222-2222-wf1waitnode11"
     },
@@ -397,7 +397,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total.\\n\\nAdd 3-5 relevant hashtags on the last line, formatted with no space after # and no hyphens — e.g. #AIAutomation, never \\'# AIAutomation\\' or \\'#AI-Automation\\'.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: 'Rewrite this LinkedIn post with the following instructions:\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\nInstructions: ' + $json.query.instructions } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 600, messages: [ { role: 'system', content: 'You write LinkedIn posts for Yahya, an Egyptian agentic AI developer, endurance athlete, and co-founder of Synax — an AI automation company targeting Arab markets.\\n\\nVoice: direct, systems-thinking, authentic. Real insights, not motivational fluff. No cringe. No corporate speak.\\n\\nIMPORTANT: Write about whatever the user gives you — it could be about AI, automation, running, psychology, books, life lessons, random thoughts, or anything else. Do NOT force Synax or work topics into every post. Follow the user\\'s intent exactly.\\n\\nGROUNDING — this is critical: only use facts and details that are actually in the input below. Do NOT invent specific numbers, timelines, outcomes, or backstory (e.g. \\'audited my processes\\', \\'slashed hours to minutes\\', \\'built a crash course\\') that the user never said. If the input is short or vague, write a short, honest, specific post about that — a small real post beats a padded generic one.\\n\\nBANNED phrases and structures — never use any of these, they read as AI slop: \\'hidden tax(es)\\', \\'trenches of\\', \\'crash course in\\', \\'blind spots\\', \\'prime example of\\', \\'game-changer\\', \\'synergy\\', \\'unlock\\', \\'swerve around\\', and \\'it\\'s not just X, it\\'s Y\\' contrast framing. Also do not end every post with a reflective rhetorical question — vary the ending; sometimes just make a statement instead.\\n\\nFormat: strong hook on the first line that stops the scroll — vary the structure and opening every time, and never start with \\'Just spent [time]...\\' or similar templated phrasing. Then body, max 1300 characters total.\\n\\nAdd 3-5 relevant hashtags on the last line, formatted with no space after # and no hyphens — e.g. #AIAutomation, never \\'# AIAutomation\\' or \\'#AI-Automation\\'.\\n\\nReturn only the post text, nothing else.' }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + $node['Extract Post Text'].json['post_text'] + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea — write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] }) }}",
         "options": {}
       },
       "id": "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
@@ -1640,6 +1640,17 @@
           }
         ]
       ]
+    },
+    "Send Updated Preview": {
+      "main": [
+        [
+          {
+            "node": "Wait for Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1709,9 +1720,9 @@
     }
   ],
   "pinData": {},
-  "versionId": "3b16e1e5-4ff8-42b5-a275-baf79eabbe47",
-  "activeVersionId": "3b16e1e5-4ff8-42b5-a275-baf79eabbe47",
-  "versionCounter": 148,
+  "versionId": "b9bc3016-c7bd-48ef-9d0b-5fcd512072fd",
+  "activeVersionId": "b9bc3016-c7bd-48ef-9d0b-5fcd512072fd",
+  "versionCounter": 156,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "tags": [],
@@ -1736,7 +1747,7 @@
     }
   ],
   "versionMetadata": {
-    "name": "Version 3b16e1e5",
+    "name": "Version b9bc3016",
     "description": ""
   }
 }

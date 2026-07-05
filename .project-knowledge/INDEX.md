@@ -1,6 +1,6 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-04 (hashtag count/format fix — both platforms now correct)
+> Last updated: 2026-07-05 (/edit → /approve loop-back bug fixed; grounding/anti-slop prompt fix)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)

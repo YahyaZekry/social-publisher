@@ -242,6 +242,48 @@
   hashtag-formatting rule (no space after `#`, no hyphens) that Instagram's
   caption prompt had already needed — added it to both LinkedIn prompts too,
   preventively. *(fixed: 2026-07-04)*
+- `/edit` broke `/approve` for every post that had ever been edited: `Send
+  Updated Preview` had no outgoing connection at all, so after a `/edit` the
+  execution simply finished instead of looping back to `Wait for Approval`.
+  A later `/approve` then tried to resume that already-finished execution
+  and 409'd with `"The execution 'N' has finished already"` — silently, no
+  Telegram reply. Root-caused by comparing `execution_entity.status` across
+  the draft execution (finished right after `Send Updated Preview`, no
+  further nodes) against the stale `pending_approvals.resume_url` still
+  pointing at it. Fixed by wiring `Send Updated Preview → Wait for
+  Approval`, the same loop-back pattern the first preview already used.
+  *(fixed: 2026-07-05)*
+- Instagram-style content-quality bug recurred on LinkedIn's `/edit` path
+  specifically: with no instructions given, `Rewrite with Instructions`
+  reused the same original post text every time and produced near-duplicate
+  synonym-level rewrites (e.g. "inefficiency is invisible" → "inefficiency
+  is like a parasite"), then a worse failure mode — fabricating specifics
+  never mentioned in the one-line input (e.g. "audited my work processes",
+  "slashed hours to minutes") wrapped in generic AI-startup jargon ("hidden
+  taxes", "trenches of", "crash course", ending every post with the same
+  reflective-question structure). Root-caused via web research on
+  hallucination mitigation and AI-slop/cliché avoidance (see
+  `integrations.md`). Fixed by adding an explicit grounding rule (only use
+  facts present in the input, never invent numbers/timelines/backstory) and
+  a named banned-phrase list to both `Generate LinkedIn Post` and `Rewrite
+  with Instructions`' system prompts, plus a ternary in `Rewrite with
+  Instructions`'s user message so a bare `/edit` explicitly demands a
+  different hook/structure/metaphor instead of a synonym-swap. *(fixed:
+  2026-07-05)*
+- Two paste mistakes surfaced while applying the above fix, both worth
+  remembering as a recurring bug class: (1) the user pasted `Generate
+  LinkedIn Post`'s body (ending `content: $json.content`) into `Rewrite with
+  Instructions` by mistake — `$json.content` doesn't exist on the
+  resumed-webhook payload (`{signature, command, instructions}`), so
+  `JSON.stringify` silently dropped the `content` key and Groq rejected the
+  request (`'messages.1.content' is missing`); (2) a second paste attempt
+  left the field's existing leading `=` in place and pasted a second `=` on
+  top of it, producing `=={{ ... }}` — n8n strips only one `=`, so the
+  *literal* leftover `={{ ... }}` template prepended a stray `=` character
+  to the JSON body sent to Groq, breaking JSON parsing entirely (Groq:
+  `cannot unmarshal string into Go value of type map[string]interface{}`).
+  Both diagnosed by reading the live node's stored `body` param directly
+  from the DB rather than guessing. *(fixed: 2026-07-05)*
 
 ---
 
