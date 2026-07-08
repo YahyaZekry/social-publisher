@@ -1,15 +1,21 @@
 # 📮 social-publisher
 
-**Text a bot. Get a draft. Approve it. It's live.**
+**Text a bot. It posts what you typed — or ask it to write/generate something instead.**
 
 An n8n automation that drafts and publishes content to personal LinkedIn and
 personal Instagram (company LinkedIn next), gated behind a Telegram approval
-step. One bot, one workflow, one prefix per platform.
+step with a tap-to-choose menu. One bot, one workflow, one prefix per
+platform.
 
 ```
-y: <topic>   →  LinkedIn post
-ig: <topic>  →  Instagram image + caption
+y: <text>    →  posts that text to LinkedIn, verbatim
+ig: <text>   →  posts that text to Instagram, verbatim, with an auto-generated image
 ```
+
+Send a **photo** with `ig: <caption>` as its caption and it uses your own
+photo instead of generating one. On every preview, a 5-button menu lets you
+regenerate the text/caption, the image, both, post it, or discard — nothing
+publishes until you tap **Post it**.
 
 ---
 
@@ -17,26 +23,30 @@ ig: <topic>  →  Instagram image + caption
 
 ```mermaid
 flowchart LR
-    A["📱 Telegram\nmessage"] --> R{"Prefix?"}
-    R -->|"y:"| B1["🧠 Groq\ndrafts LinkedIn post"]
-    R -->|"ig:"| B2["🧠 Groq\ndrafts image prompt"]
-    B2 --> C["🎨 Pollinations\ngenerates image"]
-    C --> D["☁️ Cloudinary\nhosts image"]
-    D --> B3["🧠 Groq\nwrites caption"]
+    A["📱 Telegram\nmessage or photo"] --> R{"Prefix?"}
+    R -->|"y:"| B1["📝 Post text\nused verbatim"]
+    R -->|"ig: + photo"| B2P["📷 Your photo\nused as-is"]
+    R -->|"ig: + text only"| B2["🎨 Pollinations\ngenerates image"]
+    B2 --> D["☁️ Cloudinary\nhosts image"]
+    B2P --> D
     B1 --> E["🗄️ Supabase\npending_approvals"]
-    B3 --> E
-    E --> F["📱 Telegram\npreview sent"]
-    F -->|"/approve"| G1["🚀 Posted to LinkedIn"]
-    F -->|"/approve"| G2["🚀 Posted to Instagram"]
-    F -->|"/edit"| B1
-    F -->|"/regenerate"| B2
-    F -->|"/discard"| H["🗑️ Cancelled"]
+    D --> E
+    E --> F["📱 Telegram preview\n+ 5-button menu"]
+    F -->|"Post it"| G1["🚀 Posted"]
+    F -->|"Regenerate text/caption"| H1["🧠 Groq rewrites it"]
+    F -->|"Regenerate image"| H2["🧠 Groq + Pollinations\nmake a new one"]
+    H1 --> F
+    H2 --> F
+    F -->|"Discard"| I["🗑️ Cancelled"]
 ```
 
-LinkedIn (top lane) never touches the image pipeline at all — only Instagram
-(bottom lane) does. Both lanes converge only at Supabase/the preview step;
-`/edit` and `/regenerate` loop back into their own platform's draft step, not
-into each other.
+LinkedIn posts start **text-only** — an image only enters the picture if you
+tap "Regenerate image" (or "...+ image") from the menu, and once generated
+it's shown back to you as a real photo before you can post it. Instagram
+always needs media, so it auto-generates one immediately unless you sent
+your own photo. The 5-button menu (regenerate text/caption+image, image
+only, text/caption only, Post it, Discard) is identical on both platforms —
+typed commands like `/approve` no longer do anything.
 
 Everything above lives in **one n8n workflow** (`WF1 - LinkedIn Post
 (Personal)` — the name is a holdover from before Instagram joined it). That's
@@ -58,7 +68,7 @@ platform its own workflow both silently broke the first one's webhook — see
 | Telegram bot ([@BotFather](https://t.me/BotFather)) + your numeric Telegram user ID | Everything |
 | Supabase project with a `pending_approvals` table (schema below) | Everything |
 | [Groq](https://console.groq.com) API key (free tier is fine) | Everything |
-| [Cloudinary](https://cloudinary.com) account + an **unsigned** upload preset | Instagram |
+| [Cloudinary](https://cloudinary.com) account + an **unsigned** upload preset | Instagram, LinkedIn images |
 | LinkedIn API access token + your LinkedIn person URN | LinkedIn |
 | Meta Developer app + Facebook Page + linked Instagram Business account, with a long-lived Page Access Token | Instagram |
 
@@ -92,15 +102,15 @@ Search the workflow for each of these and replace with your own:
 | Placeholder | Where | Get it from |
 |---|---|---|
 | Telegram credential | Every Telegram node | Create one in n8n (bot token from BotFather), attach it to each Telegram node |
-| `REPLACE_WITH_GROQ_API_KEY` | `Generate LinkedIn Post`, `Rewrite with Instructions`, `Build Image Prompt`, `Generate Caption` | console.groq.com |
-| `REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY` | `Save to Supabase`, `Get Pending Approval`, `Update Status`, `Save to Supabase (IG)` — both `apikey` and `Authorization` headers on each | Supabase → Project Settings → API |
-| `<your-project-ref>.supabase.co` | Same 4 nodes' URLs | Your Supabase project URL |
-| `REPLACE_WITH_LINKEDIN_ACCESS_TOKEN` | `Post to LinkedIn` | LinkedIn API access token |
-| `urn:li:person:<your-person-id>` | `Post to LinkedIn` body | Your own LinkedIn person URN |
+| `REPLACE_WITH_GROQ_API_KEY` | `Rewrite with Instructions` (+ its `(Both)` clone), `Build Image Prompt` (+ its `(LI)` clone), `Generate Caption` | console.groq.com |
+| `REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY` | `Save to Supabase`, `Get Pending Approval` (+ `(Callback)`), `Update Status` (+ `(Callback)`), `Save to Supabase (IG)` — both `apikey` and `Authorization` headers on each | Supabase → Project Settings → API |
+| `<your-project-ref>.supabase.co` | Same nodes' URLs | Your Supabase project URL |
+| `REPLACE_WITH_LINKEDIN_ACCESS_TOKEN` | `Post to LinkedIn`, `Post to LinkedIn (Image)`, `Register LinkedIn Upload`, `Upload Image to LinkedIn` | LinkedIn API access token |
+| `urn:li:person:<your-person-id>` | `Post to LinkedIn`, `Post to LinkedIn (Image)`, `Register LinkedIn Upload` bodies | Your own LinkedIn person URN |
 | `REPLACE_WITH_META_PAGE_ACCESS_TOKEN` | `Create Media Container`, `Publish to Instagram` | Meta Graph API long-lived Page Access Token |
 | `<your-ig-business-account-id>` | Both Instagram publish nodes' URLs | Your Instagram Business Account ID |
-| `<your-upload-preset>` | `Upload to Cloudinary` | Your Cloudinary unsigned upload preset name |
-| `<your-cloud-name>` | `Upload to Cloudinary` URL | Your Cloudinary cloud name |
+| `<your-upload-preset>` | `Upload to Cloudinary`, `Upload User Photo to Cloudinary` | Your Cloudinary unsigned upload preset name |
+| `<your-cloud-name>` | Same two nodes' URLs | Your Cloudinary cloud name |
 
 None of these are optional — the workflow won't run correctly until every one
 points at **your own** accounts.
@@ -121,27 +131,35 @@ Then text the bot `y: test` or `ig: test`.
 
 | You send | What happens |
 |---|---|
-| `y: <topic>` | Drafts a LinkedIn post about that topic |
-| `ig: <topic>` | Drafts an Instagram image + caption about that topic |
-| `/approve` | Publishes the most recent pending draft |
-| `/edit <instructions>` | *(LinkedIn)* Rewrites the draft per your instructions, sends a new preview |
-| `/regenerate` | *(Instagram)* Redoes the image + caption from the same topic, sends a new preview |
-| `/discard` | Cancels the pending draft |
+| `y: <text>` | Posts that text to LinkedIn verbatim, shows a preview with a 5-button menu |
+| `ig: <caption>` | Posts that caption to Instagram verbatim with an auto-generated image, same menu |
+| A photo with caption `ig: <caption>` | Uses your photo instead of generating one; caption stays verbatim |
+| Tap **Post it** | Publishes the current draft (with whatever image/text state it's in) |
+| Tap **Regenerate text/caption only** | Rewrites the text/caption via Groq, keeps any existing image |
+| Tap **Regenerate image only** | Generates a new AI image, keeps the current text/caption |
+| Tap **Regenerate text/caption + image** | Redoes both from the original input |
+| Tap **Discard** | Cancels the pending draft |
+
+Typed commands (`/approve`, `/edit`, `/regenerate`, `/discard`, etc.) are no
+longer wired to anything — the buttons are the only interface.
 
 Only one draft is "pending" at a time per user — sending a new `y:`/`ig:`
-message before approving/discarding the previous one just queues a newer row;
-`/approve` always acts on the most recent one.
+message before resolving the previous one just queues a newer row; the
+button menu always acts on the most recent one.
 
 ## 🎨 Customizing the writing voice
 
 Each platform's tone lives entirely in its own Groq system prompt — nothing
 is shared:
 
-- **LinkedIn** → `Generate LinkedIn Post` / `Rewrite with Instructions`
+- **LinkedIn** → `Rewrite with Instructions` (+ its `(Both)` clone, same
+  prompt) for the post text, `Build Image Prompt (LI)` for the image
+  description
 - **Instagram** → `Build Image Prompt` (image description only) / `Generate Caption`
 
 Edit the `content` field of the `role: 'system'` message in each node's Body
-to change voice, length, hashtag rules, or what topics it will or won't cover.
+to change voice, length, hashtag rules, image style, or what topics it will
+or won't cover.
 
 ## 🔄 Updating this repo after editing a workflow in the n8n UI
 
@@ -155,12 +173,15 @@ docker exec n8n rm -rf /home/node/.n8n/workflow-backups/
 export re-introduces back to the placeholders above — the live n8n instance
 is unaffected either way, only this repo's copy needs to stay clean.
 
+(As of 2026-07-08, workflow edits are also sometimes made directly via n8n's
+Public API rather than the UI — see `.project-knowledge/history.md`'s
+Decisions section. Either way, always re-export/re-redact before committing.)
+
 ## ⚠️ Known open issues
 
-See `.project-knowledge/roadmap.md` for the live list — notably, Instagram's
-generated images/captions/hashtags are still considered low-quality as of the
-last update, and several credentials are still hardcoded on nodes rather than
-proper n8n credentials.
+See `.project-knowledge/roadmap.md` for the live list — notably, several
+credentials are still hardcoded on nodes rather than proper n8n credentials,
+and the old typed-command listener nodes are dead code pending cleanup.
 
 ---
 

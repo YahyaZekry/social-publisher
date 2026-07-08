@@ -373,6 +373,19 @@
   per-command `additionalFields.text` (a short Telegram toast like "🔄
   Regenerating caption...") instead of an empty acknowledgment. *(fixed:
   2026-07-08)*
+- Instagram's `Build Image Prompt` was still only running the *original*
+  single-example system prompt (plus the later "HARD RULE" patch spliced on
+  top) — the earlier 3-example diversity fix (Example A/B/C: person-not-
+  facing-camera photorealistic, no-person still-life photorealistic,
+  person-front-and-center illustration-style) had only ever been handed to
+  the user as paste-ready text for manual application, and was never
+  actually pasted in before the session moved on to other work. LinkedIn's
+  equivalent node got the 3-example version from the start since it was
+  built fresh via the API. Caught when the user directly asked whether
+  image-style variety had actually been added; fixed by porting the exact
+  same 3-example structure onto Instagram's node, keeping its
+  Instagram-specific wording (e.g. "AI/tech/running imagery" instead of
+  LinkedIn's "AI/tech/corporate imagery"). *(fixed: 2026-07-08)*
 
 ---
 
