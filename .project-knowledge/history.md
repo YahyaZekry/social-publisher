@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (targeted Instagram regenerate + anti-uncanny-face image prompt)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -328,10 +328,79 @@
   distance/in motion/from behind, or explicitly switch to a stated
   illustration/digital-art style rather than photorealistic camera language.
   *(fixed: 2026-07-05)*
+- A LinkedIn post with a generated image published straight to LinkedIn
+  without ever being shown to the user first — the preview only ever
+  rendered the caption text, never the actual image, so a genuinely
+  disturbing FLUX generation went live and had to be deleted after the
+  fact. Root design flaw, not just a bad generation: no image-prompt can
+  guarantee zero bad outputs, so the real fix was structural — `Send
+  Preview (LI with Image)` (`sendPhoto`, `binaryData: true`, reusing the
+  same Pollinations binary that was uploaded to LinkedIn's asset library)
+  now always shows the real image in Telegram before `/approve`-equivalent
+  is even reachable, matching how Instagram's preview already worked.
+  *(fixed: 2026-07-08)*
+- Immediately after adding a new "HARD RULE" paragraph to both
+  `Build Image Prompt` system prompts (banning the specific
+  describable-expression + photorealistic-camera-language combination that
+  caused the bug above), image generation broke completely on both
+  platforms — the new paragraph's own example phrases (`'looking
+  skeptical'`, `'smiling'`, etc.) were spliced into the *already-escaped*
+  body string with their inner quotes left unescaped, terminating the JS
+  string literal early. Same bug class as several earlier fixes this
+  project (doubled `=`, stray spaces) — any time new text is spliced into
+  an existing escaped expression body, its own quotes need escaping too,
+  not just quotes present at initial-construction time. *(fixed: 2026-07-08)*
+- Instagram's "Regenerate caption" button crashed silently (no Telegram
+  reply, no visible error) on any post that used a user-uploaded photo
+  instead of an AI-generated image — `Generate Caption`'s user-message
+  content referenced `$node['Extract Image Prompt'].json['content']`
+  directly with no fallback, and `Extract Image Prompt` never runs on the
+  user-photo path. Fixed with the same try/catch-fallback pattern used
+  elsewhere, falling back to `Extract Content (IG)` (which always runs).
+  *(fixed: 2026-07-08)*
+- Sending a photo with an `ig: <caption>` caption fell through to the
+  "start your message with ig:" reminder instead of being recognized — all
+  prefix/command checks only read `message.text`, which is empty on photo
+  messages (the text lives in `message.caption` instead). This had been
+  logged as an open, lower-priority bug in `roadmap.md` since 2026-07-04;
+  fixed properly once "post your own photo" was actually built, by having
+  every check read `(message.text || message.caption || '')`. *(fixed:
+  2026-07-08)*
+- Button taps had no visible confirmation beyond the button's own brief
+  loading-spinner animation, easy to miss — especially since the actual
+  regenerate could take several seconds afterward, making it look like the
+  tap hadn't registered at all. Fixed by giving `Answer Callback Query` a
+  per-command `additionalFields.text` (a short Telegram toast like "🔄
+  Regenerating caption...") instead of an empty acknowledgment. *(fixed:
+  2026-07-08)*
 
 ---
 
 ## Decisions
+
+- Built the 2026-07-08 session's large feature set (LinkedIn image support,
+  the unified 5-button menu replacing typed commands on both platforms,
+  Instagram's user-photo support) via n8n's **Public REST API**
+  (`/api/v1/workflows/:id`, a self-generated API key) instead of the
+  manual drag-and-click UI process used for everything before it — this
+  session's changes were large enough (60+ nodes touched across several
+  passes) that manual per-node UI instructions would have been far slower
+  and more error-prone. Every batch of changes was validated locally first
+  (a hand-written Python re-implementation of n8n's node-group validator,
+  plus expression-syntax checks for the recurring doubled-`=`/unescaped-
+  quote bug classes) before pushing, and the live workflow was re-fetched
+  and diffed after each push to confirm it landed correctly. Discovered
+  along the way that n8n's Public API enforces a **node-group topology
+  constraint** on every save (each group must be a single connected
+  component with at most one external entry and one external exit) that
+  the manual UI apparently doesn't enforce as strictly when dragging nodes
+  around by hand — see `integrations.md` for the exact rule and how it
+  shaped the button-resume chain's design (kept fully separate from the
+  old typed-command listener rather than merged in). Direct curl calls
+  against the live LinkedIn API (outside of n8n) were attempted once to
+  verify the image-upload mechanism before building it, but stopped after
+  one call at the user's/system's request in favor of testing exclusively
+  through real n8n executions triggered via Telegram.
 
 - n8n's native git Source Control isn't available (Business/Enterprise-only,
   this instance has a 1-entitlement license) — versioning workflows manually

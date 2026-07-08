@@ -1,51 +1,97 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-05 (targeted Instagram regenerate + anti-uncanny-face image prompt)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
 
-- Trigger: `Telegram Trigger` node, `updates: ["message"]`. WF1 now has the
-  *only* one — WF4 and WF2 used to have their own too, but Telegram only
-  allows one webhook per bot, so their logic was merged into WF1 (see
-  `history.md`). **Any future platform must follow this same pattern.**
+- Trigger: `Telegram Trigger` node, `updates: ["message", "callback_query"]`
+  (the `callback_query` entry was added 2026-07-08 for the button menu — see
+  below). WF1 has the *only* trigger — WF4 and WF2 used to have their own
+  too, but Telegram only allows one webhook per bot, so their logic was
+  merged into WF1 (see `history.md`). **Any future platform must follow this
+  same pattern.**
 - Webhook path: `/webhook/<uuid>/webhook` on the ngrok tunnel.
-- Commands are plain `message.text` starting with `/` (checked via `startsWith`) —
-  not Telegram's native `bot_command` entity parsing on the *receiving* side.
 - Owner: single private chat (`chat.type: "private"`) tested so far.
-- **Tappable commands need no BotFather setup (discovered 2026-07-05):** this
-  bot has **zero** commands registered via BotFather's `/setcommands` — the
-  `/approve`, `/edit`, `/regenerate` etc. words that appear tappable in
-  Telegram are just Telegram's own client auto-detecting any `/word` pattern
-  inside message text as a `bot_command` entity and linkifying it, confirmed
-  from actual Telegram API responses on our own outbound preview messages
-  (e.g. `Send Updated Preview`'s response included
-  `{"offset":209,"length":8,"type":"bot_command"}` matching where `/discard`
-  sits in the text). **Important side effect:** tapping one of these
-  auto-linked words sends *only that word* — Telegram does not let you tap
-  then keep typing more text after it. This is why a shared `/regenerate
-  <target>` command relying on typed trailing text (`instructions`) fights
-  against the tappable UX; dedicated single-word commands (`/regenerateImage`,
-  `/regenerateCaption`) work with it instead of against it — see
-  `features.md` and `history.md`.
+- **Interaction model is now entirely inline-keyboard buttons, not typed
+  commands (redesigned 2026-07-08).** Every preview (LinkedIn and Instagram)
+  carries a 5-button `inline_keyboard`: regenerate-both, regenerate-image-only,
+  regenerate-text/caption-only, Post it, Discard. Typed `/approve`, `/edit`,
+  `/regenerate*`, `/discard` **no longer do anything on either platform** —
+  the old typed-command listener chain (`Ignore Commands` → `Is it a
+  command?` → `Extract Command` → `Get Pending Approval` → `Has Pending?` →
+  `Resume Workflow` → `Update Status`) still exists but is now dead code, kept
+  only until `roadmap.md`'s cleanup TODO is done.
+- **How a button tap actually resumes a paused execution:** tapping a button
+  sends a `callback_query` update (not a `message`) — `Is Callback Query?`
+  branches on `$json.callback_query` existing right after the Trigger, before
+  `Ignore Commands`, so the two paths never collide. `Extract Callback Data`
+  pulls `chat_id`/`telegram_user_id`/`command` (=`callback_query.data`, e.g.
+  `li_approve`, `ig_regen_caption`) and fans out to two things in parallel:
+  `Answer Callback Query` (resource `callback`, operation `answerQuery`,
+  `queryId` = `callback_query.id` — stops the button's loading spinner, and
+  since 2026-07-08 also sets `additionalFields.text` to a short per-command
+  message like "🔄 Regenerating caption..." so the tap is visibly
+  acknowledged even before the actual regenerate finishes) and a **separate,
+  parallel** `Get Pending Approval (Callback)` → `Has Pending? (Callback)` →
+  `Resume Workflow (Callback)` → `Update Status (Callback)` chain that mirrors
+  the old typed-command listener's Supabase lookup/resume logic exactly, just
+  reading from `Extract Callback Data` instead of `Extract Command`. Kept as
+  a **fully separate node chain** rather than merged into the old one — see
+  the node-group gotcha below for why.
+- **n8n node-group validation gotcha (hit repeatedly building the button
+  menu, 2026-07-08):** this workflow's `nodeGroups` (the colored
+  canvas-organization boxes — e.g. "Linkedin Personal", "Telegram Bot",
+  "Instagram") are enforced server-side on every API `PUT`: each group's
+  member-induced subgraph must be a single weakly-connected component with
+  **at most one member receiving external input** (a "root" with no
+  in-group predecessor) **and at most one member sending external output**.
+  Concretely this means: a member node can *never* have both an in-group
+  predecessor and an out-of-group predecessor at the same time (same for
+  successors) — inserting *any* new node between two existing members from
+  an outside source trips `"must form a single connected subgraph with a
+  single entry and exit"` (`invalid-subgraph` in the underlying
+  `validateNodeSelectionForGrouping` check, in
+  `n8n-workflow/dist/cjs/node-grouping-validation.js`). This is why the
+  callback-resume chain above is a fully separate, ungrouped set of nodes
+  rather than merging into `Get Pending Approval` etc. — merging would give
+  that node both an internal predecessor (`Extract Command`) and an external
+  one (`Extract Callback Data`), which always fails. When adding new nodes
+  to an existing group, either make sure they only touch the group at
+  exactly the one existing entry/exit point, or leave them out of the group
+  entirely (grouping is purely cosmetic, never required for a node to
+  function).
 - **Gotcha (resolved, keep in mind for any future workflow):** don't give a
   second workflow its own `Telegram Trigger` on this same bot credential —
   whichever workflow activates/saves most recently silently wins the webhook,
   and the other stops receiving updates with no error at all.
-- **Gotcha (open, see `roadmap.md`):** all prefix checks (`Has y: prefix?`,
-  `Has ig: prefix?`) only look at `message.text`. A photo sent *with a
-  caption* puts that text in `message.caption` instead — `message.text` is
-  entirely absent on those messages, so a photo+caption message currently
-  falls through every prefix check and just gets the reminder text.
-- **File download**: this Telegram node version (confirmed from the
-  installed node's source, `Telegram.node.js`) has a `resource: "file"`,
-  `operation: "get"` mode that takes a `fileId` parameter — with its
-  `download` option set to `true`, it fetches the file's path via Telegram's
-  API and downloads the actual binary in one node, no separate HTTP calls
-  needed. Relevant for the planned "post user's own photo" feature (see
-  `roadmap.md`) — the photo's `file_id` comes from
-  `message.photo[n].file_id` (Telegram sends multiple resolutions; last one
-  is highest-res).
+- **Gotcha (fixed 2026-07-08):** all prefix/command checks (`Ignore
+  Commands`, `Is it a command?`, `Has y: prefix?`, `Has ig: prefix?`,
+  `Extract Content (IG)`, `Extract Raw Post Text`) used to only look at
+  `message.text`. A photo sent *with a caption* puts that text in
+  `message.caption` instead — `message.text` is entirely absent on those
+  messages, so a photo+caption message used to fall through every prefix
+  check and just get the reminder text. Fixed by having every one of those
+  checks read `($json.message.text || $json.message.caption || '')` instead
+  of `$json.message.text` alone.
+- **File download** (used for Instagram's user-photo path, built
+  2026-07-08): this Telegram node version (confirmed from the installed
+  node's source, `Telegram.node.js`) has a `resource: "file"`, `operation:
+  "get"` mode that takes a `fileId` parameter — with its `download` option
+  set to `true`, it fetches the file's path via Telegram's API and downloads
+  the actual binary in one node (`Download Photo (IG)`), no separate HTTP
+  calls needed. The photo's `file_id` comes from the *last* entry in
+  `message.photo[]` (Telegram sends multiple resolutions smallest-first, so
+  `photo[photo.length - 1]` is the highest-res one) — see `Get Largest Photo
+  File ID`.
+- **Inline keyboard JSON shape** (confirmed from the installed node's source,
+  not guessed): `replyMarkup: "inlineKeyboard"` plus a top-level
+  `inlineKeyboard` param shaped `{ rows: [ { row: { buttons: [ { text,
+  additionalFields: { callback_data } } ] } }, ... ] }` — one `{row:...}`
+  entry per keyboard row, one or more buttons per row. Answering a callback
+  query is `resource: "callback"`, `operation: "answerQuery"`, `queryId`,
+  `additionalFields: { text, show_alert, cache_time, url }` (`text` is
+  capped at 200 characters by Telegram's API).
 
 ## n8n `Wait` node webhook resume (used by `Wait for Approval`)
 
@@ -111,9 +157,26 @@
 
 ## Groq (LLM — post/caption/image-prompt generation)
 
-- Used by 4 nodes: WF1's `Generate LinkedIn Post` + `Rewrite with
-  Instructions` (LinkedIn), and `Build Image Prompt` + `Generate Caption`
-  (Instagram).
+- **`y:`/`ig:` no longer auto-draft on entry (redesigned 2026-07-08).**
+  Originally `y: <topic>`/`ig: <topic>` always ran the topic through Groq
+  immediately. Now both post the typed text/caption **verbatim** and only
+  call Groq when the "Regenerate text/caption" or "...+ image" button is
+  tapped afterward. `Generate LinkedIn Post` (the old always-on-entry
+  LinkedIn drafting node) is now dead/deleted — `Rewrite with Instructions`
+  (and its clone `Rewrite with Instructions (Both)`, used by the
+  regenerate-both button so image generation can chain off the fresh text)
+  handles 100% of LinkedIn text generation now, always reading its rewrite
+  seed from `Extract Raw Post Text` (the sole LinkedIn entry point now,
+  regardless of whether the text ever actually gets rewritten). Instagram's
+  `Generate Caption` was already reusable for this via `Skip Caption?` (see
+  `features.md`); its trigger condition flipped from "skip only when
+  regenerating the image" to "skip *unless* explicitly regenerating the
+  caption or both" so a verbatim caption is the default and AI-writing one
+  is opt-in.
+- Used by 5 nodes now: WF1's `Rewrite with Instructions` (+ its clone
+  `Rewrite with Instructions (Both)`) for LinkedIn, and `Build Image Prompt`
+  (also cloned as `Build Image Prompt (LI)` for LinkedIn's own image
+  generation) + `Generate Caption` for Instagram.
 - `POST https://api.groq.com/openai/v1/chat/completions`, OpenAI-compatible chat
   format, model `llama-3.3-70b-versatile`. LinkedIn nodes: `max_tokens: 600`.
   Instagram: `Build Image Prompt` uses `max_tokens: 200`, `Generate Caption`
@@ -215,16 +278,49 @@
 
 ## LinkedIn (personal)
 
-- Used by WF1's `Post to LinkedIn` node, fired only after `/approve`.
+- Used by WF1's `Post to LinkedIn` (text-only) / `Post to LinkedIn (Image)`
+  nodes, fired only after the "Post it" button (`li_approve`).
 - `POST https://api.linkedin.com/v2/ugcPosts`, `X-Restli-Protocol-Version: 2.0.0`.
-- Auth: `Authorization: Bearer <LinkedIn access token>` header, hardcoded on the
-  node (not an n8n credential — see `roadmap.md`; expiry/refresh behavior unknown,
-  also tracked in `roadmap.md`).
-- Body: `author: 'urn:li:person:kvFSUycND7'`, `lifecycleState: 'PUBLISHED'`,
-  `specificContent['com.linkedin.ugc.ShareContent'].shareCommentary.text` = the
-  approved post text, `shareMediaCategory: 'NONE'`,
-  `visibility['com.linkedin.ugc.MemberNetworkVisibility']: 'PUBLIC'`.
+- Auth: `Authorization: Bearer <LinkedIn access token>` header, hardcoded on
+  every LinkedIn node (not an n8n credential — see `roadmap.md`;
+  expiry/refresh behavior unknown, also tracked in `roadmap.md`).
+- Text-only body: `author: 'urn:li:person:kvFSUycND7'`, `lifecycleState:
+  'PUBLISHED'`, `specificContent['com.linkedin.ugc.ShareContent']
+  .shareCommentary.text` = the current post text, `shareMediaCategory:
+  'NONE'`, `visibility['com.linkedin.ugc.MemberNetworkVisibility']:
+  'PUBLIC'`.
 - **Confirmed working live 2026-07-03** — first real post published this way.
+- **Image support (added 2026-07-08):** LinkedIn posts are text-only by
+  default — an image is only attached if the "Regenerate image" or
+  "Regenerate text+image" button was tapped at least once. Unlike Instagram,
+  this still uses the older (but confirmed still-functional) unversioned
+  `v2/assets` Assets API rather than the newer `/rest/images` Images API,
+  since that's the API generation this account's token was already granted
+  under — mixing generations risks an incompatible asset-URN type. Flow:
+  (1) `Register LinkedIn Upload` — `POST
+  https://api.linkedin.com/v2/assets?action=registerUpload` with
+  `registerUploadRequest: { owner, recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
+  serviceRelationships: [{identifier: 'urn:li:userGeneratedContent',
+  relationshipType: 'OWNER'}] }` → returns `value.asset` (the asset URN) and
+  `value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl`.
+  (2) `Attach LI Image Binary` (Code node) re-attaches the Pollinations
+  binary onto the current item via `$('Generate Image (LI
+  Pollinations)').item.binary.data` — needed because the HTTP Request node in
+  between doesn't carry input binary through to its own output. (3) `Upload
+  Image to LinkedIn` — `PUT` the binary straight to that `uploadUrl`
+  (`contentType: "binaryData"`, `inputDataFieldName: "data"`) — LinkedIn
+  requires the *same* OAuth bearer token on this PUT too (unlike video
+  uploads, which don't). (4) `Post to LinkedIn (Image)` references
+  `shareMediaCategory: 'IMAGE'`, `media: [{status: 'READY', media: <asset
+  URN>, title: {text: 'Image'}}]`. **The generated image is always shown
+  back in Telegram (`Send Preview (LI with Image)`, `sendPhoto` with
+  `binaryData: true` reusing the same Pollinations binary) before any
+  `/approve`-equivalent is even possible** — an earlier version of this
+  build skipped that and published an image straight to LinkedIn without
+  ever showing it first, which produced a genuinely bad (disturbing) image
+  the user had to delete — see `history.md`. No prompt can fully guarantee a
+  good generation every time, so the show-before-publish step is the actual
+  safety net, not the prompt quality.
 
 ## Instagram — Meta Graph API (personal, via Facebook Page "Bear Code")
 
@@ -251,6 +347,18 @@
   (malformed value — e.g. stray whitespace, seen once during setup).
 - **Confirmed working live 2026-07-04** — first real Instagram post
   published this way (content quality issues aside, see `roadmap.md`).
+- **User's own photo (added 2026-07-08):** `ig: <caption>` sent as a photo's
+  caption (not plain text) now uses that actual photo instead of generating
+  one — `Has Photo? (IG)` checks `$node["Telegram Trigger"].json.message.photo`
+  right after `Extract Content (IG)`; if present, `Get Largest Photo File ID`
+  → `Download Photo (IG)` → `Upload User Photo to Cloudinary` feeds the same
+  `Set Post Data`/`Save to Supabase (IG)`/`Send Preview (IG)` path the
+  AI-generated-image branch already used, so the existing 5-button menu
+  (including "Regenerate image only", which swaps in an AI-generated image
+  instead) works unchanged. `Set Post Data`'s `cloudinary_url` field tries
+  `Upload to Cloudinary` (AI path) first, falling back to `Upload User Photo
+  to Cloudinary` (user-photo path) via try/catch, since exactly one of the
+  two ever runs per execution.
 
 ## LinkedIn (company)
 
