@@ -1,6 +1,6 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
+> Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
@@ -26,7 +26,13 @@ public (git history was rewritten to scrub an exposed key first — see
 `history.md`). Since 2026-07-08, workflow edits are made via n8n's Public
 API (self-generated key) rather than manual UI clicks, given how large
 recent changes have gotten — see `history.md`'s Decisions section for the
-node-group validation constraint this surfaced.
+node-group validation constraint this surfaced. **2026-07-10: fixed a real
+Instagram publish race condition** (Graph API rejected `/media_publish`
+when called before the media container finished processing — now polls
+`status_code` until `FINISHED` before publishing) **and a stale
+webhook-registration bug** that silently dropped some incoming Telegram
+messages after repeated structural API edits to the active workflow (fixed
+by deactivate/reactivate) — see `integrations.md` and `history.md`.
 
 ---
 

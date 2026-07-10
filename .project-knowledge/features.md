@@ -1,6 +1,6 @@
 # Features & Workflows
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
 
 ## Features
 
@@ -150,8 +150,8 @@ merged into this one workflow, never its own standalone one.**
 15. `Route Command (IG)` (Switch on `$json.query.command`, 5 outputs, values
     updated 2026-07-08 to match the button data instead of old typed
     commands):
-    - **`ig_approve` →** `Create Media Container` → `Publish to Instagram`
-      → `Confirm Posted (IG)`.
+    - **`ig_approve` →** `Create Media Container` → the publish-readiness
+      poll (below) → `Publish to Instagram` → `Confirm Posted (IG)`.
     - **`ig_regen_both` / `ig_regen_image` →** both loop back to `Build
       Image Prompt` (`Skip Caption?` is what decides whether `Generate
       Caption` also reruns).
@@ -159,9 +159,28 @@ merged into this one workflow, never its own standalone one.**
       untouched.
     - **`ig_discard` →** `Discard (IG)`.
 
+16. Publish-readiness poll (added 2026-07-10, sits between `Create Media
+    Container` and `Publish to Instagram`, deliberately kept **outside**
+    the `Instagram` node group — same reasoning as the button-resume chain
+    below): `Wait Before Media Check` (`Wait`, `resume: timeInterval`, 3s)
+    → `Check Media Status` (HTTP GET
+    `/v20.0/<container-id>?fields=status_code`, container ID read from
+    `$node["Create Media Container"].json["id"]`) → `Track Poll Attempt`
+    (Set — `poll_attempt` increments via a self-referential try/catch
+    reading its own most recent prior run, defaulting to `1`) → `Route
+    Media Status` (Switch): `status_code == 'FINISHED'` → `Publish to
+    Instagram`; `status_code == 'IN_PROGRESS' && poll_attempt < 8` → loops
+    back to `Wait Before Media Check`; anything else (via
+    `fallbackOutput: 'extra'`) → `Notify Media Failed (IG)` (tells the user
+    to retry instead of failing silently). `Publish to Instagram`'s body
+    now reads the container ID from `$node['Create Media Container']`
+    rather than `$json.id`, since `$json` at that point is whatever `Route
+    Media Status` passed through. Fixes a real Instagram Graph API race
+    condition — see `integrations.md` and `history.md`.
+
 ### Button-resume chain (shared by both platforms, parallel to the old typed-command listener)
 
-16. `Is Callback Query?` TRUE → `Extract Callback Data` (Set — `chat_id`,
+17. `Is Callback Query?` TRUE → `Extract Callback Data` (Set — `chat_id`,
     `telegram_user_id`, `command` = `callback_query.data`,
     `callback_query_id`) → fans out to:
     - `Answer Callback Query` (Telegram, `resource: callback`, `operation:

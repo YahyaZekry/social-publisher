@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -386,6 +386,50 @@
   same 3-example structure onto Instagram's node, keeping its
   Instagram-specific wording (e.g. "AI/tech/running imagery" instead of
   LinkedIn's "AI/tech/corporate imagery"). *(fixed: 2026-07-08)*
+- **Instagram publish failed with "Media ID is not available"** — user
+  reported a post attempt "didn't work"; root-caused via the failed
+  execution's error log to a genuine Instagram Graph API race condition:
+  `Publish to Instagram` called `/media_publish` immediately after
+  `Create Media Container` returned, before Instagram had finished
+  asynchronously processing the image (Meta error code 9007, subcode
+  2207027, `error_user_msg: "The media is not ready for publishing, please
+  wait for a moment"`). A second symptom was a follow-on `409` when the user
+  tapped "Post it" again on the same stale, already-errored execution.
+  Fixed by inserting a poll-until-ready loop between the two publish steps
+  — see `integrations.md`'s Instagram section for the exact node chain.
+  Verified locally against a faithful Python re-implementation of n8n's
+  actual node-grouping-validation algorithm (read directly from
+  `n8n-workflow/dist/cjs/graph/graph-utils.js` inside the container this
+  time, not just the earlier paraphrase) before pushing — passed on the
+  first live attempt. *(fixed: 2026-07-10)*
+- **Real, separate bug: some Telegram messages silently produced zero
+  reply and zero execution**, despite n8n returning `200` to Telegram.
+  Confirmed genuine (not user error, not a second bot) by inspecting the
+  actual raw webhook payloads via ngrok's local request inspector — correct
+  secret token, correct path, valid `ig: test` update, but no matching
+  execution ever appeared in n8n, and the `200` response body was an
+  unexplained bare `firstEntryJson` string. Correlated with this session
+  having pushed several structural API `PUT`s to the workflow while it
+  stayed continuously active. Fixed by deactivating then reactivating the
+  workflow via the Public API, which forces n8n to fully re-register the
+  webhook; confirmed fixed by a subsequent real message producing a normal
+  execution and reply within seconds. See `integrations.md` for the
+  general gotcha this surfaces for future API-driven edits. *(fixed:
+  2026-07-10)*
+- **Non-issue, resolved by clarification:** a screenshot showing a
+  Telegram chat named "The Bear Code" with a long, unrelated slash-command
+  menu (`/subagents`, `/prisma_cli`, `/taskflow`, etc.) looked like it might
+  be a second system competing for the bot's webhook. Ruled out concretely:
+  (1) grepped the entire live workflow JSON for `setMyCommands` and found
+  nothing — nothing in this project could have set that menu; (2) confirmed
+  only WF1 is active among the 3 workflows in this n8n instance; (3) the
+  actual webhook payload for a real `ig: test` message showed the sender's
+  Telegram account itself is `is_bot: false, username: "TheBearCode"` — i.e.
+  it's the user's own personal account/branding (matches the Meta Facebook
+  Page already named "Bear Code" in this same project, see `integrations.md`),
+  not a separate bot. The command menu itself was a one-time BotFather
+  setting, unrelated to message delivery; the user cleared it directly.
+  *(resolved: 2026-07-10)*
 
 ---
 
@@ -442,3 +486,16 @@
   cloud name/preset) was genericized out of the README and workflow
   exports — those aren't classified as secrets but the user didn't want
   them public either. *(2026-07-04)*
+- Debugging a "message doesn't arrive" report is done via **inspecting real
+  user-sent messages** (n8n's execution list/detail via the Public API,
+  ngrok's local request inspector for raw payloads) rather than firing a
+  synthetic webhook POST at the live workflow to reproduce it — the latter
+  would trigger a genuine end-to-end run (image generation, a real Telegram
+  message, a path toward an actual publish), which is explicitly off-limits
+  per the earlier decision to test exclusively through real Telegram
+  messages (see the 2026-07-08 entry above). This boundary held again
+  2026-07-10 when a manual reproduction attempt was declined. Extracting
+  credentials directly from n8n's local database (rather than asking the
+  user for them) is similarly off-limits, even though it's the project's
+  own self-hosted instance — ask the user directly for API keys instead.
+  *(2026-07-10)*

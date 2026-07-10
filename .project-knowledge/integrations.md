@@ -1,6 +1,6 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
@@ -65,6 +65,36 @@
   second workflow its own `Telegram Trigger` on this same bot credential —
   whichever workflow activates/saves most recently silently wins the webhook,
   and the other stops receiving updates with no error at all.
+- **Gotcha (fixed 2026-07-10): repeated API-driven structural edits to an
+  already-*active* workflow can leave the webhook's internal registration
+  stale.** Symptom: Telegram delivers the message fine (confirmed via
+  ngrok's request inspector — correct path, correct
+  `X-Telegram-Bot-Api-Secret-Token`, valid update JSON), n8n responds `200`,
+  but **no execution is created at all** — the response body is a bare,
+  malformed-looking `firstEntryJson` string instead of the normal ack. Silent
+  or subtle, not represented anywhere in `docker logs` (a genuinely
+  successful execution logs nothing either, so log silence doesn't confirm
+  success). Root cause not confirmed with certainty, but strongly correlated
+  with having just pushed several structural `PUT`s (new nodes/connections)
+  to the workflow via the Public API while it stayed continuously active —
+  n8n normally only fully re-registers a webhook's execution plan on the
+  inactive→active transition, not on every subsequent update. **Fix:**
+  `POST /api/v1/workflows/:id/deactivate` then `POST
+  /api/v1/workflows/:id/activate` — confirmed working immediately after (a
+  real Telegram message produced a normal execution + reply within
+  seconds). **Going forward: after any batch of structural API edits to an
+  already-active workflow, deactivate/reactivate before trusting it's live**,
+  the same way saving in the UI implicitly would.
+- **Debugging technique (introduced 2026-07-10): ngrok's local inspector
+  API** (`http://localhost:4040/api/tunnels` for tunnel status,
+  `http://localhost:4040/api/requests/http?limit=N` to list recent requests,
+  `http://localhost:4040/api/requests/http/<id>` for the full raw
+  request/response including headers and base64-encoded body) shows exactly
+  what hit the tunnel — including the full Telegram update JSON — without
+  ever needing to fabricate a synthetic test webhook against the live
+  workflow (which is off-limits here, see `history.md`'s Decisions). This is
+  how the stale-registration bug above was actually confirmed: real user
+  messages, inspected after the fact, rather than a simulated one.
 - **Gotcha (fixed 2026-07-08):** all prefix/command checks (`Ignore
   Commands`, `Is it a command?`, `Has y: prefix?`, `Has ig: prefix?`,
   `Extract Content (IG)`, `Extract Raw Post Text`) used to only look at
@@ -335,6 +365,34 @@
   (as `$json.id`).
 - **Step 2**: `POST /v20.0/17841476339271624/media_publish` with
   `creation_id`, `access_token`.
+- **Publish race condition (fixed 2026-07-10):** calling step 2 immediately
+  after step 1 sometimes failed with `400 Media ID is not available` /
+  `"The media is not ready for publishing, please wait for a moment"` (Meta
+  error code 9007, subcode 2207027) — Instagram processes the container
+  (fetching/transcoding the image from `image_url`) asynchronously, and the
+  container isn't always ready the instant `/media` returns. Fixed by
+  inserting a poll between the two steps: `Wait Before Media Check` (3s,
+  `resume: timeInterval`) → `Check Media Status` (`GET
+  /v20.0/<container-id>?fields=status_code`) → `Track Poll Attempt` (Set
+  node, increments a `poll_attempt` counter via the same self-referential
+  try/catch pattern used elsewhere — `$node["Track Poll Attempt"]` reading
+  its own most recent prior run within the execution, defaulting to `1` the
+  first time) → `Route Media Status` (Switch: `status_code == 'FINISHED'` →
+  `Publish to Instagram`; `status_code == 'IN_PROGRESS' && poll_attempt < 8`
+  → loop back to `Wait Before Media Check`; anything else, via
+  `options.fallbackOutput: 'extra'` → `Notify Media Failed (IG)`, a Telegram
+  message telling the user to retry instead of a silent failure). Since
+  `Publish to Instagram` is now fed from outside the `Instagram` node group
+  (the polling chain deliberately sits outside every group, same pattern as
+  the callback-resume chain), its body expression had to change from
+  `$json.id` to `$node['Create Media Container'].json['id']` — the Switch
+  node passes through `Track Poll Attempt`'s output, which no longer has an
+  `id` field. `Publish to Instagram` and `Confirm Posted (IG)` were removed
+  from the `Instagram` node group for the same reason (an external
+  predecessor would otherwise make one of them a second group "root",
+  which n8n's node-group validator rejects — see the node-group validation
+  gotcha under Telegram Bot API above, and `history.md`'s Decisions for how
+  this was verified locally before pushing).
 - Auth: `access_token` is a **long-lived Page Access Token** (hardcoded
   directly in the request body on both nodes, not a header — same
   "move to a credential" TODO as everything else, see `roadmap.md`),

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-08T10:38:06.744Z",
+  "updatedAt": "2026-07-10T09:35:51.846Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -21,7 +21,7 @@
       "typeVersion": 1,
       "position": [
         -1952,
-        -400
+        80
       ],
       "webhookId": "bf3a1c2d-1111-1111-1111-wf1linkedinprs",
       "credentials": {
@@ -60,8 +60,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1728,
-        -400
+        -1504,
+        -112
       ]
     },
     {
@@ -93,8 +93,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1504,
-        -208
+        -1280,
+        80
       ]
     },
     {
@@ -133,15 +133,14 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -496,
-        -112
+        -832,
+        576
       ]
     },
     {
       "parameters": {
         "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
         "text": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below.",
-        "additionalFields": {},
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -206,15 +205,16 @@
               }
             }
           ]
-        }
+        },
+        "additionalFields": {}
       },
       "id": "fd36ece8-857f-491b-b051-87a00256e48c",
       "name": "Send Preview",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -272,
-        -112
+        -608,
+        576
       ],
       "webhookId": "3b5c7b01-40c4-437f-bafc-4245fd63c0a6",
       "credentials": {
@@ -236,8 +236,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        -64,
-        -240
+        -384,
+        512
       ],
       "webhookId": "bf3a1c2d-2222-2222-2222-wf1waitnode11"
     },
@@ -364,8 +364,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        176,
-        -128
+        -160,
+        176
       ]
     },
     {
@@ -400,8 +400,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        400,
-        -384
+        288,
+        416
       ]
     },
     {
@@ -415,8 +415,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        624,
-        -384
+        512,
+        512
       ],
       "webhookId": "e066f7ed-2de9-470e-9e3d-514f2b57f8b0",
       "credentials": {
@@ -454,8 +454,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        400,
-        -192
+        64,
+        -240
       ]
     },
     {
@@ -469,8 +469,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        400,
-        0
+        64,
+        -48
       ],
       "webhookId": "bd1f9af3-e340-493f-8c05-a436c57fe16e",
       "credentials": {
@@ -509,8 +509,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1152,
-        -1088
+        -1280,
+        -1008
       ]
     },
     {
@@ -542,8 +542,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -928,
-        -1088
+        -1056,
+        -1008
       ]
     },
     {
@@ -569,8 +569,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -704,
-        -1088
+        -832,
+        -1008
       ],
       "alwaysOutputData": true
     },
@@ -603,8 +603,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -480,
-        -1088
+        -608,
+        -1008
       ]
     },
     {
@@ -630,7 +630,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -256,
+        -384,
         -1104
       ]
     },
@@ -666,7 +666,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -32,
+        -160,
         -1104
       ]
     },
@@ -681,7 +681,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        192,
+        64,
         -1104
       ],
       "webhookId": "429971d4-e874-4bef-b3f2-45ca0806b9b6",
@@ -703,7 +703,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -256,
+        -384,
         -912
       ],
       "webhookId": "b75baef6-f4e4-47ee-b069-ce4964860101",
@@ -743,8 +743,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1360,
-        704
+        -1056,
+        -576
       ]
     },
     {
@@ -758,8 +758,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -1136,
-        720
+        -832,
+        -336
       ],
       "webhookId": "850310bd-d119-4de5-a371-544ecebea886",
       "credentials": {
@@ -794,8 +794,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -1136,
-        528
+        -832,
+        -640
       ]
     },
     {
@@ -826,8 +826,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -912,
-        528
+        -384,
+        -720
       ]
     },
     {
@@ -859,8 +859,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -688,
-        464
+        -160,
+        -784
       ]
     },
     {
@@ -879,8 +879,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -464,
-        464
+        64,
+        -784
       ]
     },
     {
@@ -909,8 +909,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -240,
-        464
+        288,
+        -784
       ]
     },
     {
@@ -941,8 +941,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        192,
-        464
+        736,
+        -864
       ]
     },
     {
@@ -974,8 +974,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        416,
-        464
+        960,
+        -960
       ]
     },
     {
@@ -1014,8 +1014,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        640,
-        464
+        1184,
+        -960
       ]
     },
     {
@@ -1023,9 +1023,6 @@
         "operation": "sendPhoto",
         "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
         "file": "={{ $node[\"Set Post Data\"].json[\"cloudinary_url\"] }}",
-        "additionalFields": {
-          "caption": "=📸 Instagram Preview:\n---\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nChoose an action below."
-        },
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -1090,6 +1087,9 @@
               }
             }
           ]
+        },
+        "additionalFields": {
+          "caption": "=📸 Instagram Preview:\n---\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nChoose an action below."
         }
       },
       "id": "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
@@ -1097,8 +1097,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        864,
-        464
+        1408,
+        -960
       ],
       "webhookId": "d84a3984-e700-48f9-9eb9-2695c7afdfaa",
       "credentials": {
@@ -1118,8 +1118,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        1088,
-        464
+        1632,
+        -960
       ],
       "webhookId": "bf3a1c2d-4444-4444-4444-wf2waitnode22"
     },
@@ -1248,8 +1248,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        1312,
-        512
+        1856,
+        -832
       ]
     },
     {
@@ -1267,8 +1267,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1744,
-        432
+        2080,
+        -880
       ]
     },
     {
@@ -1278,7 +1278,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ creation_id: $json.id, access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
+        "body": "={{ JSON.stringify({ creation_id: $node['Create Media Container'].json['id'], access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
         "options": {}
       },
       "id": "2e82f211-2cea-4024-9637-802b0f97f6b9",
@@ -1286,8 +1286,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        1968,
-        432
+        2304,
+        -880
       ]
     },
     {
@@ -1301,8 +1301,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        2192,
-        432
+        2528,
+        -880
       ],
       "webhookId": "6a33175f-8185-4c2b-a877-d0e88601cba2",
       "credentials": {
@@ -1323,8 +1323,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        1744,
-        624
+        2080,
+        -688
       ],
       "webhookId": "78523c8a-bbe9-4185-b05d-3e684b922bb8",
       "credentials": {
@@ -1362,8 +1362,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -32,
-        464
+        512,
+        -784
       ],
       "id": "7f1bd801-4351-400e-b562-c5c6d68edca1",
       "name": "Skip Caption?"
@@ -1397,8 +1397,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1952,
-        950
+        -1728,
+        80
       ]
     },
     {
@@ -1418,8 +1418,7 @@
               "stringValue": "={{ $json.callback_query.data }}"
             },
             {
-              "name": "instructions",
-              "stringValue": ""
+              "name": "instructions"
             },
             {
               "name": "callback_query_id",
@@ -1434,14 +1433,13 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -1728,
-        950
+        -1504,
+        768
       ]
     },
     {
       "parameters": {
         "resource": "callback",
-        "operation": "answerQuery",
         "queryId": "={{ $json.callback_query_id }}",
         "additionalFields": {
           "text": "={{ ({ li_approve: '✅ Posting to LinkedIn...', li_discard: '🗑️ Discarding...', li_regen_text: '🔄 Regenerating text...', li_regen_image: '🖼️ Regenerating image...', li_regen_both: '🔄🖼️ Regenerating text + image...', ig_approve: '✅ Posting to Instagram...', ig_discard: '🗑️ Discarding...', ig_regen_caption: '🔄 Regenerating caption...', ig_regen_image: '🖼️ Regenerating image...', ig_regen_both: '🔄🖼️ Regenerating caption + image...' })[$json.command] || 'Got it!' }}"
@@ -1452,16 +1450,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -1504,
-        950
+        -1280,
+        672
       ],
+      "webhookId": "566c142e-1189-4fc4-8959-716d6df57117",
       "credentials": {
         "telegramApi": {
           "id": "ZkWfYSlTSfJ42VwR",
           "name": "Telegram account"
         }
-      },
-      "webhookId": "566c142e-1189-4fc4-8959-716d6df57117"
+      }
     },
     {
       "parameters": {
@@ -1487,7 +1485,7 @@
       "typeVersion": 4,
       "position": [
         -1280,
-        950
+        864
       ]
     },
     {
@@ -1520,7 +1518,7 @@
       "typeVersion": 2,
       "position": [
         -1056,
-        950
+        864
       ]
     },
     {
@@ -1547,7 +1545,7 @@
       "typeVersion": 4,
       "position": [
         -832,
-        950
+        768
       ]
     },
     {
@@ -1583,7 +1581,7 @@
       "typeVersion": 4,
       "position": [
         -608,
-        950
+        768
       ]
     },
     {
@@ -1597,16 +1595,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -384,
-        950
+        -832,
+        960
       ],
+      "webhookId": "49179b5a-e5cd-416a-9957-8d76f8e0248f",
       "credentials": {
         "telegramApi": {
           "id": "ZkWfYSlTSfJ42VwR",
           "name": "Telegram account"
         }
-      },
-      "webhookId": "49179b5a-e5cd-416a-9957-8d76f8e0248f"
+      }
     },
     {
       "parameters": {
@@ -1633,8 +1631,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        64,
-        950
+        -1056,
+        576
       ]
     },
     {
@@ -1665,8 +1663,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -1280,
-        1110
+        288,
+        224
       ]
     },
     {
@@ -1698,8 +1696,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -1056,
-        1110
+        512,
+        224
       ]
     },
     {
@@ -1718,8 +1716,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -832,
-        1110
+        736,
+        224
       ]
     },
     {
@@ -1754,8 +1752,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -608,
-        1110
+        960,
+        224
       ]
     },
     {
@@ -1768,8 +1766,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -384,
-        1110
+        1184,
+        224
       ]
     },
     {
@@ -1801,8 +1799,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -160,
-        1110
+        1408,
+        224
       ]
     },
     {
@@ -1837,8 +1835,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        64,
-        1110
+        288,
+        608
       ]
     },
     {
@@ -1870,8 +1868,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1952,
-        1270
+        64,
+        384
       ]
     },
     {
@@ -1884,8 +1882,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1952,
-        1750
+        1632,
+        48
       ]
     },
     {
@@ -1893,10 +1891,6 @@
         "operation": "sendPhoto",
         "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
         "binaryData": true,
-        "binaryPropertyName": "data",
-        "additionalFields": {
-          "caption": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below."
-        },
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -1961,6 +1955,9 @@
               }
             }
           ]
+        },
+        "additionalFields": {
+          "caption": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below."
         }
       },
       "id": "1a3aecf2-02f1-446c-8b4c-e1550941f417",
@@ -1968,16 +1965,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -1728,
-        1750
+        1856,
+        336
       ],
+      "webhookId": "9b99779b-3180-453a-b89d-9e593da7f9a6",
       "credentials": {
         "telegramApi": {
           "id": "ZkWfYSlTSfJ42VwR",
           "name": "Telegram account"
         }
-      },
-      "webhookId": "9b99779b-3180-453a-b89d-9e593da7f9a6"
+      }
     },
     {
       "parameters": {
@@ -2008,8 +2005,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1952,
-        2100
+        288,
+        -240
       ]
     },
     {
@@ -2040,8 +2037,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -1728,
-        2100
+        64,
+        624
       ]
     },
     {
@@ -2073,8 +2070,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -1952,
-        2450
+        -608,
+        -640
       ]
     },
     {
@@ -2106,16 +2103,14 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3,
       "position": [
-        -1728,
-        2450
+        288,
+        -432
       ]
     },
     {
       "parameters": {
         "resource": "file",
-        "operation": "get",
         "fileId": "={{ $json.photo_file_id }}",
-        "download": true,
         "additionalFields": {}
       },
       "id": "455663c9-b49d-46ba-b494-0038f31aa03f",
@@ -2123,16 +2118,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        -1504,
-        2450
+        512,
+        -432
       ],
+      "webhookId": "189492ab-8773-46a8-b489-1dd48babfeac",
       "credentials": {
         "telegramApi": {
           "id": "ZkWfYSlTSfJ42VwR",
           "name": "Telegram account"
         }
-      },
-      "webhookId": "189492ab-8773-46a8-b489-1dd48babfeac"
+      }
     },
     {
       "parameters": {
@@ -2160,9 +2155,177 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        -1280,
-        2450
+        736,
+        -432
       ]
+    },
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 3,
+        "unit": "seconds",
+        "options": {}
+      },
+      "id": "a3cad33e-3fe5-4959-8f82-b7d78b4db866",
+      "name": "Wait Before Media Check",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        -540
+      ],
+      "webhookId": "e64672d9-de86-4f8c-b9f0-4f19f4747ec5"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.facebook.com/v20.0/{{ $node[\"Create Media Container\"].json[\"id\"] }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "status_code"
+            },
+            {
+              "name": "access_token",
+              "value": "REPLACE_WITH_META_PAGE_ACCESS_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f398c826-ca3b-4eb7-8f5c-de45484cb32f",
+      "name": "Check Media Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2260,
+        -540
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "status_code",
+              "stringValue": "={{ $node[\"Check Media Status\"].json.status_code }}"
+            },
+            {
+              "name": "poll_attempt",
+              "type": "numberValue",
+              "numberValue": "={{ (() => { try { return $node[\"Track Poll Attempt\"].json.poll_attempt + 1 } catch (e) { return 1 } })() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9a3dd016-3ab5-4bde-b895-c6112a3b3ead",
+      "name": "Track Poll Attempt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        2440,
+        -540
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-media-ready",
+                    "leftValue": "={{ $json.status_code }}",
+                    "rightValue": "FINISHED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "cond-media-in-progress",
+                    "leftValue": "={{ $json.status_code }}",
+                    "rightValue": "IN_PROGRESS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  },
+                  {
+                    "id": "cond-media-attempts-left",
+                    "leftValue": "={{ $json.poll_attempt }}",
+                    "rightValue": 8,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lt",
+                      "name": "filter.operator.lt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "b81ea4bc-d2f0-44a8-9700-b96115678811",
+      "name": "Route Media Status",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        2620,
+        -540
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
+        "text": "=⚠️ Instagram couldn't prepare the image for publishing (status: {{ $json.status_code }}). Try \"Regenerate image\" from the menu, or wait a moment and tap Post it again.",
+        "additionalFields": {}
+      },
+      "id": "769ff096-1644-42cf-9c45-ffb786025ffc",
+      "name": "Notify Media Failed (IG)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        2620,
+        -380
+      ],
+      "webhookId": "cdeecb68-8f6d-4b4e-935c-a1959987a550",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZkWfYSlTSfJ42VwR",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "connections": {
@@ -2512,7 +2675,7 @@
       "main": [
         [
           {
-            "node": "Publish to Instagram",
+            "node": "Wait Before Media Check",
             "type": "main",
             "index": 0
           }
@@ -2868,6 +3031,64 @@
           }
         ]
       ]
+    },
+    "Wait Before Media Check": {
+      "main": [
+        [
+          {
+            "node": "Check Media Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Media Status": {
+      "main": [
+        [
+          {
+            "node": "Track Poll Attempt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Poll Attempt": {
+      "main": [
+        [
+          {
+            "node": "Route Media Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Media Status": {
+      "main": [
+        [
+          {
+            "node": "Publish to Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait Before Media Check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Media Failed (IG)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2898,8 +3119,6 @@
         "446b5702-99cb-45e5-80be-b2827bf72b82",
         "7d4e2e03-3e53-4015-ac64-824e3fde01dc",
         "4e0f8bf5-97a9-4305-8479-779befe7712d",
-        "2e82f211-2cea-4024-9637-802b0f97f6b9",
-        "d01f074a-d31d-46f9-a959-5caec4809787",
         "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
         "7f1bd801-4351-400e-b562-c5c6d68edca1",
         "6da77f86-751c-4fcb-9ea5-6b9befe535c1",
@@ -2950,9 +3169,9 @@
     }
   ],
   "pinData": {},
-  "versionId": "2989c170-0f8b-4510-88a9-598caa38a025",
-  "activeVersionId": "2989c170-0f8b-4510-88a9-598caa38a025",
-  "versionCounter": 208,
+  "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+  "activeVersionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+  "versionCounter": 211,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "shared": [
@@ -2977,9 +3196,9 @@
   ],
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-07-08T10:38:06.747Z",
-    "createdAt": "2026-07-08T10:38:06.747Z",
-    "versionId": "2989c170-0f8b-4510-88a9-598caa38a025",
+    "updatedAt": "2026-07-10T09:35:51.852Z",
+    "createdAt": "2026-07-10T09:35:51.852Z",
+    "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
     "workflowId": "9lo7Lhwn3tg2cC6P",
     "nodes": [
       {
@@ -2996,7 +3215,7 @@
         "typeVersion": 1,
         "position": [
           -1952,
-          -400
+          80
         ],
         "webhookId": "bf3a1c2d-1111-1111-1111-wf1linkedinprs",
         "credentials": {
@@ -3035,8 +3254,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1728,
-          -400
+          -1504,
+          -112
         ]
       },
       {
@@ -3068,8 +3287,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1504,
-          -208
+          -1280,
+          80
         ]
       },
       {
@@ -3108,15 +3327,14 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -496,
-          -112
+          -832,
+          576
         ]
       },
       {
         "parameters": {
           "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
           "text": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below.",
-          "additionalFields": {},
           "replyMarkup": "inlineKeyboard",
           "inlineKeyboard": {
             "rows": [
@@ -3181,15 +3399,16 @@
                 }
               }
             ]
-          }
+          },
+          "additionalFields": {}
         },
         "id": "fd36ece8-857f-491b-b051-87a00256e48c",
         "name": "Send Preview",
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -272,
-          -112
+          -608,
+          576
         ],
         "webhookId": "3b5c7b01-40c4-437f-bafc-4245fd63c0a6",
         "credentials": {
@@ -3211,8 +3430,8 @@
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1,
         "position": [
-          -64,
-          -240
+          -384,
+          512
         ],
         "webhookId": "bf3a1c2d-2222-2222-2222-wf1waitnode11"
       },
@@ -3339,8 +3558,8 @@
         "type": "n8n-nodes-base.switch",
         "typeVersion": 3,
         "position": [
-          176,
-          -128
+          -160,
+          176
         ]
       },
       {
@@ -3375,8 +3594,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          400,
-          -384
+          288,
+          416
         ]
       },
       {
@@ -3390,8 +3609,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          624,
-          -384
+          512,
+          512
         ],
         "webhookId": "e066f7ed-2de9-470e-9e3d-514f2b57f8b0",
         "credentials": {
@@ -3429,8 +3648,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          400,
-          -192
+          64,
+          -240
         ]
       },
       {
@@ -3444,8 +3663,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          400,
-          0
+          64,
+          -48
         ],
         "webhookId": "bd1f9af3-e340-493f-8c05-a436c57fe16e",
         "credentials": {
@@ -3484,8 +3703,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1152,
-          -1088
+          -1280,
+          -1008
         ]
       },
       {
@@ -3517,8 +3736,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          -928,
-          -1088
+          -1056,
+          -1008
         ]
       },
       {
@@ -3544,8 +3763,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -704,
-          -1088
+          -832,
+          -1008
         ],
         "alwaysOutputData": true
       },
@@ -3578,8 +3797,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -480,
-          -1088
+          -608,
+          -1008
         ]
       },
       {
@@ -3605,7 +3824,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -256,
+          -384,
           -1104
         ]
       },
@@ -3641,7 +3860,7 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -32,
+          -160,
           -1104
         ]
       },
@@ -3656,7 +3875,7 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          192,
+          64,
           -1104
         ],
         "webhookId": "429971d4-e874-4bef-b3f2-45ca0806b9b6",
@@ -3678,7 +3897,7 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -256,
+          -384,
           -912
         ],
         "webhookId": "b75baef6-f4e4-47ee-b069-ce4964860101",
@@ -3718,8 +3937,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1360,
-          704
+          -1056,
+          -576
         ]
       },
       {
@@ -3733,8 +3952,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -1136,
-          720
+          -832,
+          -336
         ],
         "webhookId": "850310bd-d119-4de5-a371-544ecebea886",
         "credentials": {
@@ -3769,8 +3988,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          -1136,
-          528
+          -832,
+          -640
         ]
       },
       {
@@ -3793,7 +4012,7 @@
           "sendBody": true,
           "contentType": "raw",
           "rawContentType": "application/json",
-          "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for an Instagram post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones — always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE — this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face — instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language — a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nHARD RULE: never combine a describable facial expression or emotion (e.g. \\'looking skeptical\\', \\'smiling\\', \\'frowning\\', \\'concerned look\\') with photorealistic camera language (lens, depth of field, angle) in the same prompt — that exact combination is what produces the disturbing uncanny-valley faces. If a reaction or emotion needs to come through, either show it purely via posture, body language, or motion from a non-frontal angle while staying photorealistic, or commit fully to an illustration/digital-art style if the face must be visible and expressive.\\n\\nDepict what the user actually described — do NOT default to generic AI/tech/running imagery, and avoid generic corporate stock-photo visuals (skylines, sunsets over cities, people on phones) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nExample — for the topic \\'finally beat my 10k personal best\\', a good prompt is: \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
+          "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for an Instagram post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones — always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE — this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face — instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language — a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nHARD RULE: never combine a describable facial expression or emotion (e.g. \\'looking skeptical\\', \\'smiling\\', \\'frowning\\', \\'concerned look\\') with photorealistic camera language (lens, depth of field, angle) in the same prompt — that exact combination is what produces the disturbing uncanny-valley faces. If a reaction or emotion needs to come through, either show it purely via posture, body language, or motion from a non-frontal angle while staying photorealistic, or commit fully to an illustration/digital-art style if the face must be visible and expressive.\\n\\nDepict what the user actually described — do NOT default to generic AI/tech/running imagery, and avoid generic corporate stock-photo visuals (skylines, sunsets over cities, people on phones) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nDo NOT default to photorealistic camera style just because an example below uses it — pick whichever of the three patterns below actually fits the topic and the PEOPLE rule above. Vary your approach across generations; don\\'t let one style dominate every image.\\n\\nExample A (person kept out of a close frontal shot, photorealistic) — for the topic \\'finally beat my 10k personal best\\': \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nExample B (no person needed, photorealistic still life) — for the topic \\'read my first book in years\\': \\'A worn paperback lying open on a sunlit windowsill next to a half-finished cup of coffee, pages slightly curled from the heat, soft afternoon light casting long shadows across the wood table, shallow depth of field, warm natural light, shot on a 50mm lens.\\'\\n\\nExample C (person front-and-center, so illustration style instead of photorealistic) — for the topic \\'finally took a day off after months of burnout\\': \\'A flat digital illustration of a person stretched out on a couch with eyes closed, soft gradient sunlight streaming through a window behind them, a cup of tea steaming on a side table, muted pastel color palette, clean minimal linework, cozy editorial illustration style.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
           "options": {}
         },
         "id": "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
@@ -3801,8 +4020,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -912,
-          528
+          -384,
+          -720
         ]
       },
       {
@@ -3834,8 +4053,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          -688,
-          464
+          -160,
+          -784
         ]
       },
       {
@@ -3854,8 +4073,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -464,
-          464
+          64,
+          -784
         ]
       },
       {
@@ -3884,8 +4103,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -240,
-          464
+          288,
+          -784
         ]
       },
       {
@@ -3916,8 +4135,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          192,
-          464
+          736,
+          -864
         ]
       },
       {
@@ -3949,8 +4168,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          416,
-          464
+          960,
+          -960
         ]
       },
       {
@@ -3989,8 +4208,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          640,
-          464
+          1184,
+          -960
         ]
       },
       {
@@ -3998,9 +4217,6 @@
           "operation": "sendPhoto",
           "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
           "file": "={{ $node[\"Set Post Data\"].json[\"cloudinary_url\"] }}",
-          "additionalFields": {
-            "caption": "=📸 Instagram Preview:\n---\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nChoose an action below."
-          },
           "replyMarkup": "inlineKeyboard",
           "inlineKeyboard": {
             "rows": [
@@ -4065,6 +4281,9 @@
                 }
               }
             ]
+          },
+          "additionalFields": {
+            "caption": "=📸 Instagram Preview:\n---\n{{ $node['Set Post Data'].json['caption'] }}\n\n---\nChoose an action below."
           }
         },
         "id": "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
@@ -4072,8 +4291,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          864,
-          464
+          1408,
+          -960
         ],
         "webhookId": "d84a3984-e700-48f9-9eb9-2695c7afdfaa",
         "credentials": {
@@ -4093,8 +4312,8 @@
         "type": "n8n-nodes-base.wait",
         "typeVersion": 1,
         "position": [
-          1088,
-          464
+          1632,
+          -960
         ],
         "webhookId": "bf3a1c2d-4444-4444-4444-wf2waitnode22"
       },
@@ -4223,8 +4442,8 @@
         "type": "n8n-nodes-base.switch",
         "typeVersion": 3,
         "position": [
-          1312,
-          512
+          1856,
+          -832
         ]
       },
       {
@@ -4242,8 +4461,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          1744,
-          432
+          2080,
+          -880
         ]
       },
       {
@@ -4253,7 +4472,7 @@
           "sendBody": true,
           "contentType": "raw",
           "rawContentType": "application/json",
-          "body": "={{ JSON.stringify({ creation_id: $json.id, access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
+          "body": "={{ JSON.stringify({ creation_id: $node['Create Media Container'].json['id'], access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
           "options": {}
         },
         "id": "2e82f211-2cea-4024-9637-802b0f97f6b9",
@@ -4261,8 +4480,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          1968,
-          432
+          2304,
+          -880
         ]
       },
       {
@@ -4276,8 +4495,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          2192,
-          432
+          2528,
+          -880
         ],
         "webhookId": "6a33175f-8185-4c2b-a877-d0e88601cba2",
         "credentials": {
@@ -4298,8 +4517,8 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          1744,
-          624
+          2080,
+          -688
         ],
         "webhookId": "78523c8a-bbe9-4185-b05d-3e684b922bb8",
         "credentials": {
@@ -4337,8 +4556,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2.3,
         "position": [
-          -32,
-          464
+          512,
+          -784
         ],
         "id": "7f1bd801-4351-400e-b562-c5c6d68edca1",
         "name": "Skip Caption?"
@@ -4372,8 +4591,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1952,
-          950
+          -1728,
+          80
         ]
       },
       {
@@ -4393,8 +4612,7 @@
                 "stringValue": "={{ $json.callback_query.data }}"
               },
               {
-                "name": "instructions",
-                "stringValue": ""
+                "name": "instructions"
               },
               {
                 "name": "callback_query_id",
@@ -4409,14 +4627,13 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          -1728,
-          950
+          -1504,
+          768
         ]
       },
       {
         "parameters": {
           "resource": "callback",
-          "operation": "answerQuery",
           "queryId": "={{ $json.callback_query_id }}",
           "additionalFields": {
             "text": "={{ ({ li_approve: '✅ Posting to LinkedIn...', li_discard: '🗑️ Discarding...', li_regen_text: '🔄 Regenerating text...', li_regen_image: '🖼️ Regenerating image...', li_regen_both: '🔄🖼️ Regenerating text + image...', ig_approve: '✅ Posting to Instagram...', ig_discard: '🗑️ Discarding...', ig_regen_caption: '🔄 Regenerating caption...', ig_regen_image: '🖼️ Regenerating image...', ig_regen_both: '🔄🖼️ Regenerating caption + image...' })[$json.command] || 'Got it!' }}"
@@ -4427,16 +4644,16 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -1504,
-          950
+          -1280,
+          672
         ],
+        "webhookId": "566c142e-1189-4fc4-8959-716d6df57117",
         "credentials": {
           "telegramApi": {
             "id": "ZkWfYSlTSfJ42VwR",
             "name": "Telegram account"
           }
-        },
-        "webhookId": "566c142e-1189-4fc4-8959-716d6df57117"
+        }
       },
       {
         "parameters": {
@@ -4462,7 +4679,7 @@
         "typeVersion": 4,
         "position": [
           -1280,
-          950
+          864
         ]
       },
       {
@@ -4495,7 +4712,7 @@
         "typeVersion": 2,
         "position": [
           -1056,
-          950
+          864
         ]
       },
       {
@@ -4522,7 +4739,7 @@
         "typeVersion": 4,
         "position": [
           -832,
-          950
+          768
         ]
       },
       {
@@ -4558,7 +4775,7 @@
         "typeVersion": 4,
         "position": [
           -608,
-          950
+          768
         ]
       },
       {
@@ -4572,16 +4789,16 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -384,
-          950
+          -832,
+          960
         ],
+        "webhookId": "49179b5a-e5cd-416a-9957-8d76f8e0248f",
         "credentials": {
           "telegramApi": {
             "id": "ZkWfYSlTSfJ42VwR",
             "name": "Telegram account"
           }
-        },
-        "webhookId": "49179b5a-e5cd-416a-9957-8d76f8e0248f"
+        }
       },
       {
         "parameters": {
@@ -4608,8 +4825,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          64,
-          950
+          -1056,
+          576
         ]
       },
       {
@@ -4640,8 +4857,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -1280,
-          1110
+          288,
+          224
         ]
       },
       {
@@ -4673,8 +4890,8 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          -1056,
-          1110
+          512,
+          224
         ]
       },
       {
@@ -4693,8 +4910,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -832,
-          1110
+          736,
+          224
         ]
       },
       {
@@ -4729,8 +4946,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -608,
-          1110
+          960,
+          224
         ]
       },
       {
@@ -4743,8 +4960,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -384,
-          1110
+          1184,
+          224
         ]
       },
       {
@@ -4776,8 +4993,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -160,
-          1110
+          1408,
+          224
         ]
       },
       {
@@ -4812,8 +5029,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          64,
-          1110
+          288,
+          608
         ]
       },
       {
@@ -4845,8 +5062,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1952,
-          1270
+          64,
+          384
         ]
       },
       {
@@ -4859,8 +5076,8 @@
         "type": "n8n-nodes-base.code",
         "typeVersion": 2,
         "position": [
-          -1952,
-          1750
+          1632,
+          48
         ]
       },
       {
@@ -4868,10 +5085,6 @@
           "operation": "sendPhoto",
           "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
           "binaryData": true,
-          "binaryPropertyName": "data",
-          "additionalFields": {
-            "caption": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below."
-          },
           "replyMarkup": "inlineKeyboard",
           "inlineKeyboard": {
             "rows": [
@@ -4936,6 +5149,9 @@
                 }
               }
             ]
+          },
+          "additionalFields": {
+            "caption": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below."
           }
         },
         "id": "1a3aecf2-02f1-446c-8b4c-e1550941f417",
@@ -4943,16 +5159,16 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -1728,
-          1750
+          1856,
+          336
         ],
+        "webhookId": "9b99779b-3180-453a-b89d-9e593da7f9a6",
         "credentials": {
           "telegramApi": {
             "id": "ZkWfYSlTSfJ42VwR",
             "name": "Telegram account"
           }
-        },
-        "webhookId": "9b99779b-3180-453a-b89d-9e593da7f9a6"
+        }
       },
       {
         "parameters": {
@@ -4983,8 +5199,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1952,
-          2100
+          288,
+          -240
         ]
       },
       {
@@ -5015,8 +5231,8 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -1728,
-          2100
+          64,
+          624
         ]
       },
       {
@@ -5048,8 +5264,8 @@
         "type": "n8n-nodes-base.if",
         "typeVersion": 2,
         "position": [
-          -1952,
-          2450
+          -608,
+          -640
         ]
       },
       {
@@ -5081,16 +5297,14 @@
         "type": "n8n-nodes-base.set",
         "typeVersion": 3,
         "position": [
-          -1728,
-          2450
+          288,
+          -432
         ]
       },
       {
         "parameters": {
           "resource": "file",
-          "operation": "get",
           "fileId": "={{ $json.photo_file_id }}",
-          "download": true,
           "additionalFields": {}
         },
         "id": "455663c9-b49d-46ba-b494-0038f31aa03f",
@@ -5098,16 +5312,16 @@
         "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [
-          -1504,
-          2450
+          512,
+          -432
         ],
+        "webhookId": "189492ab-8773-46a8-b489-1dd48babfeac",
         "credentials": {
           "telegramApi": {
             "id": "ZkWfYSlTSfJ42VwR",
             "name": "Telegram account"
           }
-        },
-        "webhookId": "189492ab-8773-46a8-b489-1dd48babfeac"
+        }
       },
       {
         "parameters": {
@@ -5135,9 +5349,177 @@
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4,
         "position": [
-          -1280,
-          2450
+          736,
+          -432
         ]
+      },
+      {
+        "parameters": {
+          "resume": "timeInterval",
+          "amount": 3,
+          "unit": "seconds",
+          "options": {}
+        },
+        "id": "a3cad33e-3fe5-4959-8f82-b7d78b4db866",
+        "name": "Wait Before Media Check",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          2080,
+          -540
+        ],
+        "webhookId": "e64672d9-de86-4f8c-b9f0-4f19f4747ec5"
+      },
+      {
+        "parameters": {
+          "method": "GET",
+          "url": "=https://graph.facebook.com/v20.0/{{ $node[\"Create Media Container\"].json[\"id\"] }}",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "fields",
+                "value": "status_code"
+              },
+              {
+                "name": "access_token",
+                "value": "REPLACE_WITH_META_PAGE_ACCESS_TOKEN"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "f398c826-ca3b-4eb7-8f5c-de45484cb32f",
+        "name": "Check Media Status",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          2260,
+          -540
+        ]
+      },
+      {
+        "parameters": {
+          "fields": {
+            "values": [
+              {
+                "name": "status_code",
+                "stringValue": "={{ $node[\"Check Media Status\"].json.status_code }}"
+              },
+              {
+                "name": "poll_attempt",
+                "type": "numberValue",
+                "numberValue": "={{ (() => { try { return $node[\"Track Poll Attempt\"].json.poll_attempt + 1 } catch (e) { return 1 } })() }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9a3dd016-3ab5-4bde-b895-c6112a3b3ead",
+        "name": "Track Poll Attempt",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3,
+        "position": [
+          2440,
+          -540
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "cond-media-ready",
+                      "leftValue": "={{ $json.status_code }}",
+                      "rightValue": "FINISHED",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 1
+                  },
+                  "conditions": [
+                    {
+                      "id": "cond-media-in-progress",
+                      "leftValue": "={{ $json.status_code }}",
+                      "rightValue": "IN_PROGRESS",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    },
+                    {
+                      "id": "cond-media-attempts-left",
+                      "leftValue": "={{ $json.poll_attempt }}",
+                      "rightValue": 8,
+                      "operator": {
+                        "type": "number",
+                        "operation": "lt",
+                        "name": "filter.operator.lt"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra"
+          }
+        },
+        "id": "b81ea4bc-d2f0-44a8-9700-b96115678811",
+        "name": "Route Media Status",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          2620,
+          -540
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
+          "text": "=⚠️ Instagram couldn't prepare the image for publishing (status: {{ $json.status_code }}). Try \"Regenerate image\" from the menu, or wait a moment and tap Post it again.",
+          "additionalFields": {}
+        },
+        "id": "769ff096-1644-42cf-9c45-ffb786025ffc",
+        "name": "Notify Media Failed (IG)",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1,
+        "position": [
+          2620,
+          -380
+        ],
+        "webhookId": "cdeecb68-8f6d-4b4e-935c-a1959987a550",
+        "credentials": {
+          "telegramApi": {
+            "id": "ZkWfYSlTSfJ42VwR",
+            "name": "Telegram account"
+          }
+        }
       }
     ],
     "connections": {
@@ -5487,7 +5869,7 @@
         "main": [
           [
             {
-              "node": "Publish to Instagram",
+              "node": "Wait Before Media Check",
               "type": "main",
               "index": 0
             }
@@ -5843,6 +6225,64 @@
             }
           ]
         ]
+      },
+      "Wait Before Media Check": {
+        "main": [
+          [
+            {
+              "node": "Check Media Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check Media Status": {
+        "main": [
+          [
+            {
+              "node": "Track Poll Attempt",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Track Poll Attempt": {
+        "main": [
+          [
+            {
+              "node": "Route Media Status",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Route Media Status": {
+        "main": [
+          [
+            {
+              "node": "Publish to Instagram",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Wait Before Media Check",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Media Failed (IG)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "nodeGroups": [
@@ -5864,8 +6304,6 @@
           "446b5702-99cb-45e5-80be-b2827bf72b82",
           "7d4e2e03-3e53-4015-ac64-824e3fde01dc",
           "4e0f8bf5-97a9-4305-8479-779befe7712d",
-          "2e82f211-2cea-4024-9637-802b0f97f6b9",
-          "d01f074a-d31d-46f9-a959-5caec4809787",
           "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
           "7f1bd801-4351-400e-b562-c5c6d68edca1",
           "6da77f86-751c-4fcb-9ea5-6b9befe535c1",
@@ -5921,18 +6359,34 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-07-08T10:38:07.562Z",
-        "id": 115,
+        "createdAt": "2026-07-10T09:35:52.721Z",
+        "id": 119,
         "workflowId": "9lo7Lhwn3tg2cC6P",
-        "versionId": "2989c170-0f8b-4510-88a9-598caa38a025",
+        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
         "event": "activated",
         "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
       },
       {
-        "createdAt": "2026-07-08T10:38:07.093Z",
-        "id": 114,
+        "createdAt": "2026-07-10T09:48:24.144Z",
+        "id": 121,
         "workflowId": "9lo7Lhwn3tg2cC6P",
-        "versionId": "2989c170-0f8b-4510-88a9-598caa38a025",
+        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+        "event": "activated",
+        "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
+      },
+      {
+        "createdAt": "2026-07-10T09:35:52.222Z",
+        "id": 118,
+        "workflowId": "9lo7Lhwn3tg2cC6P",
+        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+        "event": "deactivated",
+        "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
+      },
+      {
+        "createdAt": "2026-07-10T09:48:21.610Z",
+        "id": 120,
+        "workflowId": "9lo7Lhwn3tg2cC6P",
+        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
         "event": "deactivated",
         "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
       }

@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-08 (unified 5-button menu on both platforms, LinkedIn image support, user-photo Instagram posts)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
@@ -21,11 +21,10 @@ LinkedIn (`s:`).
 
 ## Known Bugs
 
-*(none open as of 2026-07-08 — see `history.md` for everything fixed this
-session: the LinkedIn image-upload group-validation issue, the
-unescaped-quote prompt regression, the "posted without showing the image"
-design flaw, the Instagram regenerate-caption crash on user-photo posts, and
-the photo-caption prefix-detection bug)*
+*(none open as of 2026-07-10 — see `history.md` for everything fixed this
+session: Instagram's "Media ID is not available" publish race condition, and
+a stale-webhook-registration bug that silently dropped incoming Telegram
+messages after repeated API-driven structural edits to the active workflow)*
 
 ---
 
