@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-12 (added a watch item for the LinkedIn text prompt's round-3 rewrite)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
@@ -30,6 +30,14 @@ messages after repeated API-driven structural edits to the active workflow)*
 
 ## Active TODOs
 
+- [ ] **Watch for a "we'll see" tic in LinkedIn text output.** The
+      2026-07-12 round-3 rewrite of `Rewrite with Instructions`/`(Both)`
+      kept 2 of 3 few-shot examples ending on a near-identical hedge ("no
+      idea if it'll work", "we'll see") — flagged as a risk before applying
+      (examples anchor output more than instructions do) but applied as-is
+      per user's call. If real regenerations start reusing that exact
+      hedge, swap one example's ending for a plain non-hedged statement.
+      *(added: 2026-07-12)*
 - [ ] **Clean up the now-dead typed-command infrastructure**: `Ignore
       Commands`, `Is it a command?`, `Extract Command`, `Get Pending
       Approval`, `Has Pending?`, `Resume Workflow`, `Update Status`, `Reply -

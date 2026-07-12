@@ -298,6 +298,31 @@ LinkedIn voice drifted generic.
   exact real failure + its correction, used as the corrective example
   instead of an invented one. `Build Image Prompt`, `Build Image Prompt
   (LI)`, and `Generate Caption` were re-verified unchanged in this round.
+- **Round 3, same day: full rewrite, not another patch.** After round 2, the
+  user asked for feedback on a ground-up rewrite rather than a third
+  incremental patch, and the assistant recommended it: rounds 1-2 had
+  drifted into an accumulating banned-phrase list (reactive, one incident
+  at a time), and the rewrite replaces that with one generative test
+  instead — "THE ONE RULE: everything in the post has to be something a
+  real person would actually say about this exact input." Structure:
+  opening framing recasts LinkedIn as a formatting detail, not a genre
+  ("ghostwrite quick personal updates... like a text to a friend", not
+  "write a professional post"); GROUNDING (unifies rounds 1-2's fact- and
+  narrative-fabrication rules into one, plus a new instruction to treat an
+  apparent typo as the obvious intended word rather than build a narrative
+  from the literal misspelling — a plausible root cause of the "modal" →
+  fake-UI-interface fabrication from round 2's live-test failure);
+  NO PERFORMANCE (names round 1's and round 2's specific banned phrases as
+  *one* shared failure — generic pre-packaged insight substituting for a
+  real detail — rather than an ever-growing list of examples of it); a
+  closing self-check line ("would a stranger believe a person actually
+  typed this?"). The old named banned-phrase list and the old
+  adjective-based Voice line ("direct, systems-thinking, authentic") are
+  both gone entirely, deliberately — betting the general rule subsumes
+  them; flagged as unproven, worth watching regenerations for any of the
+  old specific clichés sneaking back in. Applied as-is (no changes
+  requested) to `Rewrite with Instructions` + `Rewrite with Instructions
+  (Both)` only, kept byte-identical as always.
 - LinkedIn system prompt: Yahya's voice/length/hashtag rules, plus explicit
   instructions to (a) write about whatever topic the user actually gave it
   rather than defaulting to Synax/work content, and (b) vary the opening

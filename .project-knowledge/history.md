@@ -527,3 +527,19 @@
   this project's prompt fixes. Applied to both LinkedIn text nodes only;
   image prompts and `Generate Caption` confirmed unchanged.
   *(2026-07-12, round 2)*
+- Rounds 1-2's LinkedIn text fixes were each a reactive patch (a new
+  banned phrase, a widened grounding clause) added after a specific
+  failure. User asked for the assistant's opinion on a full rewrite
+  instead, which was recommended: the accumulating-blocklist pattern
+  doesn't generalize to the next failure mode, only catches the last one.
+  The rewrite replaces the whole voice/banned-phrase/grounding structure
+  with one generative test ("would a real person actually say this about
+  this exact input") plus a framing device (write it like a text to a
+  friend, not a LinkedIn post) and a closing self-check line. Flagged one
+  real risk before applying: 2 of 3 new few-shot examples ended on a
+  near-identical hedge ("we'll see") — since examples anchor output more
+  than instructions, this could become the next unintentional tic, the
+  same failure class this rewrite exists to prevent. User chose to apply
+  it as written rather than adjust the example first — worth checking
+  regenerations for a "we'll see" tic emerging, and revisiting that one
+  example if it does. *(2026-07-12, round 3)*

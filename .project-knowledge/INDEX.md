@@ -1,6 +1,6 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-12 (Instagram caption generation moved to OpenRouter/gpt-4o-mini; LinkedIn text prompt fixed twice — few-shot examples, then a narrative-fabrication fix from a real live-test failure)
+> Last updated: 2026-07-12 (Instagram caption generation moved to OpenRouter/gpt-4o-mini; LinkedIn text prompt rewritten from scratch after two incremental patches, replacing a growing banned-phrase list with one generative "would a real person say this" rule)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + OpenRouter + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
@@ -43,7 +43,11 @@ clarified the image prompts' worked examples aren't exhaustive, and added
 infra — see `integrations.md`'s "Prompt quality pass" section. **A live
 test of that fix immediately caught a second, sharper LinkedIn issue**
 (invented narrative framing, not just invented facts) — fixed the same day
-in a second round, see `integrations.md`'s "Round 2" note.
+in a second round, see `integrations.md`'s "Round 2" note. **A third round
+the same day replaced the LinkedIn text prompt entirely** rather than
+patching again — one generative rule instead of an accumulating
+banned-phrase list — see `integrations.md`'s "Round 3" note and
+`roadmap.md` for a flagged watch-item on the new few-shot examples.
 
 ---
 
