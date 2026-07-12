@@ -499,3 +499,16 @@
   user for them) is similarly off-limits, even though it's the project's
   own self-hosted instance — ask the user directly for API keys instead.
   *(2026-07-10)*
+- LinkedIn text output "felt rigged" — diagnosed as a prompt-content problem,
+  not a sampling-parameter problem, after checking Groq's own API reference
+  (`presence_penalty`/`frequency_penalty` are documented as accepted but
+  silently unsupported on Groq's models). Fixed by applying the same
+  few-shot-examples technique already proven on the image prompts
+  (2026-07-04) to the LinkedIn text prompts for the first time — a
+  banned-phrase blocklist alone is reactive and gives the model nothing
+  concrete to sound like instead. `presence_penalty` was added only to
+  `Generate Caption`, since that node is the one exception now running on
+  OpenRouter/genuine OpenAI infra where the parameter actually works (see
+  `integrations.md`, "Prompt quality pass"). Deferred collapsing the two
+  byte-identical LinkedIn-text nodes into one shared upstream node — a
+  real node-graph change, left for later unless requested. *(2026-07-12)*

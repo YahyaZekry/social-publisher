@@ -1,6 +1,6 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-12 (Instagram caption generation moved from Groq/Llama to OpenRouter/gpt-4o-mini)
+> Last updated: 2026-07-12 (Instagram caption generation moved to OpenRouter/gpt-4o-mini; LinkedIn text + both image prompts got a few-shot/quality pass)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + OpenRouter + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
@@ -36,7 +36,11 @@ by deactivate/reactivate) — see `integrations.md` and `history.md`.
 **2026-07-12: `Generate Caption` (Instagram) switched from Groq/Llama to
 OpenRouter's `openai/gpt-4o-mini`** — same prompt, same response shape, just
 a different backend; LinkedIn text and image-prompt generation stay on Groq
-— see `integrations.md`.
+— see `integrations.md`. **Same day, a content-quality pass** added
+few-shot examples to the LinkedIn text prompts (previously image-only),
+clarified the image prompts' worked examples aren't exhaustive, and added
+`presence_penalty` to `Generate Caption` now that it runs on real OpenAI
+infra — see `integrations.md`'s "Prompt quality pass" section.
 
 ---
 

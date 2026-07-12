@@ -232,6 +232,51 @@
   which gpt-4o-mini follows natively, so no rewrite was needed beyond the
   API/model swap. All other Groq-backed nodes (LinkedIn text, both image
   prompts) are unaffected and still run on Llama via Groq.
+
+### Prompt quality pass (2026-07-12, same session as the OpenRouter switch above)
+
+User reported LinkedIn output "felt rigged" and asked for a targeted fix
+across all 5 LLM-backed nodes. Two things confirmed before touching any
+prompt text (not assumed): (1) Groq's API reference documents
+`presence_penalty`/`frequency_penalty` as accepted params that are silent
+no-ops on Groq's models — so sampling-parameter tuning can't fix the Groq
+nodes, the fix has to be in the prompt content itself; (2) this project's
+own `history.md` (2026-07-04) already proved few-shot examples in the
+system prompt outperform abstract "don't do X" instructions for Llama 3.3 —
+that fix was applied to the image prompts back then but never to the
+LinkedIn text prompt, which still leaned on adjectives ("direct,
+systems-thinking, authentic") plus a banned-phrase blocklist alone.
+Blocklists are reactive — they stop clichés already caught but give the
+model nothing concrete to sound like instead, which is most of why the
+LinkedIn voice drifted generic.
+- **`Rewrite with Instructions` + `Rewrite with Instructions (Both)`**
+  (kept byte-identical, per the existing "must stay in sync" constraint):
+  added a 3-example few-shot block, each example tied to a specific
+  existing rule (grounding-with-a-short-input, voice + varied-ending, and
+  the "write about anything" rule with a deliberately non-tech topic) so
+  the model has concrete anchors instead of only adjectives. Grounding
+  rule and banned-phrase list left untouched — both are proven fixes from
+  real production incidents (2026-07-05), not guesses.
+- **`Build Image Prompt` + `Build Image Prompt (LI)`**: one sentence added
+  clarifying that the existing A/B/C worked examples are reference points,
+  not an exhaustive menu — a fixed set of examples can pull output toward
+  clustering around just those three even when the prompt says to vary,
+  since examples anchor a model's output more strongly than a nearby
+  disclaimer. Nothing else changed; these prompts were already confirmed
+  working well (2026-07-04/08).
+- **`Generate Caption`**: prompt text itself left unchanged (gpt-4o-mini is
+  a stronger instruction-follower on abstract style rules than Llama, and
+  no incident in `history.md` reports this prompt's output as generic).
+  Added `presence_penalty: 0.4` to the request body instead — the one real
+  lever specific to this node's new OpenRouter/OpenAI backend (Groq doesn't
+  support it, per the finding above); discourages token/phrase reuse within
+  a single caption. Range is -2 to 2; raise toward 0.6-0.8 if captions still
+  feel repetitive, lower if word choice starts feeling forced.
+- Considered and explicitly deferred: collapsing `Rewrite with Instructions`
+  and its `(Both)` clone into one shared upstream Set/Code node (removing
+  the byte-identical-duplicate-maintenance risk that caused several past
+  bugs — see `history.md`) — a real node-graph change, not a prompt-text
+  edit, left for a future session if requested.
 - LinkedIn system prompt: Yahya's voice/length/hashtag rules, plus explicit
   instructions to (a) write about whatever topic the user actually gave it
   rather than defaulting to Synax/work content, and (b) vary the opening
