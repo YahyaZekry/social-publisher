@@ -33,7 +33,7 @@ flowchart LR
     D --> E
     E --> F["📱 Telegram preview\n+ 5-button menu"]
     F -->|"Post it"| G1["🚀 Posted"]
-    F -->|"Regenerate text/caption"| H1["🧠 Groq rewrites it"]
+    F -->|"Regenerate text/caption"| H1["🧠 AI rewrites it\n(Groq or OpenRouter)"]
     F -->|"Regenerate image"| H2["🧠 Groq + Pollinations\nmake a new one"]
     H1 --> F
     H2 --> F
@@ -67,7 +67,8 @@ platform its own workflow both silently broke the first one's webhook — see
 | n8n instance, reachable at a public URL (this project: Docker + ngrok) | Everything |
 | Telegram bot ([@BotFather](https://t.me/BotFather)) + your numeric Telegram user ID | Everything |
 | Supabase project with a `pending_approvals` table (schema below) | Everything |
-| [Groq](https://console.groq.com) API key (free tier is fine) | Everything |
+| [Groq](https://console.groq.com) API key (free tier is fine) | LinkedIn text, both platforms' image prompts |
+| [OpenRouter](https://openrouter.ai) API key | Instagram captions |
 | [Cloudinary](https://cloudinary.com) account + an **unsigned** upload preset | Instagram, LinkedIn images |
 | LinkedIn API access token + your LinkedIn person URN | LinkedIn |
 | Meta Developer app + Facebook Page + linked Instagram Business account, with a long-lived Page Access Token | Instagram |
@@ -102,7 +103,8 @@ Search the workflow for each of these and replace with your own:
 | Placeholder | Where | Get it from |
 |---|---|---|
 | Telegram credential | Every Telegram node | Create one in n8n (bot token from BotFather), attach it to each Telegram node |
-| `REPLACE_WITH_GROQ_API_KEY` | `Rewrite with Instructions` (+ its `(Both)` clone), `Build Image Prompt` (+ its `(LI)` clone), `Generate Caption` | console.groq.com |
+| `REPLACE_WITH_GROQ_API_KEY` | `Rewrite with Instructions` (+ its `(Both)` clone), `Build Image Prompt` (+ its `(LI)` clone) | console.groq.com |
+| `REPLACE_WITH_OPENROUTER_API_KEY` | `Generate Caption` | openrouter.ai |
 | `REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY` | `Save to Supabase`, `Get Pending Approval` (+ `(Callback)`), `Update Status` (+ `(Callback)`), `Save to Supabase (IG)` — both `apikey` and `Authorization` headers on each | Supabase → Project Settings → API |
 | `<your-project-ref>.supabase.co` | Same nodes' URLs | Your Supabase project URL |
 | `REPLACE_WITH_LINKEDIN_ACCESS_TOKEN` | `Post to LinkedIn`, `Post to LinkedIn (Image)`, `Register LinkedIn Upload`, `Upload Image to LinkedIn` | LinkedIn API access token |
@@ -135,7 +137,7 @@ Then text the bot `y: test` or `ig: test`.
 | `ig: <caption>` | Posts that caption to Instagram verbatim with an auto-generated image, same menu |
 | A photo with caption `ig: <caption>` | Uses your photo instead of generating one; caption stays verbatim |
 | Tap **Post it** | Publishes the current draft (with whatever image/text state it's in) |
-| Tap **Regenerate text/caption only** | Rewrites the text/caption via Groq, keeps any existing image |
+| Tap **Regenerate text/caption only** | Rewrites the text/caption (Groq for LinkedIn, OpenRouter for Instagram), keeps any existing image |
 | Tap **Regenerate image only** | Generates a new AI image, keeps the current text/caption |
 | Tap **Regenerate text/caption + image** | Redoes both from the original input |
 | Tap **Discard** | Cancels the pending draft |
@@ -149,13 +151,14 @@ button menu always acts on the most recent one.
 
 ## 🎨 Customizing the writing voice
 
-Each platform's tone lives entirely in its own Groq system prompt — nothing
-is shared:
+Each platform's tone lives entirely in its own system prompt — nothing is
+shared:
 
 - **LinkedIn** → `Rewrite with Instructions` (+ its `(Both)` clone, same
-  prompt) for the post text, `Build Image Prompt (LI)` for the image
-  description
-- **Instagram** → `Build Image Prompt` (image description only) / `Generate Caption`
+  prompt, via Groq) for the post text, `Build Image Prompt (LI)` (Groq) for
+  the image description
+- **Instagram** → `Build Image Prompt` (Groq, image description only) /
+  `Generate Caption` (OpenRouter, caption text)
 
 Edit the `content` field of the `role: 'system'` message in each node's Body
 to change voice, length, hashtag rules, image style, or what topics it will
