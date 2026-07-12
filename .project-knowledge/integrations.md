@@ -203,17 +203,35 @@
   regenerating the image" to "skip *unless* explicitly regenerating the
   caption or both" so a verbatim caption is the default and AI-writing one
   is opt-in.
-- Used by 5 nodes now: WF1's `Rewrite with Instructions` (+ its clone
+- Used by 4 nodes now: WF1's `Rewrite with Instructions` (+ its clone
   `Rewrite with Instructions (Both)`) for LinkedIn, and `Build Image Prompt`
   (also cloned as `Build Image Prompt (LI)` for LinkedIn's own image
-  generation) + `Generate Caption` for Instagram.
+  generation). `Generate Caption` (Instagram) moved off Groq to OpenRouter —
+  see new subsection below.
 - `POST https://api.groq.com/openai/v1/chat/completions`, OpenAI-compatible chat
   format, model `llama-3.3-70b-versatile`. LinkedIn nodes: `max_tokens: 600`.
-  Instagram: `Build Image Prompt` uses `max_tokens: 200`, `Generate Caption`
-  uses `max_tokens: 700` (bumped from 400 so a longer reflective caption +
-  hashtags doesn't get truncated).
-- Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on all four
-  (not an n8n credential — see `roadmap.md`).
+  Instagram: `Build Image Prompt` uses `max_tokens: 200`.
+- Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on all
+  remaining Groq nodes (not an n8n credential — see `roadmap.md`).
+
+### OpenRouter (Instagram caption generation, switched 2026-07-12)
+
+- `Generate Caption` (Instagram's caption-writing node, still same node —
+  only its API target changed) now calls
+  `POST https://openrouter.ai/api/v1/chat/completions` with
+  `model: 'openai/gpt-4o-mini'`, `max_tokens: 700` (unchanged from the Groq
+  version — long reflective caption + hashtags still needs the headroom).
+  Response shape is identical to Groq/OpenAI (`choices[0].message.content`),
+  so `Set Post Data` (which reads `$node["Generate Caption"].json.choices[0]
+  .message.content`) needed no changes.
+- Auth: `Authorization: Bearer <OpenRouter API key>` header, hardcoded on
+  this one node (same "not yet an n8n credential" pattern as the Groq/Meta/
+  LinkedIn keys — see `roadmap.md`).
+- System prompt content (Yahya's voice/length/hashtag rules) carried over
+  unchanged from the Groq version — it's plain OpenAI-format chat messages,
+  which gpt-4o-mini follows natively, so no rewrite was needed beyond the
+  API/model swap. All other Groq-backed nodes (LinkedIn text, both image
+  prompts) are unaffected and still run on Llama via Groq.
 - LinkedIn system prompt: Yahya's voice/length/hashtag rules, plus explicit
   instructions to (a) write about whatever topic the user actually gave it
   rather than defaulting to Synax/work content, and (b) vary the opening

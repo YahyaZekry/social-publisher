@@ -1,8 +1,8 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
+> Last updated: 2026-07-12 (Instagram caption generation moved from Groq/Llama to OpenRouter/gpt-4o-mini)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
-> Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
+> Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + OpenRouter + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
 
 ## What This Project Does
@@ -33,6 +33,10 @@ when called before the media container finished processing — now polls
 webhook-registration bug** that silently dropped some incoming Telegram
 messages after repeated structural API edits to the active workflow (fixed
 by deactivate/reactivate) — see `integrations.md` and `history.md`.
+**2026-07-12: `Generate Caption` (Instagram) switched from Groq/Llama to
+OpenRouter's `openai/gpt-4o-mini`** — same prompt, same response shape, just
+a different backend; LinkedIn text and image-prompt generation stay on Groq
+— see `integrations.md`.
 
 ---
 

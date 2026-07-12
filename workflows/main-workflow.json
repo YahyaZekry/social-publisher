@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-10T09:35:51.846Z",
+  "updatedAt": "2026-07-12T08:45:52.305Z",
   "createdAt": "2026-07-03T04:39:56.341Z",
   "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
@@ -916,13 +916,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
+              "value": "Bearer REPLACE_WITH_OPENROUTER_API_KEY"
             },
             {
               "name": "Content-Type",
@@ -933,7 +933,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: (() => { try { return $node['Extract Image Prompt'].json['content'] } catch (e) { return $node['Extract Content (IG)'].json['content'] } })() } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: (() => { try { return $node['Extract Image Prompt'].json['content'] } catch (e) { return $node['Extract Content (IG)'].json['content'] } })() } ] }) }}",
         "options": {}
       },
       "id": "e414dd03-ff2b-4443-81b3-a4f7965b0955",
@@ -3169,9 +3169,9 @@
     }
   ],
   "pinData": {},
-  "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
-  "activeVersionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
-  "versionCounter": 211,
+  "versionId": "d66da728-56f7-461a-9532-18776623b1c9",
+  "activeVersionId": "d66da728-56f7-461a-9532-18776623b1c9",
+  "versionCounter": 212,
   "triggerCount": 1,
   "sourceWorkflowId": null,
   "shared": [
@@ -3196,9 +3196,9 @@
   ],
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-07-10T09:35:51.852Z",
-    "createdAt": "2026-07-10T09:35:51.852Z",
-    "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+    "updatedAt": "2026-07-12T08:45:52.307Z",
+    "createdAt": "2026-07-12T08:45:52.307Z",
+    "versionId": "d66da728-56f7-461a-9532-18776623b1c9",
     "workflowId": "9lo7Lhwn3tg2cC6P",
     "nodes": [
       {
@@ -4110,13 +4110,13 @@
       {
         "parameters": {
           "method": "POST",
-          "url": "https://api.groq.com/openai/v1/chat/completions",
+          "url": "https://openrouter.ai/api/v1/chat/completions",
           "sendHeaders": true,
           "headerParameters": {
             "parameters": [
               {
                 "name": "Authorization",
-                "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
+                "value": "Bearer REPLACE_WITH_OPENROUTER_API_KEY"
               },
               {
                 "name": "Content-Type",
@@ -4127,7 +4127,7 @@
           "sendBody": true,
           "contentType": "raw",
           "rawContentType": "application/json",
-          "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: (() => { try { return $node['Extract Image Prompt'].json['content'] } catch (e) { return $node['Extract Content (IG)'].json['content'] } })() } ] }) }}",
+          "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 700, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: (() => { try { return $node['Extract Image Prompt'].json['content'] } catch (e) { return $node['Extract Content (IG)'].json['content'] } })() } ] }) }}",
           "options": {}
         },
         "id": "e414dd03-ff2b-4443-81b3-a4f7965b0955",
@@ -6359,34 +6359,34 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-07-10T09:35:52.721Z",
-        "id": 119,
+        "createdAt": "2026-07-12T08:45:53.216Z",
+        "id": 123,
         "workflowId": "9lo7Lhwn3tg2cC6P",
-        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+        "versionId": "d66da728-56f7-461a-9532-18776623b1c9",
         "event": "activated",
         "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
       },
       {
-        "createdAt": "2026-07-10T09:48:24.144Z",
-        "id": 121,
+        "createdAt": "2026-07-12T08:46:05.461Z",
+        "id": 125,
         "workflowId": "9lo7Lhwn3tg2cC6P",
-        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+        "versionId": "d66da728-56f7-461a-9532-18776623b1c9",
         "event": "activated",
         "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
       },
       {
-        "createdAt": "2026-07-10T09:35:52.222Z",
-        "id": 118,
+        "createdAt": "2026-07-12T08:45:52.744Z",
+        "id": 122,
         "workflowId": "9lo7Lhwn3tg2cC6P",
-        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+        "versionId": "d66da728-56f7-461a-9532-18776623b1c9",
         "event": "deactivated",
         "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
       },
       {
-        "createdAt": "2026-07-10T09:48:21.610Z",
-        "id": 120,
+        "createdAt": "2026-07-12T08:46:03.894Z",
+        "id": 124,
         "workflowId": "9lo7Lhwn3tg2cC6P",
-        "versionId": "dd135aa0-f9a5-4462-a261-c22744241c20",
+        "versionId": "d66da728-56f7-461a-9532-18776623b1c9",
         "event": "deactivated",
         "userId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
       }
