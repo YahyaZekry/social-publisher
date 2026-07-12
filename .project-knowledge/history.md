@@ -512,3 +512,18 @@
   `integrations.md`, "Prompt quality pass"). Deferred collapsing the two
   byte-identical LinkedIn-text nodes into one shared upstream node — a
   real node-graph change, left for later unless requested. *(2026-07-12)*
+- A live test of the above fix (`y: now testing the automation with better
+  modal...`) immediately surfaced a second, more specific failure mode:
+  two regenerations both opened with a near-identical "Automation's next
+  hurdle..." line and invented a fictional narrative never in the input.
+  The existing GROUNDING rule only warned against inventing facts/numbers,
+  not invented narrative *framing* — so a technically-truthful-sounding but
+  fabricated story slipped past it untouched. Fixed by widening GROUNDING
+  to name this failure mode explicitly, banning the specific opening
+  pattern and a generic "tools getting out of the way" systems-aphorism,
+  narrowing "systems-thinking" to mean a specific mechanism rather than a
+  vibe, and swapping in this real failure (with its correction) as the
+  worked example — same real-incident-as-example principle used throughout
+  this project's prompt fixes. Applied to both LinkedIn text nodes only;
+  image prompts and `Generate Caption` confirmed unchanged.
+  *(2026-07-12, round 2)*

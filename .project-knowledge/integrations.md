@@ -277,6 +277,27 @@ LinkedIn voice drifted generic.
   the byte-identical-duplicate-maintenance risk that caused several past
   bugs — see `history.md`) — a real node-graph change, not a prompt-text
   edit, left for a future session if requested.
+- **Round 2, same day, triggered by a real live-test failure**: `y: now
+  testing the automation with better modal, Hope I can post better results
+  here` produced two regenerations that both opened with a near-identical
+  "Automation's next hurdle..." line and invented a fictional narrative
+  ("a revamped interface", "seamless automation") instead of staying
+  literal to the input. Root cause: the GROUNDING rule's own examples of
+  what not to invent were all fake metrics/timelines/backstory — it never
+  named invented *narrative framing* as the same violation, so this shape
+  of fabrication slipped through. Separately, "systems-thinking" as a bare
+  adjective was inviting exactly this kind of hollow generalization. Fixed
+  on `Rewrite with Instructions` + `Rewrite with Instructions (Both)` only
+  (kept byte-identical, verified after editing): (1) GROUNDING widened to
+  explicitly cover invented narrative framing, not just invented facts;
+  (2) BANNED list gained two new structural patterns (the "next
+  hurdle/challenge" opening, and generic systems-aphorisms about tools
+  "getting out of the way"); (3) the Voice line's "systems-thinking"
+  narrowed to mean the specific mechanism actually at play, not a generic
+  maxim; (4) Example 1 (from the Round 1 few-shot block) replaced with this
+  exact real failure + its correction, used as the corrective example
+  instead of an invented one. `Build Image Prompt`, `Build Image Prompt
+  (LI)`, and `Generate Caption` were re-verified unchanged in this round.
 - LinkedIn system prompt: Yahya's voice/length/hashtag rules, plus explicit
   instructions to (a) write about whatever topic the user actually gave it
   rather than defaulting to Synax/work content, and (b) vary the opening
