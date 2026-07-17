@@ -203,35 +203,42 @@
   regenerating the image" to "skip *unless* explicitly regenerating the
   caption or both" so a verbatim caption is the default and AI-writing one
   is opt-in.
-- Used by 4 nodes now: WF1's `Rewrite with Instructions` (+ its clone
-  `Rewrite with Instructions (Both)`) for LinkedIn, and `Build Image Prompt`
-  (also cloned as `Build Image Prompt (LI)` for LinkedIn's own image
-  generation). `Generate Caption` (Instagram) moved off Groq to OpenRouter —
-  see new subsection below.
+- **Now used by only 2 nodes (as of 2026-07-17): `Build Image Prompt` and
+  its clone `Build Image Prompt (LI)`** — both FLUX-prompt generators. The
+  two LinkedIn text nodes (`Rewrite with Instructions` + `Rewrite with
+  Instructions (Both)`) **moved off Groq to OpenRouter on 2026-07-17**, and
+  `Generate Caption` had already moved on 2026-07-12 — so all three
+  text/caption generators are OpenRouter now; Groq only does the two image
+  prompts. See the OpenRouter subsection below.
 - `POST https://api.groq.com/openai/v1/chat/completions`, OpenAI-compatible chat
-  format, model `llama-3.3-70b-versatile`. LinkedIn nodes: `max_tokens: 600`.
-  Instagram: `Build Image Prompt` uses `max_tokens: 200`.
-- Auth: `Authorization: Bearer <Groq API key>` header, hardcoded on all
-  remaining Groq nodes (not an n8n credential — see `roadmap.md`).
+  format, model `llama-3.3-70b-versatile`, `max_tokens: 200`.
+- Auth: `Authorization: Bearer <Groq API key>` header, still **hardcoded** on
+  both image-prompt nodes (not yet an n8n credential — see `roadmap.md`).
 
-### OpenRouter (Instagram caption generation, switched 2026-07-12)
+### OpenRouter (all text + caption generation — expanded 2026-07-17)
 
-- `Generate Caption` (Instagram's caption-writing node, still same node —
-  only its API target changed) now calls
-  `POST https://openrouter.ai/api/v1/chat/completions` with
-  `model: 'openai/gpt-4o-mini'`, `max_tokens: 700` (unchanged from the Groq
-  version — long reflective caption + hashtags still needs the headroom).
-  Response shape is identical to Groq/OpenAI (`choices[0].message.content`),
-  so `Set Post Data` (which reads `$node["Generate Caption"].json.choices[0]
-  .message.content`) needed no changes.
-- Auth: `Authorization: Bearer <OpenRouter API key>` header, hardcoded on
-  this one node (same "not yet an n8n credential" pattern as the Groq/Meta/
-  LinkedIn keys — see `roadmap.md`).
-- System prompt content (Yahya's voice/length/hashtag rules) carried over
-  unchanged from the Groq version — it's plain OpenAI-format chat messages,
-  which gpt-4o-mini follows natively, so no rewrite was needed beyond the
-  API/model swap. All other Groq-backed nodes (LinkedIn text, both image
-  prompts) are unaffected and still run on Llama via Groq.
+- **Now backs all three text/caption generators**: `Generate Caption`
+  (Instagram, moved 2026-07-12) plus `Rewrite with Instructions` and
+  `Rewrite with Instructions (Both)` (LinkedIn text, **moved 2026-07-17**).
+  All call `POST https://openrouter.ai/api/v1/chat/completions`,
+  `model: 'openai/gpt-4o-mini'`. `max_tokens`: Generate Caption 700
+  (+ `presence_penalty: 0.4`), the two LinkedIn nodes 600. Response shape is
+  identical to Groq/OpenAI (`choices[0].message.content`), so downstream
+  references needed no changes. System prompts carried over verbatim (their
+  content was unchanged by the provider move).
+- **Auth is now an n8n credential — the project's first (2026-07-17).** All
+  three nodes use `authentication: genericCredentialType` → **Header Auth**
+  credential named `Authorization`, holding header **Name** `Authorization`,
+  **Value** `Bearer sk-or-v1-…`. The manual per-node `Authorization` header
+  was removed. This is the start of the roadmap's "move hardcoded keys into
+  n8n credentials" goal — the OpenRouter key now lives in one place instead
+  of on each node. (Groq/Supabase/LinkedIn/Meta keys are still hardcoded.)
+- **Gotcha (cost ~an hour of 401s):** when creating the Header Auth
+  credential, the header **Name** field must be `Authorization` (the literal
+  HTTP header name) — NOT the credential's display name. It was first set to
+  `OpenRouter`, so requests sent an `OpenRouter:` header and no
+  `Authorization:` header → OpenRouter returned **"Authorization failed"
+  (401)**. Fix: set the Name field to `Authorization`. See `history.md`.
 
 ### Prompt quality pass (2026-07-12, same session as the OpenRouter switch above)
 

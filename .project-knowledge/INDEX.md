@@ -1,9 +1,9 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-12 (Instagram caption generation moved to OpenRouter/gpt-4o-mini; LinkedIn text prompt rewritten from scratch after two incremental patches, replacing a growing banned-phrase list with one generative "would a real person say this" rule)
+> Last updated: 2026-07-17 (all text/caption generation moved to OpenRouter/gpt-4o-mini behind the project's first n8n credential — a shared Header Auth cred; Instagram preview split into two Telegram messages to beat the 1024-char photo-caption limit; a Claude-Code-via-local-bridge experiment was tried and abandoned)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
-> Stack: n8n (Docker) + Telegram Bot API + Supabase + Groq + OpenRouter + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
-> Current goal: proper n8n credentials instead of hardcoded values, then build company LinkedIn (`s:`)
+> Stack: n8n (Docker) + Telegram Bot API + Supabase + OpenRouter (text/captions) + Groq (image prompts) + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
+> Current goal: finish moving remaining hardcoded keys (Supabase/Groq/LinkedIn/Meta) into n8n credentials — OpenRouter is done — then build company LinkedIn (`s:`)
 
 ## What This Project Does
 Automates posting to personal Instagram, personal LinkedIn, and company LinkedIn.

@@ -132,10 +132,11 @@ merged into this one workflow, never its own standalone one.**
     regenerating the image", now "skip *unless* the command is
     `ig_regen_caption` or `ig_regen_both`" — caption defaults to verbatim,
     AI-writing one is opt-in via the button menu) — True → `Set Post Data`
-    directly. False → `Generate Caption` (Groq; its `content` reference
-    tries `Extract Image Prompt` first, falls back to `Extract Content
-    (IG)` directly via try/catch — needed because `Extract Image Prompt`
-    never runs on the user-photo path) → `Set Post Data`.
+    directly. False → `Generate Caption` (**OpenRouter `openai/gpt-4o-mini`
+    via the shared `Authorization` Header Auth credential** since 2026-07-17;
+    its `content` reference tries `Extract Image Prompt` first, falls back to
+    `Extract Content (IG)` directly via try/catch — needed because
+    `Extract Image Prompt` never runs on the user-photo path) → `Set Post Data`.
 13. `Set Post Data` (Set) — `cloudinary_url` tries `Upload to Cloudinary`
     (AI path) first, falls back to `Upload User Photo to Cloudinary`
     (user-photo path) via try/catch; `caption` tries `Generate Caption`
@@ -143,10 +144,17 @@ merged into this one workflow, never its own standalone one.**
     `chat_id`/`telegram_user_id` reference `Extract Content (IG)` directly
     (simplified 2026-07-08 — it runs on every path, unlike
     `Extract Image Prompt`).
-14. `Save to Supabase (IG)` → `Send Preview (IG)` (Telegram `sendPhoto`,
-    same 5-button pattern: `ig_regen_both`, `ig_regen_image`,
+14. `Save to Supabase (IG)` → **`Send a photo message`** (Telegram
+    `sendPhoto`, image only — `📸 Instagram Preview` short caption, **no
+    menu**) → **`Send Preview (IG)`** (**changed 2026-07-17 from `sendPhoto`
+    to `sendMessage`**: sends the **full caption** as a text message with the
+    5-button `inline_keyboard`: `ig_regen_both`, `ig_regen_image`,
     `ig_regen_caption`, `ig_approve`, `ig_discard`) → `Wait for Approval
-    (IG)` (same GET-only gotcha as LinkedIn's).
+    (IG)` (same GET-only gotcha as LinkedIn's). **Split into two messages
+    2026-07-17** to escape Telegram's 1024-char `sendPhoto` caption limit —
+    the photo carries no long caption, the caption rides a `sendMessage`
+    (4096-char limit) with the menu under it (image first, then caption+menu).
+    See `history.md`.
 15. `Route Command (IG)` (Switch on `$json.query.command`, 5 outputs, values
     updated 2026-07-08 to match the button data instead of old typed
     commands):

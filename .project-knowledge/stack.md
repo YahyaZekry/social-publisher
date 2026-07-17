@@ -11,7 +11,7 @@
 | Tunnel | ngrok, static domain `ergonomic-password-rosy.ngrok-free.dev` |
 | Bot platform | Telegram Bot API |
 | Database | Supabase (project ref `xiqohqytcyjiqskkextz`) — `pending_approvals` table |
-| LLM | Groq (`llama-3.3-70b-versatile`) — generates/rewrites LinkedIn posts, Instagram image prompts + captions |
+| LLM | OpenRouter (`openai/gpt-4o-mini`) — LinkedIn post text + Instagram captions (via n8n Header Auth credential); Groq (`llama-3.3-70b-versatile`) — FLUX image prompts only (2026-07-17) |
 | Image generation | Pollinations (`image.pollinations.ai`) — free, no auth, text-to-image only |
 | Image hosting | Cloudinary (unsigned upload preset) |
 | Publish targets | Personal LinkedIn (built), Instagram (built) — both live; company LinkedIn not yet integrated |

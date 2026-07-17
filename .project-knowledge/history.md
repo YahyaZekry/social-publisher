@@ -1,10 +1,37 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-17 (OpenRouter credential migration + IG two-message caption split; Claude-bridge experiment abandoned)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
 
+- **Instagram caption regeneration failed with Telegram "Bad Request:
+  message caption is too long."** `Send Preview (IG)` sent the image via
+  `sendPhoto` with the full caption attached, but Telegram caps `sendPhoto`
+  captions at **1024 chars**, while `Generate Caption`'s prompt allows up to
+  2000 — so any long reflective caption overflowed and the send failed
+  ("regenerating… then nothing"). This was a latent limit mismatch, not
+  caused by the provider swap. **Fix: split into two messages** — added
+  `Send a photo message` (`sendPhoto`, image only, short `📸 Instagram
+  Preview` caption, no menu) before `Send Preview (IG)`, and changed
+  `Send Preview (IG)` from `sendPhoto` to `sendMessage` (4096-char limit)
+  carrying the full caption + the 5-button menu. Order is image → caption
+  (with menu under it). Implemented by swapping the two nodes' send types
+  (no rewiring, keyboard preserved). *(fixed: 2026-07-17)*
+- **OpenRouter returned "Authorization failed" (401) on every text/caption
+  regeneration** after the credential switch. Cause: the new Header Auth
+  credential had its header **Name** field set to `OpenRouter` (the
+  credential's intended display name) instead of the literal `Authorization`
+  — so requests carried an `OpenRouter:` header and no auth header. Fix: set
+  the Name field to `Authorization`. The node wiring (URL, model, credential
+  selection) was all correct; only the credential's internal header name was
+  wrong. *(fixed: 2026-07-17)*
+- **The migrated caption `Text` field rendered as literal `{{ … }}` in
+  Telegram.** After changing `Send Preview (IG)` to `sendMessage`, its `Text`
+  field was left in **Fixed** mode, so n8n sent the raw expression string
+  instead of evaluating it. Fix: toggle the field to **Expression** mode (the
+  `fx` marker). Tell: an expression field shows the `fx` icon; a Fixed one
+  doesn't. *(fixed: 2026-07-17)*
 - n8n logged "X-Forwarded-For header is set but trust proxy is false" → already
   resolved by `N8N_PROXY_HOPS=1` on the container before this session started;
   confirmed zero occurrences across full log history. *(fixed: on/before 2026-07-02)*
@@ -435,6 +462,27 @@
 
 ## Decisions
 
+- **Considered running text/caption generation through Claude Code (no
+  Anthropic API key) via a local bridge, then abandoned it for OpenRouter.**
+  A small Node HTTP server wrapping `claude -p` (subscription auth) was built
+  and worked end-to-end, reachable from the Dockerized n8n at the host
+  gateway `172.17.0.1`. Dropped because it needs a host-side process running
+  persistently (dies on reboot / crash), whereas OpenRouter + an n8n
+  credential is self-contained inside n8n. Net move: the three text/caption
+  nodes went to OpenRouter `openai/gpt-4o-mini`. The bridge script is leftover
+  at `/home/frieso/claude-bridge/` (host, outside this repo) — unused, safe to
+  delete. *(2026-07-17)*
+- **All three text/caption nodes consolidated on OpenRouter
+  `openai/gpt-4o-mini`** (LinkedIn text moved off Groq; caption already
+  there since 2026-07-12), authenticated via **one shared Header Auth n8n
+  credential** rather than per-node hardcoded keys — the first credential in
+  the project and the opening move on the roadmap's credentials-migration
+  goal. Groq now only powers the two FLUX image-prompt nodes. *(2026-07-17)*
+- **The Instagram preview is intentionally two Telegram messages, not one.**
+  Full caption goes in a `sendMessage` (4096 limit) so long captions survive;
+  the photo is a separate `sendPhoto` with no long caption. Chosen over
+  capping caption length (would lose long captions) and over a single
+  link-preview message (image would show smaller). *(2026-07-17)*
 - Built the 2026-07-08 session's large feature set (LinkedIn image support,
   the unified 5-button menu replacing typed commands on both platforms,
   Instagram's user-photo support) via n8n's **Public REST API**
