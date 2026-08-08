@@ -1,0 +1,6 @@
+# n8n credentials — NEVER commit
+.credentials.env
+
+# Editor/OS noise
+.DS_Store
+*.swp

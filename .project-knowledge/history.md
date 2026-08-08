@@ -591,3 +591,27 @@
   it as written rather than adjust the example first — worth checking
   regenerations for a "we'll see" tic emerging, and revisiting that one
   example if it does. *(2026-07-12, round 3)*
+- **All API keys moved into n8n credentials — roadmap goal completed
+  (2026-08-08).** Groq, Supabase, LinkedIn, and Meta keys were still
+  hardcoded in node headers/bodies; all four moved into n8n credentials the
+  same way OpenRouter was done on 2026-07-17. Three of them are `httpHeaderAuth`
+  credentials (`Authorization: Bearer …` for Groq and LinkedIn; the Supabase
+  credential sends **only** the `apikey` header). The Meta key went to
+  `httpQueryAuth` (`access_token` as a query parameter) — it had lived inside
+  JSON request bodies, which a header credential can't cover; the two body-based
+  Instagram nodes now send `access_token` as a query param, which the Graph API
+  accepts on every endpoint. **Verified empirically before applying**: Supabase
+  `apikey`-alone succeeds and `Authorization`-alone fails ("No API key found"),
+  so the old `Authorization` header was dropped. **Repo hardened in the same
+  pass**: the workflow JSON is now secret-free (generic `-REPLACE` credential
+  IDs that n8n re-prompts by name on import), real values live in a gitignored
+  `.credentials.env`, and a `.credentials.env.example` template is committed.
+  *(2026-08-08)*
+- **Meta node auth-form trap (2026-08-08):** the first conversion script
+  stripped `access_token` from the two body-based Instagram nodes and set the
+  credential only where the token was already in query params — leaving those
+  two nodes with no auth at all. Caught in export review (zero secrets but two
+  auth-less nodes), fixed by attaching the same `httpQueryAuth` credential.
+  Lesson: when migrating a key from JSON body to a credential, verify the
+  credential is attached to *every* node that had it, not just the ones
+  matching a query-param pattern. *(2026-08-08)*

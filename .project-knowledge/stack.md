@@ -1,6 +1,6 @@
 # Stack
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-04
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-08
 
 ## Tech Stack
 
@@ -11,7 +11,7 @@
 | Tunnel | ngrok, static domain `ergonomic-password-rosy.ngrok-free.dev` |
 | Bot platform | Telegram Bot API |
 | Database | Supabase (project ref `xiqohqytcyjiqskkextz`) — `pending_approvals` table |
-| LLM | OpenRouter (`openai/gpt-4o-mini`) — LinkedIn post text + Instagram captions (via n8n Header Auth credential); Groq (`llama-3.3-70b-versatile`) — FLUX image prompts only (2026-07-17) |
+| LLM | OpenRouter (`openai/gpt-4o-mini`) — LinkedIn post text + Instagram captions; Groq (`llama-3.3-70b-versatile`) — FLUX image prompts. **All 6 API keys now live in n8n credentials (2026-08-08)** — see `integrations.md` for the full list |
 | Image generation | Pollinations (`image.pollinations.ai`) — free, no auth, text-to-image only |
 | Image hosting | Cloudinary (unsigned upload preset) |
 | Publish targets | Personal LinkedIn (built), Instagram (built) — both live; company LinkedIn not yet integrated |
@@ -39,7 +39,8 @@
 | `WEBHOOK_URL` | n8n container | Public base URL (ngrok) n8n uses when registering webhooks |
 | `N8N_PROXY_HOPS` | n8n container | Set to `1` — tells Express to trust 1 hop of `X-Forwarded-For` (fixes "trust proxy" error behind ngrok) |
 
-Bot token and Supabase service_role key currently live as **hardcoded values** inside
-the workflow JSON (Telegram credential + raw headers on the "Get Pending Approval"
-HTTP Request node) rather than as env vars or n8n credentials for the Supabase call.
-See `roadmap.md` for the follow-up to fix that.
+Bot token and every API key now live as **n8n credentials** (not hardcoded in
+the workflow JSON) since 2026-08-08 — the repo's `workflows/main-workflow.json`
+contains **no secrets**, only generic `-REPLACE` credential IDs that n8n
+re-prompts you to match by name on import. Real values are kept locally in the
+gitignored `.credentials.env` (see repo README section 4).

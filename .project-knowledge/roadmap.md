@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-17 (OpenRouter credential + IG two-message caption split)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-08 (all API keys moved into n8n credentials)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
@@ -14,12 +14,11 @@ Regenerate text/caption+image, image only, text/caption only, Post it,
 Discard — instead of typed `/approve`/`/edit`/`/regenerate*` commands, which
 no longer do anything on either platform. Instagram also accepts a photo +
 `ig: <caption>` directly, using your own photo instead of generating one.
-**2026-07-17: all text/caption generation moved to OpenRouter
-(`openai/gpt-4o-mini`) behind the project's first n8n credential, and the
-Instagram preview was split into two Telegram messages (image, then
-full-caption text + menu) to beat the 1024-char photo-caption limit.**
-Next: finish moving the remaining hardcoded keys into n8n credentials, then
-company LinkedIn (`s:`).
+**2026-08-08: the roadmap's "move hardcoded keys into n8n credentials" goal
+is COMPLETE** — all remaining keys (Groq, Supabase, LinkedIn, Meta) moved
+into n8n credentials, matching OpenRouter's earlier pattern; the workflow
+JSON and repo contain no secrets (details in `integrations.md` and
+`history.md`). **Next: build company LinkedIn (`s:`).**
 
 ---
 
@@ -56,18 +55,15 @@ messages after repeated API-driven structural edits to the active workflow)*
       it (confirmed clean across all commits + GitHub after a force-push).
       Since the repo was never public before that rewrite, this is now low
       urgency — the key was likely never actually seen outside this project
-      — but rotating is still good hygiene since it's used from a live
-      workflow with plaintext copies on multiple nodes. *(added: 2026-07-03,
-      downgraded: 2026-07-04 after history rewrite)*
-- [ ] Move the remaining hardcoded keys into proper n8n credentials.
-      **Started 2026-07-17: OpenRouter is done** — all three text/caption
-      nodes (`Rewrite with Instructions`, `Rewrite with Instructions (Both)`,
-      `Generate Caption`) now use a shared **Header Auth credential**
-      (`Authorization`), the project's first credential. **Still hardcoded:**
-      Supabase `apikey`/`Authorization` (service_role), Groq key (2
-      image-prompt nodes), LinkedIn token, Meta/Instagram access token.
-      *(added: 2026-07-02, expanded: 2026-07-03/04/08, partially done:
-      2026-07-17)*
+      — but rotating is still good hygiene. *(added: 2026-07-03, downgraded:
+      2026-07-04 after history rewrite; note: the key now lives in a single
+      n8n credential, not on multiple nodes, since 2026-08-08)*
+- [x] Move the remaining hardcoded keys into proper n8n credentials.
+      **COMPLETED 2026-08-08** — all six keys now live in n8n credentials:
+      Telegram (`telegramApi`), OpenRouter + Groq + LinkedIn + Supabase
+      (`httpHeaderAuth`), Meta (`httpQueryAuth`). The repo's workflow JSON
+      has no secrets; real values sit in gitignored `.credentials.env`.
+      *(added: 2026-07-02, done: 2026-08-08)*
 - [ ] Build the actual publish step for company LinkedIn (`s:`) — personal
       LinkedIn and Instagram are both done now. WF1 is the template for the
       pattern: draft/verbatim capture → Supabase pending row → Telegram

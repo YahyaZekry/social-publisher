@@ -172,10 +172,14 @@
   `content_preview` (first 200 chars of the generated post text), `status`
   (`pending`/`approved`/`rejected` confirmed used; exact full constraint
   definition still not directly inspected, see `roadmap.md`), `created_at`.
-- Auth: `apikey` header + `Authorization: Bearer <service_role JWT>`, hardcoded on
-  all three nodes above (not an n8n credential — see `roadmap.md` to fix; this
-  key was exposed in this repo's first commit and should be rotated regardless
-  of redaction — see `roadmap.md`).
+- Auth: **n8n Header Auth credential `Supabase`** (since 2026-08-08) — header
+  **Name** `apikey`, **Value** the service_role JWT. The old
+  `Authorization: Bearer <service_role JWT>` header was **dropped**: verified
+  live that `apikey` alone succeeds and `Authorization` alone fails ("No API
+  key found"), so the credential only needs the one header. Was previously
+  hardcoded on all three nodes; this key was exposed in the repo's first
+  commit (see `roadmap.md` — rotation still recommended regardless of
+  redaction).
 - **Gotcha:** a 0-row response is a 0-item n8n output, which silently stops the whole
   downstream branch (no error, no reply). `Get Pending Approval` has
   **"Always Output Data" enabled** to work around this — do not disable it.
@@ -212,8 +216,9 @@
   prompts. See the OpenRouter subsection below.
 - `POST https://api.groq.com/openai/v1/chat/completions`, OpenAI-compatible chat
   format, model `llama-3.3-70b-versatile`, `max_tokens: 200`.
-- Auth: `Authorization: Bearer <Groq API key>` header, still **hardcoded** on
-  both image-prompt nodes (not yet an n8n credential — see `roadmap.md`).
+- Auth: **n8n Header Auth credential `Groq API`** (since 2026-08-08) — header
+  **Name** `Authorization`, **Value** `Bearer <Groq API key>`. Was previously
+  hardcoded on both image-prompt nodes.
 
 ### OpenRouter (all text + caption generation — expanded 2026-07-17)
 
@@ -230,9 +235,11 @@
   three nodes use `authentication: genericCredentialType` → **Header Auth**
   credential named `Authorization`, holding header **Name** `Authorization`,
   **Value** `Bearer sk-or-v1-…`. The manual per-node `Authorization` header
-  was removed. This is the start of the roadmap's "move hardcoded keys into
-  n8n credentials" goal — the OpenRouter key now lives in one place instead
-  of on each node. (Groq/Supabase/LinkedIn/Meta keys are still hardcoded.)
+  was removed. This was the start of the roadmap's "move hardcoded keys into
+  n8n credentials" goal, **completed 2026-08-08** — the remaining
+  Groq/Supabase/LinkedIn/Meta keys all moved into credentials the same way
+  (Header/Query Auth), so **every key in the workflow now lives in an n8n
+  credential** (Telegram + OpenRouter + Groq + Supabase + LinkedIn + Meta).
 - **Gotcha (cost ~an hour of 401s):** when creating the Header Auth
   credential, the header **Name** field must be `Authorization` (the literal
   HTTP header name) — NOT the credential's display name. It was first set to
@@ -427,9 +434,10 @@ LinkedIn voice drifted generic.
 - Used by WF1's `Post to LinkedIn` (text-only) / `Post to LinkedIn (Image)`
   nodes, fired only after the "Post it" button (`li_approve`).
 - `POST https://api.linkedin.com/v2/ugcPosts`, `X-Restli-Protocol-Version: 2.0.0`.
-- Auth: `Authorization: Bearer <LinkedIn access token>` header, hardcoded on
-  every LinkedIn node (not an n8n credential — see `roadmap.md`;
-  expiry/refresh behavior unknown, also tracked in `roadmap.md`).
+- Auth: **n8n Header Auth credential `LinkedIn API`** (since 2026-08-08) —
+  header **Name** `Authorization`, **Value** `Bearer <LinkedIn access token>`.
+  Was previously hardcoded on every LinkedIn node; expiry/refresh behavior
+  unknown, tracked in `roadmap.md`.
 - Text-only body: `author: 'urn:li:person:kvFSUycND7'`, `lifecycleState:
   'PUBLISHED'`, `specificContent['com.linkedin.ugc.ShareContent']
   .shareCommentary.text` = the current post text, `shareMediaCategory:
@@ -477,10 +485,10 @@ LinkedIn voice drifted generic.
   `1175585338972824` · Instagram Business Account ID `17841476339271624` ·
   Instagram username `yahya_zekry`.
 - **Step 1**: `POST /v20.0/17841476339271624/media` with `image_url`
-  (Cloudinary's `secure_url`), `caption`, `access_token` → returns `creation_id`
-  (as `$json.id`).
+  (Cloudinary's `secure_url`), `caption` + `access_token` (as query param via
+  the `Meta Instagram` credential) → returns `creation_id` (as `$json.id`).
 - **Step 2**: `POST /v20.0/17841476339271624/media_publish` with
-  `creation_id`, `access_token`.
+  `creation_id` + `access_token` (query param via credential).
 - **Publish race condition (fixed 2026-07-10):** calling step 2 immediately
   after step 1 sometimes failed with `400 Media ID is not available` /
   `"The media is not ready for publishing, please wait for a moment"` (Meta
@@ -509,15 +517,17 @@ LinkedIn voice drifted generic.
   which n8n's node-group validator rejects — see the node-group validation
   gotcha under Telegram Bot API above, and `history.md`'s Decisions for how
   this was verified locally before pushing).
-- Auth: `access_token` is a **long-lived Page Access Token** (hardcoded
-  directly in the request body on both nodes, not a header — same
-  "move to a credential" TODO as everything else, see `roadmap.md`),
-  derived via the `fb_exchange_token` flow from a long-lived user token.
-  Good until **~Sept 2026** (tied to the underlying user token's expiry,
-  not a short-lived token) — refresh steps documented separately by the
-  user outside this repo. The *first* token used here was short-lived and
-  expired same-day; don't confuse the two failure modes if this breaks
-  again: "Session has expired" (auth/expiry) vs. "Cannot parse access token"
+- Auth: **n8n Query Auth credential `Meta Instagram`** (since 2026-08-08) —
+  query param **Name** `access_token`, **Value** the long-lived Page Access
+  Token. The token was previously hardcoded in the request **body** on
+  `Create Media Container`/`Publish to Instagram` (and in the query params of
+  `Check Media Status`); the two body-based nodes now send it as a query
+  parameter instead, which the Graph API accepts on every endpoint. Long-lived
+  token, good until **~Sept 2026** (tied to the underlying user token's expiry,
+  not a short-lived token) — refresh steps documented separately by the user
+  outside this repo. The *first* token used here was short-lived and expired
+  same-day; don't confuse the two failure modes if this breaks again:
+  "Session has expired" (auth/expiry) vs. "Cannot parse access token"
   (malformed value — e.g. stray whitespace, seen once during setup).
 - **Confirmed working live 2026-07-04** — first real Instagram post
   published this way (content quality issues aside, see `roadmap.md`).

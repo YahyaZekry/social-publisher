@@ -98,27 +98,34 @@ against your actual table before trusting it verbatim.)
 
 n8n → **Workflows → Import from File** → `workflows/main-workflow.json`.
 
-### 4. Fill in every placeholder
+### 4. Create the credentials
 
-The exported JSON has all real credentials and account-specific IDs stripped.
-Search the workflow for each of these and replace with your own:
+The workflow JSON contains **no secrets** — every API key lives in an n8n
+credential, referenced by name. Create each of these in n8n (**Credentials →
+New credential → Import**) before activating:
 
-| Placeholder | Where | Get it from |
+| n8n credential name | n8n type | Fields |
 |---|---|---|
-| Telegram credential | Every Telegram node | Create one in n8n (bot token from BotFather), attach it to each Telegram node |
-| OpenRouter credential (**Header Auth**) | `Rewrite with Instructions` (+ its `(Both)` clone), `Generate Caption` | Create a **Header Auth** credential in n8n — **Name:** `Authorization`, **Value:** `Bearer <your openrouter.ai key>` — then set each node's Authentication to *Generic Credential Type → Header Auth → this credential*. (These three nodes use the credential, not a hardcoded key.) |
-| `REPLACE_WITH_GROQ_API_KEY` | `Build Image Prompt` (+ its `(LI)` clone) | console.groq.com |
-| `REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY` | `Save to Supabase`, `Get Pending Approval` (+ `(Callback)`), `Update Status` (+ `(Callback)`), `Save to Supabase (IG)` — both `apikey` and `Authorization` headers on each | Supabase → Project Settings → API |
-| `<your-project-ref>.supabase.co` | Same nodes' URLs | Your Supabase project URL |
-| `REPLACE_WITH_LINKEDIN_ACCESS_TOKEN` | `Post to LinkedIn`, `Post to LinkedIn (Image)`, `Register LinkedIn Upload`, `Upload Image to LinkedIn` | LinkedIn API access token |
-| `urn:li:person:<your-person-id>` | `Post to LinkedIn`, `Post to LinkedIn (Image)`, `Register LinkedIn Upload` bodies | Your own LinkedIn person URN |
-| `REPLACE_WITH_META_PAGE_ACCESS_TOKEN` | `Create Media Container`, `Publish to Instagram` | Meta Graph API long-lived Page Access Token |
-| `<your-ig-business-account-id>` | Both Instagram publish nodes' URLs | Your Instagram Business Account ID |
-| `<your-upload-preset>` | `Upload to Cloudinary`, `Upload User Photo to Cloudinary` | Your Cloudinary unsigned upload preset name |
-| `<your-cloud-name>` | Same two nodes' URLs | Your Cloudinary cloud name |
+| `Telegram account` | Telegram account | bot token from BotFather |
+| `OpenRouter (Header Auth)` | Header Auth | `Authorization` = `Bearer <openrouter key>` |
+| `Groq API` | Header Auth | `Authorization` = `Bearer <groq key>` |
+| `Supabase` | Header Auth | `apikey` = `<service_role key>` (no `Authorization` needed) |
+| `LinkedIn API` | Header Auth | `Authorization` = `Bearer <linkedin access token>` |
+| `Meta Instagram` | Query Auth | `access_token` = `<long-lived Page Access Token>` |
 
-None of these are optional — the workflow won't run correctly until every one
-points at **your own** accounts.
+The token is sent as a query parameter for Meta (`access_token=...`, which the
+Graph API accepts on every endpoint) and as the `apikey` header for Supabase
+— that single header is all Supabase requires.
+
+Account-specific IDs are hardcoded in node URLs/expressions (they aren't
+secrets): your Supabase project ref (`xiqohqytcyjiqskkextz`), LinkedIn person
+URN (`urn:li:person:kvFSUycND7`), Instagram Business Account ID
+(`17841476339271624`), and Cloudinary cloud `cbolcssr` + unsigned preset
+`ttloffm8`. Replace these with your own after importing.
+
+> On import, n8n can't match the placeholder credential IDs, so it shows each
+> node's credential as unresolved — just click it and pick the matching
+> credential from the dropdown (matched by name above).
 
 ### 5. Activate it
 
@@ -175,12 +182,11 @@ docker cp n8n:/home/node/.n8n/workflow-backups/<workflow-id>.json ./workflows/ma
 docker exec n8n rm -rf /home/node/.n8n/workflow-backups/
 ```
 
-**Before committing:** re-strip the real Groq / Supabase / LinkedIn / Meta
-keys and account IDs the export re-introduces back to the placeholders above,
-and clear the `pinData` field (editor test-execution snapshots). The
-OpenRouter key is **not** in the export — it lives in the Header Auth
-credential, which n8n never exports. The live n8n instance is unaffected
-either way; only this repo's copy needs to stay clean.
+**Before committing:** credentials are never in the export (n8n keeps them
+encrypted separately), so no re-stripping is needed for keys. Just clear the
+`pinData` field (editor test-execution snapshots) if the export re-introduces
+it, and keep account-specific IDs as you want them documented. The live n8n
+instance is unaffected either way; only this repo's copy needs to stay clean.
 
 (As of 2026-07-08, workflow edits are also sometimes made directly via n8n's
 Public API rather than the UI — see `.project-knowledge/history.md`'s
@@ -196,3 +202,14 @@ and the old typed-command listener nodes are dead code pending cleanup.
 
 Full evolving history, architecture notes, and every bug hit along the way
 live in [`.project-knowledge/`](.project-knowledge/).
+
+---
+
+<details>
+<summary>🧠 AI Context</summary>
+
+This project uses the [project-knowledge](https://github.com/YahyaZekry/claude-code-skills) skill to maintain a `.project-knowledge/` folder — a living, AI-readable map of the codebase. Every AI session loads only the files relevant to the current task instead of scanning from scratch.
+
+Built by [Yahya Zekry](https://github.com/YahyaZekry/claude-code-skills).
+
+</details>

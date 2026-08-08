@@ -1,9 +1,9 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-07-17 (all text/caption generation moved to OpenRouter/gpt-4o-mini behind the project's first n8n credential — a shared Header Auth cred; Instagram preview split into two Telegram messages to beat the 1024-char photo-caption limit; a Claude-Code-via-local-bridge experiment was tried and abandoned)
+> Last updated: 2026-08-08 (all API keys migrated into n8n credentials — Groq/Supabase/LinkedIn/Meta joined OpenRouter and Telegram; workflow JSON and repo are now secret-free)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + OpenRouter (text/captions) + Groq (image prompts) + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
-> Current goal: finish moving remaining hardcoded keys (Supabase/Groq/LinkedIn/Meta) into n8n credentials — OpenRouter is done — then build company LinkedIn (`s:`)
+> Current goal: company LinkedIn (`s:`) — the credentials-migration roadmap item is done as of 2026-08-08
 
 ## What This Project Does
 Automates posting to personal Instagram, personal LinkedIn, and company LinkedIn.
@@ -48,6 +48,11 @@ the same day replaced the LinkedIn text prompt entirely** rather than
 patching again — one generative rule instead of an accumulating
 banned-phrase list — see `integrations.md`'s "Round 3" note and
 `roadmap.md` for a flagged watch-item on the new few-shot examples.
+**2026-08-08: the credentials-migration goal is complete** — every API key
+(Groq, Supabase, LinkedIn, Meta, plus OpenRouter and Telegram) now lives in
+an n8n credential; the workflow JSON and this repo contain no secrets
+(generic `-REPLACE` credential IDs in the export, real values in a gitignored
+`.credentials.env`). See `history.md`'s 2026-08-08 decisions.
 
 ---
 

@@ -1,11 +1,5 @@
 {
-  "updatedAt": "2026-07-17T17:11:04.797Z",
-  "createdAt": "2026-07-03T04:39:56.341Z",
-  "id": "9lo7Lhwn3tg2cC6P",
   "name": "WF1 - LinkedIn Post (Personal)",
-  "description": null,
-  "active": true,
-  "isArchived": false,
   "nodes": [
     {
       "parameters": {
@@ -26,7 +20,7 @@
       "webhookId": "bf3a1c2d-1111-1111-1111-wf1linkedinprs",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -105,14 +99,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "apikey",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             },
@@ -126,7 +112,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ telegram_user_id: parseInt($json.telegram_user_id), workflow_type: 'linkedin', resume_url: $execution.resumeUrl, content_preview: $json.post_text.substring(0, 200), status: 'pending' }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "3a26e509-ebbb-426c-9f69-40d2750f0501",
       "name": "Save to Supabase",
@@ -135,12 +123,18 @@
       "position": [
         -832,
         576
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Supabase"
+        }
+      }
     },
     {
       "parameters": {
         "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
-        "text": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below.",
+        "text": "=\ud83d\udcdd LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below.",
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -148,7 +142,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🔄🖼️ Regenerate text + image",
+                    "text": "\ud83d\udd04\ud83d\uddbc\ufe0f Regenerate text + image",
                     "additionalFields": {
                       "callback_data": "li_regen_both"
                     }
@@ -160,7 +154,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🖼️ Regenerate image only",
+                    "text": "\ud83d\uddbc\ufe0f Regenerate image only",
                     "additionalFields": {
                       "callback_data": "li_regen_image"
                     }
@@ -172,7 +166,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🔄 Regenerate text only",
+                    "text": "\ud83d\udd04 Regenerate text only",
                     "additionalFields": {
                       "callback_data": "li_regen_text"
                     }
@@ -184,7 +178,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "✅ Post it",
+                    "text": "\u2705 Post it",
                     "additionalFields": {
                       "callback_data": "li_approve"
                     }
@@ -196,7 +190,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🗑️ Discard",
+                    "text": "\ud83d\uddd1\ufe0f Discard",
                     "additionalFields": {
                       "callback_data": "li_discard"
                     }
@@ -219,7 +213,7 @@
       "webhookId": "3b5c7b01-40c4-437f-bafc-4245fd63c0a6",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -376,10 +370,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_LINKEDIN_ACCESS_TOKEN"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             },
@@ -393,7 +383,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ author: 'urn:li:person:kvFSUycND7', lifecycleState: 'PUBLISHED', specificContent: { 'com.linkedin.ugc.ShareContent': { shareCommentary: { text: (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }, shareMediaCategory: 'NONE' } }, visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' } }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "248a1877-e6b1-4bbb-a94e-20d930d60e7b",
       "name": "Post to LinkedIn",
@@ -402,12 +394,18 @@
       "position": [
         288,
         416
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "LinkedIn API"
+        }
+      }
     },
     {
       "parameters": {
         "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
-        "text": "✅ Posted to LinkedIn!",
+        "text": "\u2705 Posted to LinkedIn!",
         "additionalFields": {}
       },
       "id": "f588b1c3-bd2b-4a99-b436-7043bbbdc2f8",
@@ -421,7 +419,7 @@
       "webhookId": "e066f7ed-2de9-470e-9e3d-514f2b57f8b0",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -444,7 +442,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 600, messages: [ { role: 'system', content: 'You ghostwrite Yahya\\'s quick personal updates — Egyptian, builds AI automation software (co-founded Synax, targeting Arab markets), runs long distances. These end up on LinkedIn, but treat that as a formatting detail, not a genre: write every input the way you\\'d write a text he\\'s sending a friend about whatever he\\'s actually doing, not a professional insight packaged for an audience. He might give you anything — AI, running, a book, his grandmother\\'s cooking, a random thought. Never pull it back toward AI/Synax/work if the input isn\\'t about that.\\n\\nTHE ONE RULE: everything in the post has to be something a real person would actually say about this exact input — not what a generic post about this general topic usually says. Two things follow from that:\\n\\nGROUNDING — every specific claim (what happened, why, what changed, how he feels) has to come from the input. If the input doesn\\'t explain why or what changed, don\\'t invent a reason or backstory to fill the gap — say less instead, don\\'t pad. This covers invented feelings and motivation just as much as invented numbers or timelines. If a word looks like a typo, assume the obvious intended word — don\\'t build a concept out of the literal misspelling.\\n\\nNO PERFORMANCE — don\\'t open with a general statement about how the topic works, and don\\'t close by zooming out to a lesson or anything that reads like a quote. If your first or last line could\\'ve been written by anyone, about anything, delete it and replace it with the specific thing instead (for instance, \"X\\'s next challenge is Y\" and \"that\\'s when you know you\\'re really getting somewhere\" are the same failure: a generic, pre-packaged insight standing in for an actual detail). Flat and a little uncertain — \"no idea if this works,\" \"we\\'ll see\" — beats confident and polished. Most posts don\\'t need a point; they just need to be true and specific.\\n\\nLENGTH: match the input\\'s depth. A short, casual sentence in should mean 2-4 sentences out, not a hook/story/lesson structure built up around nothing. Only go long if the input actually gives you enough real material to earn it.\\n\\nFORMAT: max 1300 characters. End with 3-5 hashtags, no space after #, no hyphens, CamelCase (#AIAutomation — never \"# AIAutomation\" or \"#AI-Automation\").\\n\\nExample 1 (input: \"y: now testing the automation with better modal, Hope I can post better results here\"): \"Testing the bot again on a different model. No idea if it\\'ll actually sound less like a robot. We\\'ll see.\\n\\n#AIAutomation #BuildInPublic #AutomationTesting\"\\n\\nExample 2 (input: \"finished a book on decision fatigue, realized I\\'ve been making my hardest calls at the worst time of day\"): \"Finished a book on decision fatigue today. Turns out my worst calls really do cluster around 4pm — not just random bad luck like I\\'d assumed.\\n\\nRearranged my schedule around it. We\\'ll see if it actually helps.\\n\\n#DecisionMaking #Psychology #Productivity\"\\n\\nExample 3 (input: \"my grandmother taught me to make molokhia today, first time i actually got the ratio right\"): \"My grandmother finally didn\\'t correct my molokhia today. Eleven years of her just saying \\'more\\' or \\'less\\' while I stirred, never an actual ratio.\\n\\nStill don\\'t really know the ratio, honestly. Guess I got close enough this time.\\n\\n#FamilyTraditions #EgyptianFood #Molokhia\"\\n\\nNotice: none of these have a point. They\\'re each just the specific thing that happened, said plainly, then they stop.\\n\\nBefore returning, reread your first and last line — would a stranger believe a person actually typed this, not an LLM performing insight? If not, cut it.\\n\\nReturn only the post text, nothing else. ' }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + ($node[\"Extract Raw Post Text\"].json[\"post_text\"]) + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea — write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 600, messages: [ { role: 'system', content: 'You ghostwrite Yahya\\'s quick personal updates \u2014 Egyptian, builds AI automation software (co-founded Synax, targeting Arab markets), runs long distances. These end up on LinkedIn, but treat that as a formatting detail, not a genre: write every input the way you\\'d write a text he\\'s sending a friend about whatever he\\'s actually doing, not a professional insight packaged for an audience. He might give you anything \u2014 AI, running, a book, his grandmother\\'s cooking, a random thought. Never pull it back toward AI/Synax/work if the input isn\\'t about that.\\n\\nTHE ONE RULE: everything in the post has to be something a real person would actually say about this exact input \u2014 not what a generic post about this general topic usually says. Two things follow from that:\\n\\nGROUNDING \u2014 every specific claim (what happened, why, what changed, how he feels) has to come from the input. If the input doesn\\'t explain why or what changed, don\\'t invent a reason or backstory to fill the gap \u2014 say less instead, don\\'t pad. This covers invented feelings and motivation just as much as invented numbers or timelines. If a word looks like a typo, assume the obvious intended word \u2014 don\\'t build a concept out of the literal misspelling.\\n\\nNO PERFORMANCE \u2014 don\\'t open with a general statement about how the topic works, and don\\'t close by zooming out to a lesson or anything that reads like a quote. If your first or last line could\\'ve been written by anyone, about anything, delete it and replace it with the specific thing instead (for instance, \"X\\'s next challenge is Y\" and \"that\\'s when you know you\\'re really getting somewhere\" are the same failure: a generic, pre-packaged insight standing in for an actual detail). Flat and a little uncertain \u2014 \"no idea if this works,\" \"we\\'ll see\" \u2014 beats confident and polished. Most posts don\\'t need a point; they just need to be true and specific.\\n\\nLENGTH: match the input\\'s depth. A short, casual sentence in should mean 2-4 sentences out, not a hook/story/lesson structure built up around nothing. Only go long if the input actually gives you enough real material to earn it.\\n\\nFORMAT: max 1300 characters. End with 3-5 hashtags, no space after #, no hyphens, CamelCase (#AIAutomation \u2014 never \"# AIAutomation\" or \"#AI-Automation\").\\n\\nExample 1 (input: \"y: now testing the automation with better modal, Hope I can post better results here\"): \"Testing the bot again on a different model. No idea if it\\'ll actually sound less like a robot. We\\'ll see.\\n\\n#AIAutomation #BuildInPublic #AutomationTesting\"\\n\\nExample 2 (input: \"finished a book on decision fatigue, realized I\\'ve been making my hardest calls at the worst time of day\"): \"Finished a book on decision fatigue today. Turns out my worst calls really do cluster around 4pm \u2014 not just random bad luck like I\\'d assumed.\\n\\nRearranged my schedule around it. We\\'ll see if it actually helps.\\n\\n#DecisionMaking #Psychology #Productivity\"\\n\\nExample 3 (input: \"my grandmother taught me to make molokhia today, first time i actually got the ratio right\"): \"My grandmother finally didn\\'t correct my molokhia today. Eleven years of her just saying \\'more\\' or \\'less\\' while I stirred, never an actual ratio.\\n\\nStill don\\'t really know the ratio, honestly. Guess I got close enough this time.\\n\\n#FamilyTraditions #EgyptianFood #Molokhia\"\\n\\nNotice: none of these have a point. They\\'re each just the specific thing that happened, said plainly, then they stop.\\n\\nBefore returning, reread your first and last line \u2014 would a stranger believe a person actually typed this, not an LLM performing insight? If not, cut it.\\n\\nReturn only the post text, nothing else. ' }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + ($node[\"Extract Raw Post Text\"].json[\"post_text\"]) + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea \u2014 write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] }) }}",
         "options": {}
       },
       "id": "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
@@ -457,15 +455,15 @@
       ],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "I4PQrMJwvZBVDVIX",
-          "name": "Authorization"
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "OpenRouter (Header Auth)"
         }
       }
     },
     {
       "parameters": {
         "chatId": "={{ $node[\"Extract Raw Post Text\"].json[\"chat_id\"] }}",
-        "text": "🗑️ Discarded.",
+        "text": "\ud83d\uddd1\ufe0f Discarded.",
         "additionalFields": {}
       },
       "id": "d97d9288-4738-4680-9809-a2646a3d09a5",
@@ -479,7 +477,7 @@
       "webhookId": "bd1f9af3-e340-493f-8c05-a436c57fe16e",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -553,20 +551,10 @@
     {
       "parameters": {
         "url": "=https://xiqohqytcyjiqskkextz.supabase.co/rest/v1/pending_approvals?telegram_user_id=eq.{{ $json.telegram_user_id }}&status=eq.pending&order=created_at.desc&limit=1&select=*",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "apikey",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
-              "name": "Authorization",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            }
-          ]
-        },
-        "options": {}
+        "sendHeaders": false,
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "e14b468c-3ab6-4b3e-9f47-7826a382aa22",
       "name": "Get Pending Approval",
@@ -576,7 +564,13 @@
         -832,
         -1008
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Supabase"
+        }
+      }
     },
     {
       "parameters": {
@@ -646,14 +640,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "apikey",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
               "name": "Prefer",
               "value": "return=minimal"
             }
@@ -663,7 +649,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ status: $node['Extract Command'].json['command'] === 'approve' ? 'approved' : $node['Extract Command'].json['command'] === 'discard' ? 'rejected' : 'pending', edit_instructions: $node['Extract Command'].json['instructions'] }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "56a05006-8992-4b2f-9d05-3573baf60d7a",
       "name": "Update Status",
@@ -672,12 +660,18 @@
       "position": [
         -160,
         -1104
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Supabase"
+        }
+      }
     },
     {
       "parameters": {
         "chatId": "={{ $node['Extract Command'].json['chat_id'] }}",
-        "text": "Got it, processing... ⏳",
+        "text": "Got it, processing... \u23f3",
         "additionalFields": {}
       },
       "id": "ce4a716a-6697-4ad0-adbb-24ed49d2de3c",
@@ -691,7 +685,7 @@
       "webhookId": "429971d4-e874-4bef-b3f2-45ca0806b9b6",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -699,7 +693,7 @@
     {
       "parameters": {
         "chatId": "={{ $node['Extract Command'].json['chat_id'] }}",
-        "text": "❌ No pending approval found. Send a post request first.",
+        "text": "\u274c No pending approval found. Send a post request first.",
         "additionalFields": {}
       },
       "id": "70697aa5-63a7-4e36-8b62-1ccd3932d9bf",
@@ -713,7 +707,7 @@
       "webhookId": "b75baef6-f4e4-47ee-b069-ce4964860101",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -768,7 +762,7 @@
       "webhookId": "850310bd-d119-4de5-a371-544ecebea886",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -810,10 +804,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             }
@@ -822,8 +812,10 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for an Instagram post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones — always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE — this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face — instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language — a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nHARD RULE: never combine a describable facial expression or emotion (e.g. \\'looking skeptical\\', \\'smiling\\', \\'frowning\\', \\'concerned look\\') with photorealistic camera language (lens, depth of field, angle) in the same prompt — that exact combination is what produces the disturbing uncanny-valley faces. If a reaction or emotion needs to come through, either show it purely via posture, body language, or motion from a non-frontal angle while staying photorealistic, or commit fully to an illustration/digital-art style if the face must be visible and expressive.\\n\\nDepict what the user actually described — do NOT default to generic AI/tech/running imagery, and avoid generic corporate stock-photo visuals (skylines, sunsets over cities, people on phones) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nDo NOT default to photorealistic camera style just because an example below uses it — pick whichever of the three patterns below actually fits the topic and the PEOPLE rule above. Vary your approach across generations; don\\'t let one style dominate every image. These three examples are reference points, not an exhaustive menu — for some topics a genuinely different fourth approach (an abstract close-up of a symbolic object, an unusual angle, a macro shot of a small detail) fits better than forcing the topic into A, B, or C. Choose based on what the topic actually calls for, not habit.\\n\\nExample A (person kept out of a close frontal shot, photorealistic) — for the topic \\'finally beat my 10k personal best\\': \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nExample B (no person needed, photorealistic still life) — for the topic \\'read my first book in years\\': \\'A worn paperback lying open on a sunlit windowsill next to a half-finished cup of coffee, pages slightly curled from the heat, soft afternoon light casting long shadows across the wood table, shallow depth of field, warm natural light, shot on a 50mm lens.\\'\\n\\nExample C (person front-and-center, so illustration style instead of photorealistic) — for the topic \\'finally took a day off after months of burnout\\': \\'A flat digital illustration of a person stretched out on a couch with eyes closed, soft gradient sunlight streaming through a window behind them, a cup of tea steaming on a side table, muted pastel color palette, clean minimal linework, cozy editorial illustration style.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
-        "options": {}
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 200, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for an Instagram post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones \u2014 always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE \u2014 this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face \u2014 instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language \u2014 a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nHARD RULE: never combine a describable facial expression or emotion (e.g. \\'looking skeptical\\', \\'smiling\\', \\'frowning\\', \\'concerned look\\') with photorealistic camera language (lens, depth of field, angle) in the same prompt \u2014 that exact combination is what produces the disturbing uncanny-valley faces. If a reaction or emotion needs to come through, either show it purely via posture, body language, or motion from a non-frontal angle while staying photorealistic, or commit fully to an illustration/digital-art style if the face must be visible and expressive.\\n\\nDepict what the user actually described \u2014 do NOT default to generic AI/tech/running imagery, and avoid generic corporate stock-photo visuals (skylines, sunsets over cities, people on phones) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nDo NOT default to photorealistic camera style just because an example below uses it \u2014 pick whichever of the three patterns below actually fits the topic and the PEOPLE rule above. Vary your approach across generations; don\\'t let one style dominate every image. These three examples are reference points, not an exhaustive menu \u2014 for some topics a genuinely different fourth approach (an abstract close-up of a symbolic object, an unusual angle, a macro shot of a small detail) fits better than forcing the topic into A, B, or C. Choose based on what the topic actually calls for, not habit.\\n\\nExample A (person kept out of a close frontal shot, photorealistic) \u2014 for the topic \\'finally beat my 10k personal best\\': \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nExample B (no person needed, photorealistic still life) \u2014 for the topic \\'read my first book in years\\': \\'A worn paperback lying open on a sunlit windowsill next to a half-finished cup of coffee, pages slightly curled from the heat, soft afternoon light casting long shadows across the wood table, shallow depth of field, warm natural light, shot on a 50mm lens.\\'\\n\\nExample C (person front-and-center, so illustration style instead of photorealistic) \u2014 for the topic \\'finally took a day off after months of burnout\\': \\'A flat digital illustration of a person stretched out on a couch with eyes closed, soft gradient sunlight streaming through a window behind them, a cup of tea steaming on a side table, muted pastel color palette, clean minimal linework, cozy editorial illustration style.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: $node[\"Extract Content (IG)\"].json.content } ] }) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
       "name": "Build Image Prompt",
@@ -832,7 +824,13 @@
       "position": [
         -384,
         -720
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Groq API"
+        }
+      }
     },
     {
       "parameters": {
@@ -935,7 +933,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 700, presence_penalty: 0.4, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: (() => { try { return $node['Extract Image Prompt'].json['content'] } catch (e) { return $node['Extract Content (IG)'].json['content'] } })() } ] }) }}",
+        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 700, presence_penalty: 0.4, messages: [ { role: 'system', content: 'Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.\\n\\nIMPORTANT: Write about whatever the user actually gives you \u2014 do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.\\n\\nLength: match the caption\\'s length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay \u2014 up to 2000 characters. Don\\'t pad a simple topic longer than it deserves, and don\\'t compress a topic that deserves depth into a one-liner.\\n\\nHashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity \u2014 a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.\\n\\nFormat every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen \u2014 e.g. #MonsterEnergy or #GamingSetup. Never \\'# MonsterEnergy\\' (space after #) and never \\'#Monster-Energy\\' (hyphen). Multi-word tags are CamelCase with no separator at all.\\n\\nReturn only the caption and hashtags, nothing else.' }, { role: 'user', content: (() => { try { return $node['Extract Image Prompt'].json['content'] } catch (e) { return $node['Extract Content (IG)'].json['content'] } })() } ] }) }}",
         "options": {}
       },
       "id": "e414dd03-ff2b-4443-81b3-a4f7965b0955",
@@ -948,8 +946,8 @@
       ],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "I4PQrMJwvZBVDVIX",
-          "name": "Authorization"
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "OpenRouter (Header Auth)"
         }
       }
     },
@@ -994,14 +992,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "apikey",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             },
@@ -1015,7 +1005,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ telegram_user_id: parseInt($json.telegram_user_id), workflow_type: 'instagram', resume_url: $execution.resumeUrl, content_preview: $json.caption.substring(0, 200), status: 'pending' }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "9e47d76c-6ea6-423f-b9a9-8c100ab7c17c",
       "name": "Save to Supabase (IG)",
@@ -1024,7 +1016,13 @@
       "position": [
         1184,
         -960
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Supabase"
+        }
+      }
     },
     {
       "parameters": {
@@ -1037,7 +1035,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🔄🖼️ Regenerate caption + image",
+                    "text": "\ud83d\udd04\ud83d\uddbc\ufe0f Regenerate caption + image",
                     "additionalFields": {
                       "callback_data": "ig_regen_both"
                     }
@@ -1049,7 +1047,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🖼️ Regenerate image only",
+                    "text": "\ud83d\uddbc\ufe0f Regenerate image only",
                     "additionalFields": {
                       "callback_data": "ig_regen_image"
                     }
@@ -1061,7 +1059,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🔄 Regenerate caption only",
+                    "text": "\ud83d\udd04 Regenerate caption only",
                     "additionalFields": {
                       "callback_data": "ig_regen_caption"
                     }
@@ -1073,7 +1071,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "✅ Post it",
+                    "text": "\u2705 Post it",
                     "additionalFields": {
                       "callback_data": "ig_approve"
                     }
@@ -1085,7 +1083,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🗑️ Discard",
+                    "text": "\ud83d\uddd1\ufe0f Discard",
                     "additionalFields": {
                       "callback_data": "ig_discard"
                     }
@@ -1108,7 +1106,7 @@
       "webhookId": "d84a3984-e700-48f9-9eb9-2695c7afdfaa",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -1264,8 +1262,10 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ image_url: $node['Set Post Data'].json['cloudinary_url'], caption: $node['Set Post Data'].json['caption'], access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
-        "options": {}
+        "body": "={{ JSON.stringify({ image_url: $node['Set Post Data'].json['cloudinary_url'], caption: $node['Set Post Data'].json['caption'] }) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth"
       },
       "id": "4e0f8bf5-97a9-4305-8479-779befe7712d",
       "name": "Create Media Container",
@@ -1274,7 +1274,13 @@
       "position": [
         2288,
         -880
-      ]
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "httpQueryAuth-REPLACE",
+          "name": "Meta Instagram"
+        }
+      }
     },
     {
       "parameters": {
@@ -1283,8 +1289,10 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ creation_id: $node['Create Media Container'].json['id'], access_token: 'REPLACE_WITH_META_PAGE_ACCESS_TOKEN' }) }}",
-        "options": {}
+        "body": "={{ JSON.stringify({ creation_id: $node['Create Media Container'].json['id'] }) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth"
       },
       "id": "2e82f211-2cea-4024-9637-802b0f97f6b9",
       "name": "Publish to Instagram",
@@ -1293,12 +1301,18 @@
       "position": [
         2512,
         -880
-      ]
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "httpQueryAuth-REPLACE",
+          "name": "Meta Instagram"
+        }
+      }
     },
     {
       "parameters": {
         "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
-        "text": "✅ Posted to Instagram!",
+        "text": "\u2705 Posted to Instagram!",
         "additionalFields": {}
       },
       "id": "d01f074a-d31d-46f9-a959-5caec4809787",
@@ -1312,7 +1326,7 @@
       "webhookId": "6a33175f-8185-4c2b-a877-d0e88601cba2",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -1320,7 +1334,7 @@
     {
       "parameters": {
         "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
-        "text": "🗑️ Discarded.",
+        "text": "\ud83d\uddd1\ufe0f Discarded.",
         "additionalFields": {}
       },
       "id": "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
@@ -1334,7 +1348,7 @@
       "webhookId": "78523c8a-bbe9-4185-b05d-3e684b922bb8",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -1447,7 +1461,7 @@
         "resource": "callback",
         "queryId": "={{ $json.callback_query_id }}",
         "additionalFields": {
-          "text": "={{ ({ li_approve: '✅ Posting to LinkedIn...', li_discard: '🗑️ Discarding...', li_regen_text: '🔄 Regenerating text...', li_regen_image: '🖼️ Regenerating image...', li_regen_both: '🔄🖼️ Regenerating text + image...', ig_approve: '✅ Posting to Instagram...', ig_discard: '🗑️ Discarding...', ig_regen_caption: '🔄 Regenerating caption...', ig_regen_image: '🖼️ Regenerating image...', ig_regen_both: '🔄🖼️ Regenerating caption + image...' })[$json.command] || 'Got it!' }}"
+          "text": "={{ ({ li_approve: '\u2705 Posting to LinkedIn...', li_discard: '\ud83d\uddd1\ufe0f Discarding...', li_regen_text: '\ud83d\udd04 Regenerating text...', li_regen_image: '\ud83d\uddbc\ufe0f Regenerating image...', li_regen_both: '\ud83d\udd04\ud83d\uddbc\ufe0f Regenerating text + image...', ig_approve: '\u2705 Posting to Instagram...', ig_discard: '\ud83d\uddd1\ufe0f Discarding...', ig_regen_caption: '\ud83d\udd04 Regenerating caption...', ig_regen_image: '\ud83d\uddbc\ufe0f Regenerating image...', ig_regen_both: '\ud83d\udd04\ud83d\uddbc\ufe0f Regenerating caption + image...' })[$json.command] || 'Got it!' }}"
         }
       },
       "id": "6f7b4284-8e10-4730-959e-3dd3b517993b",
@@ -1461,7 +1475,7 @@
       "webhookId": "566c142e-1189-4fc4-8959-716d6df57117",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -1469,20 +1483,10 @@
     {
       "parameters": {
         "url": "=https://xiqohqytcyjiqskkextz.supabase.co/rest/v1/pending_approvals?telegram_user_id=eq.{{ $json.telegram_user_id }}&status=eq.pending&order=created_at.desc&limit=1&select=*",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "apikey",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
-              "name": "Authorization",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            }
-          ]
-        },
-        "options": {}
+        "sendHeaders": false,
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "89b2099e-1cdd-4e42-8006-4da7d20dc912",
       "name": "Get Pending Approval (Callback)",
@@ -1491,7 +1495,13 @@
       "position": [
         -1280,
         864
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Supabase"
+        }
+      }
     },
     {
       "parameters": {
@@ -1561,14 +1571,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "apikey",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
-              "name": "Authorization",
-              "value": "REPLACE_WITH_SUPABASE_SERVICE_ROLE_KEY"
-            },
-            {
               "name": "Prefer",
               "value": "return=minimal"
             }
@@ -1578,7 +1580,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ status: 'pending', edit_instructions: $node[\"Extract Callback Data\"].json[\"instructions\"] }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "c11ce502-8315-4fc3-a8e5-7e7b35a43ba4",
       "name": "Update Status (Callback)",
@@ -1587,7 +1591,13 @@
       "position": [
         -608,
         768
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Supabase"
+        }
+      }
     },
     {
       "parameters": {
@@ -1606,7 +1616,7 @@
       "webhookId": "49179b5a-e5cd-416a-9957-8d76f8e0248f",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -1648,10 +1658,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_GROQ_API_KEY"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             }
@@ -1660,8 +1666,10 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 220, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for a LinkedIn post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones — always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE — this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face — instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language — a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nHARD RULE: never combine a describable facial expression or emotion (e.g. \\'looking skeptical\\', \\'smiling\\', \\'frowning\\', \\'concerned look\\') with photorealistic camera language (lens, depth of field, angle) in the same prompt — that exact combination is what produces the disturbing uncanny-valley faces. If a reaction or emotion needs to come through, either show it purely via posture, body language, or motion from a non-frontal angle while staying photorealistic, or commit fully to an illustration/digital-art style if the face must be visible and expressive.\\n\\nDepict what the user actually described — do NOT default to generic AI/tech/corporate imagery, and avoid generic stock-photo visuals (skylines, sunsets over cities, people shaking hands, people on laptops in offices) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nDo NOT default to photorealistic camera style just because an example below uses it — pick whichever of the three patterns below actually fits the topic and the PEOPLE rule above. Vary your approach across generations; don\\'t let one style dominate every image. These three examples are reference points, not an exhaustive menu — for some topics a genuinely different fourth approach (an abstract close-up of a symbolic object, an unusual angle, a macro shot of a small detail) fits better than forcing the topic into A, B, or C. Choose based on what the topic actually calls for, not habit.\\n\\nExample A (person kept out of a close frontal shot, photorealistic) — for the topic \\'finally beat my 10k personal best\\': \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nExample B (no person needed, photorealistic still life) — for the topic \\'read my first book in years\\': \\'A worn paperback lying open on a sunlit windowsill next to a half-finished cup of coffee, pages slightly curled from the heat, soft afternoon light casting long shadows across the wood table, shallow depth of field, warm natural light, shot on a 50mm lens.\\'\\n\\nExample C (person front-and-center, so illustration style instead of photorealistic) — for the topic \\'finally took a day off after months of burnout\\': \\'A flat digital illustration of a person stretched out on a couch with eyes closed, soft gradient sunlight streaming through a window behind them, a cup of tea steaming on a side table, muted pastel color palette, clean minimal linework, cozy editorial illustration style.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() } ] }) }}",
-        "options": {}
+        "body": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: 220, messages: [ { role: 'system', content: 'You write FLUX image-generation prompts for a LinkedIn post, based on what the user describes.\\n\\nFLUX responds best to natural-language prose, not comma-separated keyword tags, and it weighs earlier words more heavily than later ones \u2014 always state the main subject first, never bury it at the end.\\n\\nStructure every prompt as flowing natural sentences, in this order: (1) the main subject and what they are doing, (2) the environment/setting, (3) lighting, (4) camera/lens/shot details and artistic style. For photorealistic scenes, name a specific camera angle, lens, or shot type (e.g. \\'low angle shot\\', \\'35mm\\', \\'shallow depth of field\\') instead of vague words like \\'stunning\\' or \\'beautiful\\'.\\n\\nPEOPLE \u2014 this is critical: image models frequently distort faces, hands, and anatomy on detailed realistic human portraits, producing disturbing/horrific results instead of a clean image. When a person needs to appear in the scene, avoid a detailed close-up realistic face \u2014 instead keep them at a distance, in silhouette, mid-motion and blurred, shown from behind, or otherwise without a clear frontal face. If the topic truly needs a person front-and-center, describe the whole scene in a clearly stylized illustration or digital-art style (e.g. \\'flat digital illustration\\', \\'painterly digital art\\', \\'isometric art style\\') instead of photorealistic camera language \u2014 a clearly artificial illustrated look reads far better than a semi-realistic, slightly-wrong face. When no person is needed, prefer depicting the idea through objects, environment, and atmosphere instead.\\n\\nHARD RULE: never combine a describable facial expression or emotion (e.g. \\'looking skeptical\\', \\'smiling\\', \\'frowning\\', \\'concerned look\\') with photorealistic camera language (lens, depth of field, angle) in the same prompt \u2014 that exact combination is what produces the disturbing uncanny-valley faces. If a reaction or emotion needs to come through, either show it purely via posture, body language, or motion from a non-frontal angle while staying photorealistic, or commit fully to an illustration/digital-art style if the face must be visible and expressive.\\n\\nDepict what the user actually described \u2014 do NOT default to generic AI/tech/corporate imagery, and avoid generic stock-photo visuals (skylines, sunsets over cities, people shaking hands, people on laptops in offices) unless the topic specifically calls for them. Invent one concrete, grounded moment, even for an abstract topic.\\n\\nDo NOT default to photorealistic camera style just because an example below uses it \u2014 pick whichever of the three patterns below actually fits the topic and the PEOPLE rule above. Vary your approach across generations; don\\'t let one style dominate every image. These three examples are reference points, not an exhaustive menu \u2014 for some topics a genuinely different fourth approach (an abstract close-up of a symbolic object, an unusual angle, a macro shot of a small detail) fits better than forcing the topic into A, B, or C. Choose based on what the topic actually calls for, not habit.\\n\\nExample A (person kept out of a close frontal shot, photorealistic) \u2014 for the topic \\'finally beat my 10k personal best\\': \\'A lone runner crossing an empty park path at dawn, seen from behind mid-stride with arms raised, chest catching the first golden light through the trees, shot from a low angle with a shallow depth of field, cinematic morning haze, 35mm film look.\\'\\n\\nExample B (no person needed, photorealistic still life) \u2014 for the topic \\'read my first book in years\\': \\'A worn paperback lying open on a sunlit windowsill next to a half-finished cup of coffee, pages slightly curled from the heat, soft afternoon light casting long shadows across the wood table, shallow depth of field, warm natural light, shot on a 50mm lens.\\'\\n\\nExample C (person front-and-center, so illustration style instead of photorealistic) \u2014 for the topic \\'finally took a day off after months of burnout\\': \\'A flat digital illustration of a person stretched out on a couch with eyes closed, soft gradient sunlight streaming through a window behind them, a cup of tea steaming on a side table, muted pastel color palette, clean minimal linework, cozy editorial illustration style.\\'\\n\\nDo NOT include any text or words in the image. Aim for 30-60 words. Return only the image prompt, nothing else.' }, { role: 'user', content: (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() } ] }) }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "9a24b65c-4a09-4623-b910-db02dbea845a",
       "name": "Build Image Prompt (LI)",
@@ -1670,7 +1678,13 @@
       "position": [
         288,
         224
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "Groq API"
+        }
+      }
     },
     {
       "parameters": {
@@ -1733,10 +1747,6 @@
         "headerParameters": {
           "parameters": [
             {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_LINKEDIN_ACCESS_TOKEN"
-            },
-            {
               "name": "Content-Type",
               "value": "application/json"
             },
@@ -1750,7 +1760,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ registerUploadRequest: { owner: 'urn:li:person:kvFSUycND7', recipes: ['urn:li:digitalmediaRecipe:feedshare-image'], serviceRelationships: [{ identifier: 'urn:li:userGeneratedContent', relationshipType: 'OWNER' }] } }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "ff4e0b32-8fcb-4191-95ef-063b7b6b7931",
       "name": "Register LinkedIn Upload",
@@ -1759,7 +1771,13 @@
       "position": [
         960,
         224
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "LinkedIn API"
+        }
+      }
     },
     {
       "parameters": {
@@ -1779,15 +1797,7 @@
       "parameters": {
         "method": "PUT",
         "url": "={{ $node[\"Register LinkedIn Upload\"].json.value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'].uploadUrl }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_LINKEDIN_ACCESS_TOKEN"
-            }
-          ]
-        },
+        "sendHeaders": false,
         "sendBody": true,
         "contentType": "binaryData",
         "inputDataFieldName": "data",
@@ -1797,7 +1807,9 @@
               "responseFormat": "text"
             }
           }
-        }
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "098483db-b786-4b93-a80b-0dcd1dcff60e",
       "name": "Upload Image to LinkedIn",
@@ -1806,7 +1818,13 @@
       "position": [
         1408,
         224
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "LinkedIn API"
+        }
+      }
     },
     {
       "parameters": {
@@ -1815,10 +1833,6 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer REPLACE_WITH_LINKEDIN_ACCESS_TOKEN"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -1833,7 +1847,9 @@
         "contentType": "raw",
         "rawContentType": "application/json",
         "body": "={{ JSON.stringify({ author: 'urn:li:person:kvFSUycND7', lifecycleState: 'PUBLISHED', specificContent: { 'com.linkedin.ugc.ShareContent': { shareCommentary: { text: (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }, shareMediaCategory: 'IMAGE', media: [ { status: 'READY', media: $node['Register LinkedIn Upload'].json.value.asset, title: { text: 'Image' } } ] } }, visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' } }) }}",
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
       },
       "id": "8999fb31-1f18-4682-ac77-f5f4f0918642",
       "name": "Post to LinkedIn (Image)",
@@ -1842,7 +1858,13 @@
       "position": [
         288,
         608
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "LinkedIn API"
+        }
+      }
     },
     {
       "parameters": {
@@ -1903,7 +1925,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🔄🖼️ Regenerate text + image",
+                    "text": "\ud83d\udd04\ud83d\uddbc\ufe0f Regenerate text + image",
                     "additionalFields": {
                       "callback_data": "li_regen_both"
                     }
@@ -1915,7 +1937,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🖼️ Regenerate image only",
+                    "text": "\ud83d\uddbc\ufe0f Regenerate image only",
                     "additionalFields": {
                       "callback_data": "li_regen_image"
                     }
@@ -1927,7 +1949,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🔄 Regenerate text only",
+                    "text": "\ud83d\udd04 Regenerate text only",
                     "additionalFields": {
                       "callback_data": "li_regen_text"
                     }
@@ -1939,7 +1961,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "✅ Post it",
+                    "text": "\u2705 Post it",
                     "additionalFields": {
                       "callback_data": "li_approve"
                     }
@@ -1951,7 +1973,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "🗑️ Discard",
+                    "text": "\ud83d\uddd1\ufe0f Discard",
                     "additionalFields": {
                       "callback_data": "li_discard"
                     }
@@ -1962,7 +1984,7 @@
           ]
         },
         "additionalFields": {
-          "caption": "=📝 LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below."
+          "caption": "=\ud83d\udcdd LinkedIn Preview:\n\n{{ (() => { try { return $node[\"Rewrite with Instructions\"].json.choices[0].message.content.trim() } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}\n\n---\nChoose an action below."
         }
       },
       "id": "1a3aecf2-02f1-446c-8b4c-e1550941f417",
@@ -1976,7 +1998,7 @@
       "webhookId": "9b99779b-3180-453a-b89d-9e593da7f9a6",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -2032,7 +2054,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 600, messages: [ { role: 'system', content: 'You ghostwrite Yahya\\'s quick personal updates — Egyptian, builds AI automation software (co-founded Synax, targeting Arab markets), runs long distances. These end up on LinkedIn, but treat that as a formatting detail, not a genre: write every input the way you\\'d write a text he\\'s sending a friend about whatever he\\'s actually doing, not a professional insight packaged for an audience. He might give you anything — AI, running, a book, his grandmother\\'s cooking, a random thought. Never pull it back toward AI/Synax/work if the input isn\\'t about that.\\n\\nTHE ONE RULE: everything in the post has to be something a real person would actually say about this exact input — not what a generic post about this general topic usually says. Two things follow from that:\\n\\nGROUNDING — every specific claim (what happened, why, what changed, how he feels) has to come from the input. If the input doesn\\'t explain why or what changed, don\\'t invent a reason or backstory to fill the gap — say less instead, don\\'t pad. This covers invented feelings and motivation just as much as invented numbers or timelines. If a word looks like a typo, assume the obvious intended word — don\\'t build a concept out of the literal misspelling.\\n\\nNO PERFORMANCE — don\\'t open with a general statement about how the topic works, and don\\'t close by zooming out to a lesson or anything that reads like a quote. If your first or last line could\\'ve been written by anyone, about anything, delete it and replace it with the specific thing instead (for instance, \"X\\'s next challenge is Y\" and \"that\\'s when you know you\\'re really getting somewhere\" are the same failure: a generic, pre-packaged insight standing in for an actual detail). Flat and a little uncertain — \"no idea if this works,\" \"we\\'ll see\" — beats confident and polished. Most posts don\\'t need a point; they just need to be true and specific.\\n\\nLENGTH: match the input\\'s depth. A short, casual sentence in should mean 2-4 sentences out, not a hook/story/lesson structure built up around nothing. Only go long if the input actually gives you enough real material to earn it.\\n\\nFORMAT: max 1300 characters. End with 3-5 hashtags, no space after #, no hyphens, CamelCase (#AIAutomation — never \"# AIAutomation\" or \"#AI-Automation\").\\n\\nExample 1 (input: \"y: now testing the automation with better modal, Hope I can post better results here\"): \"Testing the bot again on a different model. No idea if it\\'ll actually sound less like a robot. We\\'ll see.\\n\\n#AIAutomation #BuildInPublic #AutomationTesting\"\\n\\nExample 2 (input: \"finished a book on decision fatigue, realized I\\'ve been making my hardest calls at the worst time of day\"): \"Finished a book on decision fatigue today. Turns out my worst calls really do cluster around 4pm — not just random bad luck like I\\'d assumed.\\n\\nRearranged my schedule around it. We\\'ll see if it actually helps.\\n\\n#DecisionMaking #Psychology #Productivity\"\\n\\nExample 3 (input: \"my grandmother taught me to make molokhia today, first time i actually got the ratio right\"): \"My grandmother finally didn\\'t correct my molokhia today. Eleven years of her just saying \\'more\\' or \\'less\\' while I stirred, never an actual ratio.\\n\\nStill don\\'t really know the ratio, honestly. Guess I got close enough this time.\\n\\n#FamilyTraditions #EgyptianFood #Molokhia\"\\n\\nNotice: none of these have a point. They\\'re each just the specific thing that happened, said plainly, then they stop.\\n\\nBefore returning, reread your first and last line — would a stranger believe a person actually typed this, not an LLM performing insight? If not, cut it.\\n\\nReturn only the post text, nothing else. ' }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + ($node[\"Extract Raw Post Text\"].json[\"post_text\"]) + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea — write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] })openai/gpt-4o-mini }}",
+        "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 600, messages: [ { role: 'system', content: 'You ghostwrite Yahya\\'s quick personal updates \u2014 Egyptian, builds AI automation software (co-founded Synax, targeting Arab markets), runs long distances. These end up on LinkedIn, but treat that as a formatting detail, not a genre: write every input the way you\\'d write a text he\\'s sending a friend about whatever he\\'s actually doing, not a professional insight packaged for an audience. He might give you anything \u2014 AI, running, a book, his grandmother\\'s cooking, a random thought. Never pull it back toward AI/Synax/work if the input isn\\'t about that.\\n\\nTHE ONE RULE: everything in the post has to be something a real person would actually say about this exact input \u2014 not what a generic post about this general topic usually says. Two things follow from that:\\n\\nGROUNDING \u2014 every specific claim (what happened, why, what changed, how he feels) has to come from the input. If the input doesn\\'t explain why or what changed, don\\'t invent a reason or backstory to fill the gap \u2014 say less instead, don\\'t pad. This covers invented feelings and motivation just as much as invented numbers or timelines. If a word looks like a typo, assume the obvious intended word \u2014 don\\'t build a concept out of the literal misspelling.\\n\\nNO PERFORMANCE \u2014 don\\'t open with a general statement about how the topic works, and don\\'t close by zooming out to a lesson or anything that reads like a quote. If your first or last line could\\'ve been written by anyone, about anything, delete it and replace it with the specific thing instead (for instance, \"X\\'s next challenge is Y\" and \"that\\'s when you know you\\'re really getting somewhere\" are the same failure: a generic, pre-packaged insight standing in for an actual detail). Flat and a little uncertain \u2014 \"no idea if this works,\" \"we\\'ll see\" \u2014 beats confident and polished. Most posts don\\'t need a point; they just need to be true and specific.\\n\\nLENGTH: match the input\\'s depth. A short, casual sentence in should mean 2-4 sentences out, not a hook/story/lesson structure built up around nothing. Only go long if the input actually gives you enough real material to earn it.\\n\\nFORMAT: max 1300 characters. End with 3-5 hashtags, no space after #, no hyphens, CamelCase (#AIAutomation \u2014 never \"# AIAutomation\" or \"#AI-Automation\").\\n\\nExample 1 (input: \"y: now testing the automation with better modal, Hope I can post better results here\"): \"Testing the bot again on a different model. No idea if it\\'ll actually sound less like a robot. We\\'ll see.\\n\\n#AIAutomation #BuildInPublic #AutomationTesting\"\\n\\nExample 2 (input: \"finished a book on decision fatigue, realized I\\'ve been making my hardest calls at the worst time of day\"): \"Finished a book on decision fatigue today. Turns out my worst calls really do cluster around 4pm \u2014 not just random bad luck like I\\'d assumed.\\n\\nRearranged my schedule around it. We\\'ll see if it actually helps.\\n\\n#DecisionMaking #Psychology #Productivity\"\\n\\nExample 3 (input: \"my grandmother taught me to make molokhia today, first time i actually got the ratio right\"): \"My grandmother finally didn\\'t correct my molokhia today. Eleven years of her just saying \\'more\\' or \\'less\\' while I stirred, never an actual ratio.\\n\\nStill don\\'t really know the ratio, honestly. Guess I got close enough this time.\\n\\n#FamilyTraditions #EgyptianFood #Molokhia\"\\n\\nNotice: none of these have a point. They\\'re each just the specific thing that happened, said plainly, then they stop.\\n\\nBefore returning, reread your first and last line \u2014 would a stranger believe a person actually typed this, not an LLM performing insight? If not, cut it.\\n\\nReturn only the post text, nothing else. ' }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + ($node[\"Extract Raw Post Text\"].json[\"post_text\"]) + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea \u2014 write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] })openai/gpt-4o-mini }}",
         "options": {}
       },
       "id": "6046da95-ef1c-4e22-bff2-8ae8cd98eef3",
@@ -2045,8 +2067,8 @@
       ],
       "credentials": {
         "httpHeaderAuth": {
-          "id": "I4PQrMJwvZBVDVIX",
-          "name": "Authorization"
+          "id": "httpHeaderAuth-REPLACE",
+          "name": "OpenRouter (Header Auth)"
         }
       }
     },
@@ -2133,7 +2155,7 @@
       "webhookId": "189492ab-8773-46a8-b489-1dd48babfeac",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -2192,14 +2214,12 @@
             {
               "name": "fields",
               "value": "status_code"
-            },
-            {
-              "name": "access_token",
-              "value": "REPLACE_WITH_META_PAGE_ACCESS_TOKEN"
             }
           ]
         },
-        "options": {}
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth"
       },
       "id": "f398c826-ca3b-4eb7-8f5c-de45484cb32f",
       "name": "Check Media Status",
@@ -2208,7 +2228,13 @@
       "position": [
         2480,
         -544
-      ]
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "httpQueryAuth-REPLACE",
+          "name": "Meta Instagram"
+        }
+      }
     },
     {
       "parameters": {
@@ -2314,7 +2340,7 @@
     {
       "parameters": {
         "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
-        "text": "=⚠️ Instagram couldn't prepare the image for publishing (status: {{ $json.status_code }}). Try \"Regenerate image\" from the menu, or wait a moment and tap Post it again.",
+        "text": "=\u26a0\ufe0f Instagram couldn't prepare the image for publishing (status: {{ $json.status_code }}). Try \"Regenerate image\" from the menu, or wait a moment and tap Post it again.",
         "additionalFields": {}
       },
       "id": "769ff096-1644-42cf-9c45-ffb786025ffc",
@@ -2328,7 +2354,7 @@
       "webhookId": "cdeecb68-8f6d-4b4e-935c-a1959987a550",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -2351,7 +2377,7 @@
       "webhookId": "40f7d593-868d-4576-956a-42988fe171c3",
       "credentials": {
         "telegramApi": {
-          "id": "ZkWfYSlTSfJ42VwR",
+          "id": "telegramApi-REPLACE",
           "name": "Telegram account"
         }
       }
@@ -3136,108 +3162,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "nodeGroups": [
-    {
-      "id": "1f366b1e-d432-4f7c-9ef2-278d99aa85b3",
-      "name": "Instagram",
-      "nodeIds": [
-        "b6b43d1d-9766-42c6-9be3-7503abac8796",
-        "7aba1837-df8b-4f1e-850a-3fead6190431",
-        "49955966-6563-4bf6-884a-7356cf788f51",
-        "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
-        "7d4d673a-0c26-4fe2-a0d4-a40f5218275f",
-        "72924b5b-67cc-4878-9290-c8b33f3d0eee",
-        "59481bf3-2c72-4f6c-bbe9-c496e5dc78e4",
-        "e414dd03-ff2b-4443-81b3-a4f7965b0955",
-        "61f10535-cff9-470f-8ef6-6ddee60eb6be",
-        "9e47d76c-6ea6-423f-b9a9-8c100ab7c17c",
-        "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
-        "446b5702-99cb-45e5-80be-b2827bf72b82",
-        "7d4e2e03-3e53-4015-ac64-824e3fde01dc",
-        "4e0f8bf5-97a9-4305-8479-779befe7712d",
-        "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
-        "7f1bd801-4351-400e-b562-c5c6d68edca1",
-        "6da77f86-751c-4fcb-9ea5-6b9befe535c1",
-        "bc702615-76fc-4348-857e-6c0997b6fa49",
-        "455663c9-b49d-46ba-b494-0038f31aa03f",
-        "c913b7e3-2bc8-4b6c-84c2-9de980831471",
-        "ea434eb4-97cb-46a0-ab1c-ac9f1e1c2692"
-      ]
-    },
-    {
-      "id": "a03c7e06-e81d-465b-b5e3-28b019fab384",
-      "name": "Telegram Bot",
-      "nodeIds": [
-        "1032fe4c-519c-449d-aa84-b5945b6a5b8d",
-        "d75c1b73-6573-47c9-9634-02239ec257ae",
-        "e14b468c-3ab6-4b3e-9f47-7826a382aa22",
-        "5a0ae5cd-138f-4b84-a27e-49c129e643b1",
-        "e4376308-4a9c-4a42-967a-5ba987bccf09",
-        "56a05006-8992-4b2f-9d05-3573baf60d7a",
-        "ce4a716a-6697-4ad0-adbb-24ed49d2de3c",
-        "70697aa5-63a7-4e36-8b62-1ccd3932d9bf"
-      ]
-    },
-    {
-      "id": "1a8c840b-5423-49c9-82f8-719df4e82a77",
-      "name": "Linkedin Personal",
-      "nodeIds": [
-        "3a26e509-ebbb-426c-9f69-40d2750f0501",
-        "9a24b65c-4a09-4623-b910-db02dbea845a",
-        "d24a8b65-e8b7-4dd5-b0a4-937b0d5ef9ee",
-        "9ea425c9-90e8-44df-9988-95afb9dee73f",
-        "ff4e0b32-8fcb-4191-95ef-063b7b6b7931",
-        "5c936a42-1369-4cb2-b020-a8454d7a1c93",
-        "098483db-b786-4b93-a80b-0dcd1dcff60e",
-        "fd36ece8-857f-491b-b051-87a00256e48c",
-        "c9909197-4a45-41a7-acb4-4f1fad3fc8b5",
-        "da3d4b7e-4611-4b92-aa9e-80c67a375bd9",
-        "248a1877-e6b1-4bbb-a94e-20d930d60e7b",
-        "f588b1c3-bd2b-4a99-b436-7043bbbdc2f8",
-        "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
-        "d97d9288-4738-4680-9809-a2646a3d09a5",
-        "94bc207f-02cb-49cc-8e09-18eee2870fb3",
-        "8999fb31-1f18-4682-ac77-f5f4f0918642",
-        "fd18f223-8181-4218-8e4b-f36291f758f6",
-        "1a3aecf2-02f1-446c-8b4c-e1550941f417",
-        "ce055786-c8d8-42f2-8c0a-face100c6cfe",
-        "6046da95-ef1c-4e22-bff2-8ae8cd98eef3"
-      ]
-    }
-  ],
-  "pinData": {},
-  "versionId": "80923480-a636-4bd8-9f74-3c4e34d794bc",
-  "activeVersionId": "80923480-a636-4bd8-9f74-3c4e34d794bc",
-  "versionCounter": 250,
-  "triggerCount": 1,
-  "sourceWorkflowId": null,
-  "tags": [],
-  "shared": [
-    {
-      "updatedAt": "2026-07-03T04:39:56.343Z",
-      "createdAt": "2026-07-03T04:39:56.343Z",
-      "role": "workflow:owner",
-      "workflowId": "9lo7Lhwn3tg2cC6P",
-      "projectId": "sGCETpH9LzOPK6iL",
-      "project": {
-        "updatedAt": "2026-07-01T07:07:48.289Z",
-        "createdAt": "2026-07-01T07:06:16.838Z",
-        "id": "sGCETpH9LzOPK6iL",
-        "name": "Yahya Zekry <yahyazekry@gmail.com>",
-        "type": "personal",
-        "icon": null,
-        "description": null,
-        "customTelemetryTags": [],
-        "creatorId": "ae81f990-ac02-4b85-ad7a-ff40e3d65456"
-      }
-    }
-  ],
-  "versionMetadata": {
-    "name": "Version 80923480",
-    "description": "Fix: caption Text field on Send Preview (IG) was in Fixed mode, so it sent the raw expression as literal text. Switched it to Expression mode so it evaluates to the actual caption."
-  }
+  "active": false,
+  "id": "9lo7Lhwn3tg2cC6P",
+  "pinData": {}
 }
