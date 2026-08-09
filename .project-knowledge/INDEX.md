@@ -1,26 +1,27 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-08-08 (all API keys migrated into n8n credentials — Groq/Supabase/LinkedIn/Meta joined OpenRouter and Telegram; workflow JSON and repo are now secret-free)
+> Last updated: 2026-08-09 (prompts extracted to version-controlled `prompts/*.txt`, loaded by a `Load Prompts` Code node at runtime; workflow renamed `Telegram Publisher (LinkedIn + IG)`)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + OpenRouter (text/captions) + Groq (image prompts) + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: company LinkedIn (`s:`) — the credentials-migration roadmap item is done as of 2026-08-08
 
 ## What This Project Does
 Automates posting to personal Instagram, personal LinkedIn, and company LinkedIn.
-A human approves each post via Telegram before it goes out. "WF1 - LinkedIn
-Post (Personal)" (exported as `workflows/main-workflow.json`) is the single
-self-contained workflow for everything — it started as just LinkedIn (`y:`
-prefix) and has since absorbed Instagram (`ig:` prefix) too, since only one
-workflow can hold the bot's webhook. Texting `y:` or `ig:` posts your
-text/caption **verbatim** (no AI auto-drafting) and, for Instagram,
-auto-generates an image too (or uses a photo you send directly). Every
-preview carries a **5-button inline-keyboard menu** (regenerate text+image /
-image only / text only / Post it / Discard) — typed `/approve`, `/edit`,
-`/regenerate*`, `/discard` no longer do anything on either platform, replaced
-2026-07-08. **First real LinkedIn post: 2026-07-03. First real Instagram
-post: 2026-07-04, with output quality fixed the same day** (see `history.md`
-for the FLUX/Llama prompting research behind that fix). LinkedIn image
-support and Instagram's own-photo support were both added 2026-07-08.
+A human approves each post via Telegram before it goes out. "Telegram
+Publisher (LinkedIn + IG)" (exported as `workflows/main-workflow.json`, the
+workflow itself renamed from "WF1 - LinkedIn Post (Personal)" on 2026-08-09)
+is the single self-contained workflow for everything — it started as just
+LinkedIn (`y:` prefix) and has since absorbed Instagram (`ig:` prefix) too,
+since only one workflow can hold the bot's webhook. Texting `y:` or `ig:`
+posts your text/caption **verbatim** (no AI auto-drafting) and, for
+Instagram, auto-generates an image too (or uses a photo you send directly).
+Every preview carries a **5-button inline-keyboard menu** (regenerate text+
+image / image only / text only / Post it / Discard) — typed `/approve`,
+`/edit`, `/regenerate*`, `/discard` no longer do anything on either platform,
+replaced 2026-07-08. **First real LinkedIn post: 2026-07-03. First real
+Instagram post: 2026-07-04, with output quality fixed the same day** (see
+`history.md` for the FLUX/Llama prompting research behind that fix). LinkedIn
+image support and Instagram's own-photo support were both added 2026-07-08.
 Company LinkedIn (`s:`) is not built yet. Repo is confirmed safe to make
 public (git history was rewritten to scrub an exposed key first — see
 `history.md`). Since 2026-07-08, workflow edits are made via n8n's Public
@@ -53,6 +54,15 @@ banned-phrase list — see `integrations.md`'s "Round 3" note and
 an n8n credential; the workflow JSON and this repo contain no secrets
 (generic `-REPLACE` credential IDs in the export, real values in a gitignored
 `.credentials.env`). See `history.md`'s 2026-08-08 decisions.
+**2026-08-09: the 5 LLM system prompts were extracted out of the workflow
+JSON into version-controlled `prompts/*.txt` files.** A `Load Prompts` Code
+node at the start of the workflow reads them from disk on every run (container
+bind-mounts `~/n8n/prompts` → `/home/node/prompts` with
+`NODE_FUNCTION_ALLOW_BUILTIN=fs,path`), and the 5 prompt-bearing node bodies
+now reference `$node["Load Prompts"].json.*` instead of inline text — so
+editing a `.txt` changes the bot immediately, no n8n edits or re-import
+needed. The workflow was renamed `Telegram Publisher (LinkedIn + IG)` in the
+same pass. See `history.md`'s 2026-08-09 decision and `features.md`.
 
 ---
 
@@ -67,6 +77,7 @@ an n8n credential; the workflow JSON and this repo contain no secrets
 | `roadmap.md` | What's planned, what's known-broken | Starting any task |
 | `history.md` | Past fixes and decisions | Debugging something that looks familiar |
 | `sessions.md` | Session-by-session log | Reviewing work history |
+| `prompts/*.txt` (repo root) | The 4 live system prompts, loaded by the workflow's `Load Prompts` node | Tuning voice/style — edit the `.txt`, no workflow changes |
 
 > Only files that exist are listed here.
 
@@ -78,7 +89,7 @@ an n8n credential; the workflow JSON and this repo contain no secrets
 |------|-------------------|
 | Editing WF1 (any platform's drafting or approve/post side) | `features.md` + `integrations.md` |
 | Debugging Telegram webhook / Wait-node resume issues | `integrations.md` (Wait-node GET gotcha) + `history.md` |
-| Tuning content quality or hashtags for either platform | `integrations.md` (Groq section) + `history.md` |
+| Tuning content quality or hashtags for either platform | `integrations.md` (Groq section) + `history.md` + edit `prompts/*.txt` |
 | Building company LinkedIn (`s:`) | `roadmap.md` + `integrations.md` + `features.md` (use WF1's Instagram merge as the template) |
 | General orientation (new session) | This file → then pick by task |
 | Full audit | All files |

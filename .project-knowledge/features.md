@@ -1,6 +1,6 @@
 # Features & Workflows
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-09 (prompts extracted to `prompts/*.txt` + `Load Prompts` Code node; workflow renamed)
 
 ## Features
 
@@ -33,7 +33,8 @@
 
 ## Workflows
 
-**WF1 - LinkedIn Post (Personal)** (`workflows/main-workflow.json`)
+**Telegram Publisher (LinkedIn + IG)** (`workflows/main-workflow.json` —
+renamed from "WF1 - LinkedIn Post (Personal)" on 2026-08-09)
 
 This is the *only* active workflow, and the single hub for every platform —
 it started as just LinkedIn, absorbed WF4's approve-handling logic on
@@ -46,6 +47,15 @@ merged into this one workflow, never its own standalone one.**
 
 ### Entry / prefix detection
 
+0. `Load Prompts` (Code, added 2026-08-09) — reads all four system prompts
+   from `/home/node/prompts/*.txt` (bind-mount of `~/n8n/prompts`, read-only)
+   into `$node["Load Prompts"].json.{image_prompt_ig,caption_ig,image_prompt_li,rewrite_linkedin}`.
+   Runs once right after the trigger, before every branch, so its data
+   survives Wait-node resumes (n8n keeps earlier nodes' output across waits)
+   and is available to every prompt-bearing node downstream. The 5 LLM node
+   bodies reference these keys instead of inline prompt text, so **editing a
+   `.txt` file takes effect on the next run** — no n8n edits needed. Requires
+   `NODE_FUNCTION_ALLOW_BUILTIN=fs,path` on the container (see `stack.md`).
 1. `Telegram Trigger` — receives `message` **and** `callback_query` updates
    (the latter added 2026-07-08 for the button menu).
 2. `Is Callback Query?` (IF) — `$json.callback_query` existing branches

@@ -208,9 +208,9 @@ Decisions section. Either way, always re-export/re-redact before committing.)
 
 ## ⚠️ Known open issues
 
-See `.project-knowledge/roadmap.md` for the live list — notably, several
-credentials are still hardcoded on nodes rather than proper n8n credentials,
-and the old typed-command listener nodes are dead code pending cleanup.
+See `.project-knowledge/roadmap.md` for the live list — notably, the old
+typed-command listener nodes are dead code pending cleanup, and the LinkedIn
+bearer token's expiry still needs confirming.
 
 ---
 

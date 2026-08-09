@@ -1,6 +1,6 @@
 # Roadmap
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-08 (all API keys moved into n8n credentials)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-09 (prompts extracted to `prompts/*.txt`)
 > Forward-looking only. Check this before starting any task.
 
 ## Current Goal
@@ -40,7 +40,8 @@ messages after repeated API-driven structural edits to the active workflow)*
       (examples anchor output more than instructions do) but applied as-is
       per user's call. If real regenerations start reusing that exact
       hedge, swap one example's ending for a plain non-hedged statement.
-      *(added: 2026-07-12)*
+      *(added: 2026-07-12; the prompt now lives in
+      `prompts/rewrite-linkedin.txt` as of 2026-08-09)*
 - [ ] **Clean up the now-dead typed-command infrastructure**: `Ignore
       Commands`, `Is it a command?`, `Extract Command`, `Get Pending
       Approval`, `Has Pending?`, `Resume Workflow`, `Update Status`, `Reply -
@@ -65,12 +66,13 @@ messages after repeated API-driven structural edits to the active workflow)*
       has no secrets; real values sit in gitignored `.credentials.env`.
       *(added: 2026-07-02, done: 2026-08-08)*
 - [ ] Build the actual publish step for company LinkedIn (`s:`) — personal
-      LinkedIn and Instagram are both done now. WF1 is the template for the
-      pattern: draft/verbatim capture → Supabase pending row → Telegram
-      preview with the 5-button menu → Wait node → button-driven routing.
-      Note from 2026-07-03: the company-page prompt will likely want the
-      *opposite* instruction from the personal ones — it should probably only
-      talk about Synax/AI automation/work, rather than avoiding it.
+      LinkedIn and Instagram are both done now. The main workflow
+      (`Telegram Publisher (LinkedIn + IG)`, formerly WF1) is the template
+      for the pattern: draft/verbatim capture → Supabase pending row →
+      Telegram preview with the 5-button menu → Wait node → button-driven
+      routing. Note from 2026-07-03: the company-page prompt will likely want
+      the *opposite* instruction from the personal ones — it should probably
+      only talk about Synax/AI automation/work, rather than avoiding it.
       *(added: 2026-07-02, refined: 2026-07-03, 2026-07-04)*
 - [ ] LinkedIn bearer token on `Post to LinkedIn`/`Post to LinkedIn
       (Image)`/`Register LinkedIn Upload`/`Upload Image to LinkedIn` is a raw

@@ -1,16 +1,16 @@
 # External Integrations & Data Contracts
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-10 (Instagram publish race condition fixed, stale-webhook-registration bug fixed)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-09 (LLM system prompts moved to `prompts/*.txt`, loaded by a `Load Prompts` Code node; workflow renamed)
 > Document exact field contracts — never guess the shape.
 
 ## Telegram Bot API
 
 - Trigger: `Telegram Trigger` node, `updates: ["message", "callback_query"]`
   (the `callback_query` entry was added 2026-07-08 for the button menu — see
-  below). WF1 has the *only* trigger — WF4 and WF2 used to have their own
-  too, but Telegram only allows one webhook per bot, so their logic was
-  merged into WF1 (see `history.md`). **Any future platform must follow this
-  same pattern.**
+  below). The main workflow (`Telegram Publisher (LinkedIn + IG)`, formerly
+  "WF1") has the *only* trigger — WF4 and WF2 used to have their own too, but
+  Telegram only allows one webhook per bot, so their logic was merged into it
+  (see `history.md`). **Any future platform must follow this same pattern.**
 - Webhook path: `/webhook/<uuid>/webhook` on the ngrok tunnel.
 - Owner: single private chat (`chat.type: "private"`) tested so far.
 - **Interaction model is now entirely inline-keyboard buttons, not typed
@@ -190,6 +190,15 @@
   invalid json`/check-constraint error depending on where it ends up.
 
 ## Groq (LLM — post/caption/image-prompt generation)
+
+> **Prompts live in `prompts/*.txt` since 2026-08-09.** All five system
+> prompts were extracted from the workflow JSON into versioned text files,
+> and a `Load Prompts` Code node reads them from disk on every run — so the
+> prompt *text* below (and every 2026-07-12 prompt-tuning note in this file)
+> is now stored in `prompts/rewrite-linkedin.txt`, `prompts/image-prompt-li.txt`,
+> `prompts/caption-ig.txt`, `prompts/image-prompt-ig.txt`. Edit the `.txt`
+> (live copy: `~/n8n/prompts/`) to change any voice/style rule; the workflow
+> picks it up on the next run with no n8n edits. See `stack.md`.
 
 - **`y:`/`ig:` no longer auto-draft on entry (redesigned 2026-07-08).**
   Originally `y: <topic>`/`ig: <topic>` always ran the topic through Groq
@@ -431,8 +440,8 @@ LinkedIn voice drifted generic.
 
 ## LinkedIn (personal)
 
-- Used by WF1's `Post to LinkedIn` (text-only) / `Post to LinkedIn (Image)`
-  nodes, fired only after the "Post it" button (`li_approve`).
+- Used by the main workflow's `Post to LinkedIn` (text-only) / `Post to
+  LinkedIn (Image)` nodes, fired only after the "Post it" button (`li_approve`).
 - `POST https://api.linkedin.com/v2/ugcPosts`, `X-Restli-Protocol-Version: 2.0.0`.
 - Auth: **n8n Header Auth credential `LinkedIn API`** (since 2026-08-08) —
   header **Name** `Authorization`, **Value** `Bearer <LinkedIn access token>`.

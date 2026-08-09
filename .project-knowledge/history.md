@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-07-17 (OpenRouter credential migration + IG two-message caption split; Claude-bridge experiment abandoned)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-09 (prompts extracted to `prompts/*.txt`, loaded at runtime; workflow renamed)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -615,3 +615,23 @@
   Lesson: when migrating a key from JSON body to a credential, verify the
   credential is attached to *every* node that had it, not just the ones
   matching a query-param pattern. *(2026-08-08)*
+- **LLM system prompts extracted to `prompts/*.txt`, loaded at runtime
+  (2026-08-09).** All five system prompts (four distinct texts) moved out of
+  the workflow JSON into version-controlled text files, read on every run by
+  a new `Load Prompts` Code node placed between the trigger and
+  `Is Callback Query?`. Each prompt-bearing node's body now references
+  `$node["Load Prompts"].json.<key>` (a `key` per file) instead of inline
+  `content: '...'`. Chosen over a watcher-script Option B because file reads
+  are stateless and take effect on the next run with zero moving parts.
+  Requires `NODE_FUNCTION_ALLOW_BUILTIN=fs,path` on the container — verified
+  in n8n's source that the JS task runner allowlists builtins via that env
+  and, empty, blocks `require()` entirely — plus a read-only bind-mount of
+  the live folder (`~/n8n/prompts` → `/home/node/prompts`). The container
+  was recreated with identical config + those two additions. Wait-node
+  placement was verified safe: all 5 prompt nodes are downstream of the
+  trigger, the 3 LinkedIn ones after a `Wait`, and n8n preserves earlier
+  nodes' data across waits. Import caveat: `n8n import:workflow
+  --activeState=fromJson` is rejected in regular (non-queue) mode, so
+  activate separately with `n8n update:workflow --active=true` + restart.
+  Workflow renamed `Telegram Publisher (LinkedIn + IG)` in the same pass.
+  *(2026-08-09)*
