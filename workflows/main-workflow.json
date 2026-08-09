@@ -1,6 +1,6 @@
 [
   {
-    "updatedAt": "2026-08-08T20:15:18.000Z",
+    "updatedAt": "2026-08-09T10:49:39.589Z",
     "createdAt": "2026-07-03T04:39:56.341Z",
     "id": "9lo7Lhwn3tg2cC6P",
     "name": "Telegram Publisher (LinkedIn + IG)",
@@ -11,7 +11,7 @@
       {
         "parameters": {
           "mode": "runOnceForAllItems",
-          "jsCode": "const fs = require('fs');\nconst dir = '/home/node/prompts';\nreturn [{ json: {\n  image_prompt_ig: fs.readFileSync(dir + '/image-prompt-ig.txt', 'utf8'),\n  caption_ig: fs.readFileSync(dir + '/caption-ig.txt', 'utf8'),\n  image_prompt_li: fs.readFileSync(dir + '/image-prompt-li.txt', 'utf8'),\n  rewrite_linkedin: fs.readFileSync(dir + '/rewrite-linkedin.txt', 'utf8'),\n} }];"
+          "jsCode": "const fs = require('fs');\nconst dir = '/home/node/prompts';\nconst prompts = {\n  image_prompt_ig: fs.readFileSync(dir + '/image-prompt-ig.txt', 'utf8'),\n  caption_ig: fs.readFileSync(dir + '/caption-ig.txt', 'utf8'),\n  image_prompt_li: fs.readFileSync(dir + '/image-prompt-li.txt', 'utf8'),\n  rewrite_linkedin: fs.readFileSync(dir + '/rewrite-linkedin.txt', 'utf8'),\n};\nreturn $input.all().map(item => ({ ...item, json: { ...item.json, ...prompts } }));"
         },
         "id": "lp-0000-0000-0000-loadprompts",
         "name": "Load Prompts",
@@ -150,7 +150,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Supabase"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -421,7 +425,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "LinkedIn API"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -479,7 +487,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "OpenRouter (Header Auth)"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -591,7 +603,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Supabase"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -651,7 +667,11 @@
         "position": [
           -384,
           -1104
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -687,7 +707,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Supabase"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -851,7 +875,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Groq API"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -904,7 +932,11 @@
         "position": [
           64,
           -784
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -934,7 +966,11 @@
         "position": [
           288,
           -784
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -970,7 +1006,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "OpenRouter (Header Auth)"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1043,12 +1083,16 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Supabase"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
           "chatId": "={{ $node['Set Post Data'].json['chat_id'] }}",
-          "text": "={{ $node['Set Post Data'].json['caption'] ",
+          "text": "={{ $node['Set Post Data'].json['caption'] }}",
           "replyMarkup": "inlineKeyboard",
           "inlineKeyboard": {
             "rows": [
@@ -1301,7 +1345,11 @@
             "id": "httpQueryAuth-REPLACE",
             "name": "Meta Instagram"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1328,7 +1376,11 @@
             "id": "httpQueryAuth-REPLACE",
             "name": "Meta Instagram"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1522,7 +1574,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Supabase"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1582,7 +1638,11 @@
         "position": [
           -832,
           768
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1618,7 +1678,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Supabase"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1705,7 +1769,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "Groq API"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1717,15 +1785,15 @@
               },
               {
                 "name": "chat_id",
-                "stringValue": "={{ (() => { try { return $node[\"Extract Post Text\"].json[\"chat_id\"] } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"chat_id\"] } } )() }}"
+                "stringValue": "={{ (() => { try { return $node[\"Extract Raw Post Text\"].json[\"chat_id\"] } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"chat_id\"] } } )() }}"
               },
               {
                 "name": "telegram_user_id",
-                "stringValue": "={{ (() => { try { return $node[\"Extract Post Text\"].json[\"telegram_user_id\"] } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"telegram_user_id\"] } } )() }}"
+                "stringValue": "={{ (() => { try { return $node[\"Extract Raw Post Text\"].json[\"telegram_user_id\"] } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"telegram_user_id\"] } } )() }}"
               },
               {
                 "name": "post_text",
-                "stringValue": "={{ (() => { try { return $node[\"Extract Post Text\"].json[\"post_text\"] } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}"
+                "stringValue": "={{ (() => { try { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } catch (e) { return $node[\"Extract Raw Post Text\"].json[\"post_text\"] } } )() }}"
               }
             ]
           },
@@ -1758,7 +1826,11 @@
         "position": [
           736,
           224
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1798,7 +1870,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "LinkedIn API"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1845,7 +1921,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "LinkedIn API"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -1885,7 +1965,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "LinkedIn API"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -2075,7 +2159,7 @@
           "sendBody": true,
           "contentType": "raw",
           "rawContentType": "application/json",
-          "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 600, messages: [ { role: 'system', content: $node[\"Load Prompts\"].json.rewrite_linkedin }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + ($node[\"Extract Raw Post Text\"].json[\"post_text\"]) + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea — write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] })openai/gpt-4o-mini }}",
+          "body": "={{ JSON.stringify({ model: 'openai/gpt-4o-mini', max_tokens: 600, messages: [ { role: 'system', content: $node[\"Load Prompts\"].json.rewrite_linkedin }, { role: 'user', content: 'Rewrite this LinkedIn post.\\n\\nOriginal post:\\n' + ($node[\"Extract Raw Post Text\"].json[\"post_text\"]) + '\\n\\n' + ($json.query.instructions ? ('Instructions: ' + $json.query.instructions) : 'No specific instructions were given. Do NOT just reword the same idea — write a genuinely different take: a different hook, a different structure, and if the original used a metaphor, either use a completely different one or drop the metaphor approach entirely. Same topic, different execution.') } ] }) }}",
           "options": {}
         },
         "id": "6046da95-ef1c-4e22-bff2-8ae8cd98eef3",
@@ -2091,7 +2175,11 @@
             "id": "httpHeaderAuth-REPLACE",
             "name": "OpenRouter (Header Auth)"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -2209,7 +2297,11 @@
         "position": [
           736,
           -432
-        ]
+        ],
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -2255,7 +2347,11 @@
             "id": "httpQueryAuth-REPLACE",
             "name": "Meta Instagram"
           }
-        }
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 5000,
+        "onError": "continueErrorOutput"
       },
       {
         "parameters": {
@@ -2402,6 +2498,28 @@
             "name": "Telegram account"
           }
         }
+      },
+      {
+        "id": "notify-error-0001",
+        "name": "Notify Error",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          -1900,
+          400
+        ],
+        "parameters": {
+          "chatId": "7749928843",
+          "text": "={{ '❌ *Bot error*\\n\\n' + ($json.error?.message || $json.message || 'Unknown error') + '\\nExecution: ' + $execution.id }}",
+          "additionalFields": {}
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "telegramApi-REPLACE",
+            "name": "Telegram account"
+          }
+        },
+        "webhookId": "9982a613-26ec-40c5-a314-04012ef5c469"
       }
     ],
     "connections": {
@@ -2460,6 +2578,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2493,6 +2618,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2501,6 +2633,13 @@
           [
             {
               "node": "Has Image? (LI)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2537,6 +2676,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2566,6 +2712,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2574,6 +2727,13 @@
           [
             {
               "node": "Reply - Processing",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2617,6 +2777,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2639,6 +2806,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2650,6 +2824,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2658,6 +2839,13 @@
           [
             {
               "node": "Set Post Data",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2680,6 +2868,13 @@
           [
             {
               "node": "Send a photo message",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2755,6 +2950,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2763,6 +2965,13 @@
           [
             {
               "node": "Confirm Posted (IG)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2829,6 +3038,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2858,6 +3074,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2877,6 +3100,13 @@
           [
             {
               "node": "Extract Image Prompt (LI)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2902,6 +3132,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -2910,6 +3147,13 @@
           [
             {
               "node": "Attach LI Image Binary",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2932,6 +3176,13 @@
           [
             {
               "node": "Attach Preview Image Binary",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -2961,6 +3212,13 @@
           [
             {
               "node": "Confirm Posted",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -3054,6 +3312,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -3105,6 +3370,13 @@
               "type": "main",
               "index": 0
             }
+          ],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
           ]
         ]
       },
@@ -3124,6 +3396,13 @@
           [
             {
               "node": "Track Poll Attempt",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Notify Error",
               "type": "main",
               "index": 0
             }
@@ -3187,89 +3466,36 @@
             }
           ]
         ]
+      },
+      "Update Status (Callback)": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Notify Error",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "settings": {
       "executionOrder": "v1",
       "binaryMode": "separate",
-      "availableInMCP": false
+      "availableInMCP": false,
+      "timeSavedMode": "fixed",
+      "errorWorkflow": "TwzspKGId3wtQrHc",
+      "callerPolicy": "workflowsFromSameOwner"
     },
     "staticData": null,
     "meta": {
       "templateCredsSetupCompleted": true
     },
-    "nodeGroups": [
-      {
-        "id": "1f366b1e-d432-4f7c-9ef2-278d99aa85b3",
-        "name": "Instagram",
-        "nodeIds": [
-          "b6b43d1d-9766-42c6-9be3-7503abac8796",
-          "7aba1837-df8b-4f1e-850a-3fead6190431",
-          "49955966-6563-4bf6-884a-7356cf788f51",
-          "630ce7f0-9df1-476f-94f0-78a5c417ef2d",
-          "7d4d673a-0c26-4fe2-a0d4-a40f5218275f",
-          "72924b5b-67cc-4878-9290-c8b33f3d0eee",
-          "59481bf3-2c72-4f6c-bbe9-c496e5dc78e4",
-          "e414dd03-ff2b-4443-81b3-a4f7965b0955",
-          "61f10535-cff9-470f-8ef6-6ddee60eb6be",
-          "9e47d76c-6ea6-423f-b9a9-8c100ab7c17c",
-          "cc5ec902-03c3-4ad5-b9f0-fca1e10cedec",
-          "446b5702-99cb-45e5-80be-b2827bf72b82",
-          "7d4e2e03-3e53-4015-ac64-824e3fde01dc",
-          "4e0f8bf5-97a9-4305-8479-779befe7712d",
-          "2e5e6aa1-16ff-42d5-afb4-bd54c90afbd5",
-          "7f1bd801-4351-400e-b562-c5c6d68edca1",
-          "6da77f86-751c-4fcb-9ea5-6b9befe535c1",
-          "bc702615-76fc-4348-857e-6c0997b6fa49",
-          "455663c9-b49d-46ba-b494-0038f31aa03f",
-          "c913b7e3-2bc8-4b6c-84c2-9de980831471",
-          "ea434eb4-97cb-46a0-ab1c-ac9f1e1c2692"
-        ]
-      },
-      {
-        "id": "a03c7e06-e81d-465b-b5e3-28b019fab384",
-        "name": "Telegram Bot",
-        "nodeIds": [
-          "1032fe4c-519c-449d-aa84-b5945b6a5b8d",
-          "d75c1b73-6573-47c9-9634-02239ec257ae",
-          "e14b468c-3ab6-4b3e-9f47-7826a382aa22",
-          "5a0ae5cd-138f-4b84-a27e-49c129e643b1",
-          "e4376308-4a9c-4a42-967a-5ba987bccf09",
-          "56a05006-8992-4b2f-9d05-3573baf60d7a",
-          "ce4a716a-6697-4ad0-adbb-24ed49d2de3c",
-          "70697aa5-63a7-4e36-8b62-1ccd3932d9bf"
-        ]
-      },
-      {
-        "id": "1a8c840b-5423-49c9-82f8-719df4e82a77",
-        "name": "Linkedin Personal",
-        "nodeIds": [
-          "3a26e509-ebbb-426c-9f69-40d2750f0501",
-          "9a24b65c-4a09-4623-b910-db02dbea845a",
-          "d24a8b65-e8b7-4dd5-b0a4-937b0d5ef9ee",
-          "9ea425c9-90e8-44df-9988-95afb9dee73f",
-          "ff4e0b32-8fcb-4191-95ef-063b7b6b7931",
-          "5c936a42-1369-4cb2-b020-a8454d7a1c93",
-          "098483db-b786-4b93-a80b-0dcd1dcff60e",
-          "fd36ece8-857f-491b-b051-87a00256e48c",
-          "c9909197-4a45-41a7-acb4-4f1fad3fc8b5",
-          "da3d4b7e-4611-4b92-aa9e-80c67a375bd9",
-          "248a1877-e6b1-4bbb-a94e-20d930d60e7b",
-          "f588b1c3-bd2b-4a99-b436-7043bbbdc2f8",
-          "4dd6b08b-2fab-465b-9eed-b2bfbb8c45cb",
-          "d97d9288-4738-4680-9809-a2646a3d09a5",
-          "94bc207f-02cb-49cc-8e09-18eee2870fb3",
-          "8999fb31-1f18-4682-ac77-f5f4f0918642",
-          "fd18f223-8181-4218-8e4b-f36291f758f6",
-          "1a3aecf2-02f1-446c-8b4c-e1550941f417",
-          "ce055786-c8d8-42f2-8c0a-face100c6cfe",
-          "6046da95-ef1c-4e22-bff2-8ae8cd98eef3"
-        ]
-      }
-    ],
-    "versionId": "875ea311-c403-4841-bf04-17dc821a7717",
-    "activeVersionId": "875ea311-c403-4841-bf04-17dc821a7717",
-    "versionCounter": 251,
+    "nodeGroups": [],
+    "versionId": "f2922ffe-325b-443b-be02-6ca6b8a8922d",
+    "activeVersionId": "f2922ffe-325b-443b-be02-6ca6b8a8922d",
+    "versionCounter": 256,
     "triggerCount": 1,
     "sourceWorkflowId": null,
     "tags": [],
@@ -3292,10 +3518,6 @@
           "creatorId": "3d7ddad8-f952-4348-b153-40ec2e73bbb6"
         }
       }
-    ],
-    "versionMetadata": {
-      "name": "Version 80923480",
-      "description": "Fix: caption Text field on Send Preview (IG) was in Fixed mode, so it sent the raw expression as literal text. Switched it to Expression mode so it evaluates to the actual caption."
-    }
+    ]
   }
 ]

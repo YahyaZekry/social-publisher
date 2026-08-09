@@ -1,0 +1,95 @@
+[
+  {
+    "updatedAt": "2026-08-09T10:42:23.909Z",
+    "createdAt": "2026-08-09T10:16:22.750Z",
+    "id": "TwzspKGId3wtQrHc",
+    "name": "Telegram Publisher - Error Alerts",
+    "description": null,
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "id": "error-trigger-0001",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -240,
+          0
+        ],
+        "parameters": {}
+      },
+      {
+        "id": "err-send-alert-0001",
+        "name": "Send Error Alert",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ],
+        "parameters": {
+          "chatId": "7749928843",
+          "text": "={{ '❌ *Workflow failed*\\n\\nWorkflow: ' + $json.workflow.name + '\\nNode: ' + $json.execution.lastNodeExecuted + '\\nError: ' + $json.execution.error.message + '\\nExecution: ' + $json.execution.url + '\\nTime: ' + DateTime.fromMillis($json.execution.error.timestamp).toISO() }}",
+          "additionalFields": {}
+        },
+        "credentials": {
+          "telegramApi": {
+            "id": "telegramApi-REPLACE",
+            "name": "Telegram account"
+          }
+        },
+        "webhookId": "0d0f597f-15fa-4be1-a5bd-42d8229467d2"
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Send Error Alert",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "saveDataErrorExecution": "all",
+      "saveDataSuccessExecution": "all",
+      "saveManualExecutions": true,
+      "saveExecutionProgress": true
+    },
+    "staticData": null,
+    "meta": null,
+    "nodeGroups": [],
+    "versionId": "d90a98c9-cddb-431b-bc53-e6325e4e0c3f",
+    "activeVersionId": "d90a98c9-cddb-431b-bc53-e6325e4e0c3f",
+    "versionCounter": 2,
+    "triggerCount": 0,
+    "sourceWorkflowId": null,
+    "tags": [],
+    "shared": [
+      {
+        "updatedAt": "2026-08-09T10:16:22.753Z",
+        "createdAt": "2026-08-09T10:16:22.753Z",
+        "role": "workflow:owner",
+        "workflowId": "TwzspKGId3wtQrHc",
+        "projectId": "hcRPhshNkwclDqy1",
+        "project": {
+          "updatedAt": "2026-08-08T10:01:44.846Z",
+          "createdAt": "2026-08-08T09:56:54.602Z",
+          "id": "hcRPhshNkwclDqy1",
+          "name": "Yahya Zekry <yahyazekry@gmail.com>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "customTelemetryTags": [],
+          "creatorId": "3d7ddad8-f952-4348-b153-40ec2e73bbb6"
+        }
+      }
+    ]
+  }
+]

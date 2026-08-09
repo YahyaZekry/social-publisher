@@ -1,6 +1,6 @@
 # History
 
-> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-09 (prompts extracted to `prompts/*.txt`, loaded at runtime; workflow renamed)
+> Part of social-publisher/.project-knowledge/ | Last updated: 2026-08-09 (error-alerts workflow added; Load Prompts data-loss bug fixed; repo re-synced)
 > Past-only. Append-only — never delete entries.
 
 ## Fixed
@@ -452,11 +452,29 @@
   only WF1 is active among the 3 workflows in this n8n instance; (3) the
   actual webhook payload for a real `ig: test` message showed the sender's
   Telegram account itself is `is_bot: false, username: "TheBearCode"` — i.e.
-  it's the user's own personal account/branding (matches the Meta Facebook
-  Page already named "Bear Code" in this same project, see `integrations.md`),
-  not a separate bot. The command menu itself was a one-time BotFather
-  setting, unrelated to message delivery; the user cleared it directly.
-  *(resolved: 2026-07-10)*
+   it's the user's own personal account/branding (matches the Meta Facebook
+   Page already named "Bear Code" in this same project, see `integrations.md`),
+   not a separate bot. The command menu itself was a one-time BotFather
+   setting, unrelated to message delivery; the user cleared it directly.
+   *(resolved: 2026-07-10)*
+- **Every Telegram message fell through to the "start with ig:/y:" reminder —
+   root cause was `Load Prompts` discarding the incoming message, not the
+   prefix checks.** A new dedicated error-alerts workflow (see Decisions)
+   started pinging the owner's Telegram with three identical failures (execs
+   4/6/8, node `Ask for prefix (IG)`, Telegram `400 Bad request - please check
+   your parameters`). Each message had genuinely been received, but the
+   `Load Prompts` Code node returned a brand-new `[{ json: { image_prompt_ig,
+   caption_ig, image_prompt_li, rewrite_linkedin } }]` object, **replacing**
+   the input item instead of augmenting it — so `$json.message` (chat.id /
+   text / caption) was `undefined` for every downstream node. Every prefix
+   check (`Has ig: prefix?`, `Has y: prefix?`, …) saw empty text and fell
+   through to `Ask for prefix (IG)`, whose `chatId` is
+   `{{ $json.message.chat.id }}` → empty → Telegram 400. **Fix:** the node now
+   merges prompts onto the incoming item
+   (`$input.all().map(item => ({ ...item, json: { ...item.json, ...prompts } }))`),
+   so `$node["Load Prompts"].json.*` still resolves while message data
+   survives. Applied via the Public API; the already-active workflow
+   auto-published (see Decisions). *(fixed: 2026-08-09)*
 
 ---
 
@@ -633,5 +651,33 @@
   nodes' data across waits. Import caveat: `n8n import:workflow
   --activeState=fromJson` is rejected in regular (non-queue) mode, so
   activate separately with `n8n update:workflow --active=true` + restart.
-  Workflow renamed `Telegram Publisher (LinkedIn + IG)` in the same pass.
-  *(2026-08-09)*
+   Workflow renamed `Telegram Publisher (LinkedIn + IG)` in the same pass.
+   *(2026-08-09)*
+- **Dedicated error-alerts workflow (`Telegram Publisher - Error Alerts`, id
+   `TwzspKGId3wtQrHc`) wired as the main workflow's `settings.errorWorkflow`
+   (2026-08-09).** Chose n8n's built-in Error Workflow mechanism over
+   per-node error branches: one workflow catches every terminal failure, and
+   it routes its alert (workflow name, last executed node, error message,
+   execution URL, timestamp) to the owner's Telegram chat `7749928843`. For
+   recoverable mid-flow failures, 26 nodes carry `onError: continueErrorOutput`
+   feeding a shared `Notify Error` node (added to the main workflow). Proved
+   its value immediately — the first failure alerts it sent surfaced the
+   Load Prompts data-loss bug above. Exported as
+   `workflows/error-alerts-workflow.json`. *(2026-08-09)*
+- **Public API/MCP edits to an already-active workflow auto-publish — there is
+   no separate Publish step (2026-08-09).** When the Load Prompts fix was
+   applied via the Public API, `versionId` and `activeVersionId` advanced
+   together in the same save and the running workflow picked it up
+   immediately; draft and live are the same object for active workflows.
+   The editor's "Published" pill staying disabled was correct, not a pending
+   publish. *(2026-08-09)*
+- **Re-exported this repo's workflow files from the live Public API instead
+   of `docker exec` (2026-08-09).** The agent's user has no `docker` group
+   membership (root-owned socket), so the README's
+   `docker exec n8n n8n export:workflow --backup …` flow was unavailable.
+   `GET /api/v1/workflows/:id` (Public API key) returns the identical
+   authoritative draft — nodes, connections, settings, staticData,
+   versionId/activeVersionId — which was then scrubbed with the same
+   `-REPLACE` credential-ID convention and `active:false`. Same outcome as
+   the documented export; noted so the docker route isn't assumed required.
+   *(2026-08-09)*

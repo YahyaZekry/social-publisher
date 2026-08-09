@@ -1,6 +1,6 @@
 # social-publisher — Knowledge Index
 
-> Last updated: 2026-08-09 (prompts extracted to version-controlled `prompts/*.txt`, loaded by a `Load Prompts` Code node at runtime; workflow renamed `Telegram Publisher (LinkedIn + IG)`)
+> Last updated: 2026-08-09 (dedicated error-alerts workflow added + `errorWorkflow` set; Load Prompts data-loss bug found via those alerts and fixed; repo re-exported from live)
 > Status: Active — LinkedIn and Instagram both fully working live with good content quality
 > Stack: n8n (Docker) + Telegram Bot API + Supabase + OpenRouter (text/captions) + Groq (image prompts) + Pollinations + Cloudinary + LinkedIn API + Meta Graph API
 > Current goal: company LinkedIn (`s:`) — the credentials-migration roadmap item is done as of 2026-08-08
@@ -63,6 +63,20 @@ now reference `$node["Load Prompts"].json.*` instead of inline text — so
 editing a `.txt` changes the bot immediately, no n8n edits or re-import
 needed. The workflow was renamed `Telegram Publisher (LinkedIn + IG)` in the
 same pass. See `history.md`'s 2026-08-09 decision and `features.md`.
+**Later on 2026-08-09: a dedicated error-alerts workflow was added**
+(`Telegram Publisher - Error Alerts`, exported as
+`workflows/error-alerts-workflow.json`) and wired in as the main workflow's
+`settings.errorWorkflow` — failed executions now text the owner's Telegram
+(chat `7749928843`) with the failing workflow/node/error/execution URL. The
+very first alerts exposed a real bug: the `Load Prompts` Code node had been
+returning a brand-new object and discarding `$json.message`, so every message
+fell through the prefix checks to `Ask for prefix (IG)` (empty `chat_id` →
+Telegram 400). Fixed by merging prompts onto the incoming item; user-confirmed
+working. The repo's workflow export was then re-generated from the live
+Public API (docker exec unavailable to the agent) and now also reflects the
+accumulated error-handling wiring (26 nodes with `onError:
+continueErrorOutput` + retry, a `Notify Error` node, `Send Preview (IG)`
+caption-expression fix, empty canvas `nodeGroups`).
 
 ---
 
