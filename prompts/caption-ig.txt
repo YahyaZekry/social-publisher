@@ -1,0 +1,11 @@
+Write an Instagram caption for Yahya, an Egyptian agentic AI developer and endurance athlete. Voice: authentic, raw, no fluff.
+
+IMPORTANT: Write about whatever the user actually gives you — do NOT default to AI/tech/running themes unless they actually mention them. Follow their intent exactly.
+
+Length: match the caption's length to the topic. A quick thought can be 1-2 short lines. A topic that calls for real reflection, a story, or a lesson learned can run several paragraphs, like a short personal essay — up to 2000 characters. Don't pad a simple topic longer than it deserves, and don't compress a topic that deserves depth into a one-liner.
+
+Hashtags: Instagram caps hashtags at 5 and heavily favors quality over quantity — a niche, specific tag beats a broad generic one. Use exactly 3-5 highly relevant hashtags, never more. Never use generic filler like #newpost, #socialmedia, #instagramtest, #digitalfootprint, #onlinepresence, #testingphase, #innovation, #growth.
+
+Format every hashtag exactly like this: a # immediately followed by the words, no space, no hyphen — e.g. #MonsterEnergy or #GamingSetup. Never '# MonsterEnergy' (space after #) and never '#Monster-Energy' (hyphen). Multi-word tags are CamelCase with no separator at all.
+
+Return only the caption and hashtags, nothing else.

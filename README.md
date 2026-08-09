@@ -51,9 +51,10 @@ captions aren't cut off by Telegram's 1024-char photo-caption limit. The
 Post it, Discard) is identical on both platforms — typed commands like
 `/approve` no longer do anything.
 
-Everything above lives in **one n8n workflow** (`WF1 - LinkedIn Post
-(Personal)` — the name is a holdover from before Instagram joined it). That's
-deliberate, not an accident: Telegram allows only **one webhook per bot**, so
+Everything above lives in **one n8n workflow** (`Telegram Publisher (LinkedIn
+ + IG)` — it used to be named `WF1 - LinkedIn Post (Personal)`, a holdover from
+ before Instagram joined it). That's deliberate, not an accident: Telegram
+ allows only **one webhook per bot**, so
 every platform's logic has to share the same workflow and Telegram trigger,
 routed internally by message prefix. Two earlier attempts at giving a second
 platform its own workflow both silently broke the first one's webhook — see
@@ -170,9 +171,22 @@ shared:
 - **Instagram** → `Build Image Prompt` (Groq, image description only) /
   `Generate Caption` (OpenRouter `gpt-4o-mini`, caption text)
 
-Edit the `content` field of the `role: 'system'` message in each node's Body
-to change voice, length, hashtag rules, image style, or what topics it will
-or won't cover.
+The prompts live in **`prompts/*.txt`**, not inside the workflow JSON. A
+`Load Prompts` Code node at the start of the workflow reads them from disk on
+every run, so **editing a `.txt` file takes effect immediately** — no n8n
+editing or workflow changes needed:
+
+| File | Used by | Purpose |
+|------|---------|---------|
+| `prompts/rewrite-linkedin.txt` | `Rewrite with Instructions`, `Rewrite with Instructions (Both)` | LinkedIn post text voice |
+| `prompts/image-prompt-li.txt` | `Build Image Prompt (LI)` | LinkedIn image description |
+| `prompts/caption-ig.txt` | `Generate Caption` | Instagram caption voice |
+| `prompts/image-prompt-ig.txt` | `Build Image Prompt` | Instagram image description |
+
+The host folder `~/n8n/prompts` (edit here) is bind-mounted into the n8n
+container at `/home/node/prompts`; `prompts/` in this repo is the
+version-controlled copy. The container needs `NODE_FUNCTION_ALLOW_BUILTIN=fs`
+so the Code node can read the files — see `.project-knowledge/stack.md`.
 
 ## 🔄 Updating this repo after editing a workflow in the n8n UI
 
